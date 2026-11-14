@@ -14,3 +14,14 @@ Settled 2026-11-14 (phase 0). Versions were checked against Maven Central, Docke
 Out of scope (deliberate): real payments, Stripe Connect and Tax, multi-vendor, multi-currency, ML recommendations, mobile app, microservices.
 
 Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulith 2.1.x, Testcontainers 2.0.5, Terraform 1.17.2 (Docker wrapper), Temurin JDK 25.
+
+## Slice 3b (authentication), settled 2026-11-14
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Password hashing | `DelegatingPasswordEncoder`, BCrypt (`{bcrypt}` prefix stored) | Argon2 is stronger against GPUs but needs Bouncy Castle; the prefix lets the algorithm change later. BCrypt limits passwords to 72 bytes, enforced in validation. |
+| Login mechanics | JSON controller calling `AuthenticationManager`, session id changed and CSRF token rotated on sign-in | More code than `formLogin`, but JSON responses and no redirects for the Next.js client. |
+| CSRF | Token kept in the session, delivered by `GET /api/auth/csrf`, required on every POST including register and login | Client must fetch a token first; this prevents login CSRF. Plain (not XOR-masked) token handler, since the token only travels in JSON. |
+| Errors | One body `{code, message, fields}` for the whole auth API; JSON 401 and 403, no redirects | Codes are a contract the design depends on (`docs/api/auth.md`). |
+| Email | Trimmed, lowercased, printable ASCII, at most 100 characters | Rejects internationalised addresses; the limit comes from Spring Session's `PRINCIPAL_NAME VARCHAR(100)`. |
+| Admin accounts | Never created by registration (role is always `customer`); promoted by SQL or seed | No admin UI for user management in v1. |
