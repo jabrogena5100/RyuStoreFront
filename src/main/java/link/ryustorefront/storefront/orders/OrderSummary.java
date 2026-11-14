@@ -13,6 +13,7 @@ public record OrderSummary(
         long subtotalMinor,
         long shippingMinor,
         long totalMinor,
+        ShippingAddress shippingAddress,
         Instant expiresAt,
         Instant createdAt,
         List<Line> items) {

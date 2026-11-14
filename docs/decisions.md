@@ -72,3 +72,13 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Packaging | `worker` profile sets `storefront.worker.enabled`; jobs are `@ConditionalOnProperty`; the worker still serves HTTP | Health checks keep working; the API image and the worker image are the same. |
 | Sweep order | Cancel overdue orders first (order row, then reservations), only then release stray expired reservations | A reservation is never released while its order could still be paid. |
 | JSON | Flat string payloads written by a small `Json` helper, read back with `jsonb_each_text` | No JSON library coupling; payloads are flat maps. Nested payloads would need a library. |
+
+## Phase 4, slice 3 (email), settled 2026-11-14
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Local mail | Mailpit `v1.33.1` in `compose.yaml` and as a Testcontainers container in the email tests | One more container in the test run; the tests read the real inbox through Mailpit's API. |
+| Double sends | A `sent_emails` ledger (V9) keyed per email; written in the worker transaction before the send | A crash between the server accepting the mail and the commit sends a duplicate rather than losing the email. |
+| Content | Pure `OrderConfirmationEmail`, multipart text and HTML, everything dynamic HTML-escaped | Hand-written templates; fine for one email, a template engine only if there are many. |
+| Health | `management.health.mail.enabled=false` | A mail outage is invisible to the load balancer by design; it will need its own alarm (pending-event age, phase 6). |
+| Order summary | `OrderSummary` now carries the shipping address (also in the checkout response) | The checkout JSON grew one object; documented in `docs/api/checkout.md`. |

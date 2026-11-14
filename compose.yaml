@@ -1,5 +1,5 @@
-# Local development services. Phase 0: Postgres only.
-# Mailpit (phase 4) and the SQS/S3 emulator (phase 4/5) are added when needed.
+# Local development services: Postgres, and Mailpit (a local mail catcher: SMTP on 1025, inbox UI and API
+# on http://localhost:8025). Nothing sent here leaves the machine. The SQS/S3 emulator is added when needed.
 services:
   postgres:
     image: postgres:18.7-alpine
@@ -16,6 +16,12 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.33.1
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
 
 volumes:
   pgdata:

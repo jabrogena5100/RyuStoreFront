@@ -147,6 +147,8 @@ class CheckoutApiTests {
         String orderId = r.str("$.id");
         assertThat(r.str("$.status")).isEqualTo("pending");
         assertThat(r.str("$.contactEmail")).as("defaults to the account email").isEqualTo(s.email());
+        assertThat(r.str("$.shippingAddress.postalCode")).isEqualTo("97201");
+        assertThat(r.str("$.shippingAddress.name")).isEqualTo("Ada Buyer");
         assertThat(r.str("$.currency")).isEqualTo("USD");
         assertThat(r.num("$.subtotalMinor")).isEqualTo(30_980);
         assertThat(r.num("$.shippingMinor")).isEqualTo(800);

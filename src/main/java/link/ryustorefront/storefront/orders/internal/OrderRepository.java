@@ -123,6 +123,10 @@ public class OrderRepository {
                 .list();
         return jdbc.sql("""
                 SELECT id, status, contact_email, currency, subtotal_minor, shipping_minor, total_minor,
+                       shipping_address->>'name' AS a_name, shipping_address->>'line1' AS a_line1,
+                       shipping_address->>'line2' AS a_line2, shipping_address->>'city' AS a_city,
+                       shipping_address->>'region' AS a_region, shipping_address->>'postalCode' AS a_postal,
+                       shipping_address->>'country' AS a_country,
                        expires_at, created_at
                 FROM orders WHERE id = :id""")
                 .param("id", orderId)
@@ -131,6 +135,9 @@ public class OrderRepository {
                     return new OrderSummary(rs.getObject("id", UUID.class), rs.getString("status"),
                             rs.getString("contact_email"), rs.getString("currency").trim(),
                             rs.getLong("subtotal_minor"), rs.getLong("shipping_minor"), rs.getLong("total_minor"),
+                            new ShippingAddress(rs.getString("a_name"), rs.getString("a_line1"), rs.getString("a_line2"),
+                                    rs.getString("a_city"), rs.getString("a_region"), rs.getString("a_postal"),
+                                    rs.getString("a_country")),
                             expires == null ? null : expires.toInstant(),
                             rs.getObject("created_at", OffsetDateTime.class).toInstant(), items);
                 })
