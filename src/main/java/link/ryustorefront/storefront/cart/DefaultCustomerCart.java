@@ -1,5 +1,6 @@
 package link.ryustorefront.storefront.cart;
 
+import java.util.Collection;
 import java.util.List;
 import link.ryustorefront.storefront.cart.internal.CartRepository;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,14 @@ class DefaultCustomerCart implements CustomerCart {
                                 l.unitPriceMinor(), l.currency(), l.quantity(), l.active(), l.stock()))
                         .toList())
                 .orElse(List.of());
+    }
+
+    @Override
+    @Transactional
+    public void removeLines(long customerId, Collection<Long> variantIds) {
+        if (variantIds.isEmpty()) {
+            return;
+        }
+        carts.findByCustomer(customerId).ifPresent(cartId -> carts.removeItems(cartId, variantIds));
     }
 }

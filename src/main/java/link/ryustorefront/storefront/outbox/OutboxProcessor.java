@@ -1,6 +1,8 @@
 package link.ryustorefront.storefront.outbox;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import link.ryustorefront.storefront.outbox.internal.OutboxRepository;
@@ -34,7 +36,7 @@ public class OutboxProcessor {
 
     private final OutboxRepository repository;
     private final TransactionTemplate transaction;
-    private final Map<String, OutboxHandler> handlers = new HashMap<>();
+    private final Map<String, List<OutboxHandler>> handlers = new HashMap<>();
     private final int maxAttempts;
 
     OutboxProcessor(OutboxRepository repository, PlatformTransactionManager transactionManager,
@@ -44,11 +46,12 @@ public class OutboxProcessor {
         this.transaction = new TransactionTemplate(transactionManager);
         this.maxAttempts = maxAttempts;
         // ObjectProvider, not List: there may legitimately be no handlers at all.
-        handlerBeans.stream().forEach(handler -> {
-            if (handlers.put(handler.eventType(), handler) != null) {
-                throw new IllegalStateException("Two handlers for event type " + handler.eventType());
-            }
-        });
+        // Several handlers may consume one event type (order.paid: email and cart clearing). They run in bean
+        // order inside the one claim transaction, so if any throws, all of their database work rolls back and
+        // the whole event is retried: every handler therefore has to be idempotent (see OutboxHandler).
+        // orderedStream() honours @Order, so a handler with an outside effect (email) can be put last.
+        handlerBeans.orderedStream().forEach(handler ->
+                handlers.computeIfAbsent(handler.eventType(), type -> new ArrayList<>()).add(handler));
     }
 
     /** Handles due events until none are left or {@code maxEvents} were attempted. */
@@ -79,12 +82,14 @@ public class OutboxProcessor {
                 }
                 OutboxEvent event = claimed.get();
                 attempted.set(event);
-                OutboxHandler handler = handlers.get(event.eventType());
-                if (handler == null) {
+                List<OutboxHandler> handlersForType = handlers.get(event.eventType());
+                if (handlersForType == null) {
                     // Nobody consumes this type (yet). Mark it done and leave a trace rather than retry forever.
                     repository.markProcessed(event.id(), "no handler registered");
                 } else {
-                    handler.handle(event);
+                    for (OutboxHandler handler : handlersForType) {
+                        handler.handle(event);
+                    }
                     repository.markProcessed(event.id(), null);
                 }
                 return Step.DONE;

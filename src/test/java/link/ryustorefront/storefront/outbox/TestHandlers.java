@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
 
@@ -57,5 +58,52 @@ class RecordingHandler implements OutboxHandler {
             throw new IllegalStateException("failing on purpose (attempt " + (event.attempts() + 1) + ")");
         }
         HANDLED.add(event.id());
+    }
+}
+
+/**
+ * Two handlers for one event type ("test.multi"), to prove the processor runs all of them, in {@code @Order},
+ * inside one transaction. The first writes a database row; the second can be told to fail.
+ */
+@Component
+@Order(1)
+class MultiFirstHandler implements OutboxHandler {
+
+    /** "first" and "second" in the order the handlers actually ran (every attempt). */
+    static final List<String> RAN = new CopyOnWriteArrayList<>();
+
+    private final JdbcClient jdbc;
+
+    MultiFirstHandler(JdbcClient jdbc) {
+        this.jdbc = jdbc;
+    }
+
+    @Override
+    public String eventType() {
+        return "test.multi";
+    }
+
+    @Override
+    public void handle(OutboxEvent event) {
+        RAN.add("first");
+        jdbc.sql("INSERT INTO outbox_test_effects (event_id) VALUES (:id)").param("id", event.id()).update();
+    }
+}
+
+@Component
+@Order(2)
+class MultiSecondHandler implements OutboxHandler {
+
+    @Override
+    public String eventType() {
+        return "test.multi";
+    }
+
+    @Override
+    public void handle(OutboxEvent event) {
+        MultiFirstHandler.RAN.add("second");
+        if (event.attempts() < Integer.parseInt(event.payload().getOrDefault("failTimes", "0"))) {
+            throw new IllegalStateException("second handler failing on purpose");
+        }
     }
 }

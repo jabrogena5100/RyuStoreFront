@@ -1,7 +1,10 @@
 package link.ryustorefront.storefront.outbox;
 
 /**
- * Reacts to one event type. Declare an implementation as a Spring bean and the worker finds it.
+ * Reacts to one event type. Declare an implementation as a Spring bean and the worker finds it. Several
+ * handlers may be registered for the same type; they run one after another in the same transaction, and
+ * if one throws, the others' database work is rolled back too and the event is retried, so each must be
+ * idempotent on its own.
  *
  * <p>Delivery is <b>at least once</b>: the event is marked processed in the same transaction as the
  * handler's database work, so a crash or kill before commit means the event is delivered again. A

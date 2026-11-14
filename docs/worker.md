@@ -31,6 +31,10 @@ a different port from the API.
   If the process dies first, nothing is committed and the event is delivered again after restart.
   **Handlers must be idempotent.** Work outside the database (an email, an HTTP call) is not rolled back,
   so a handler that sends email must record that it did.
+- **Several handlers per event type.** `order.paid` has two (cart clearing, then the email, ordered with `@Order`).
+  They run one after another in the same transaction; if any throws, all of their database work is rolled back
+  and the whole event is retried, so each must be idempotent on its own. Work outside the database (the email)
+  is therefore ordered last.
 - **Atomic with the change.** `Outbox.publish` refuses to run without a transaction, so an event exists if
   and only if the change that caused it committed. Every order status change publishes `order.<status>`.
 - **Several workers are safe.** `FOR UPDATE SKIP LOCKED` means workers never wait for or duplicate each

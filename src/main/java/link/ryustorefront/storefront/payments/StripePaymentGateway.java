@@ -4,6 +4,7 @@ import com.stripe.StripeClient;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
+import com.stripe.param.RefundCreateParams;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,27 @@ class StripePaymentGateway implements PaymentGateway {
             return new CheckoutSession(session.getId(), session.getUrl());
         } catch (StripeException e) {
             throw new PaymentProviderException("Stripe rejected the checkout session request: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void refund(String paymentIntentId, String idempotencyKey) {
+        if (client == null) {
+            throw new PaymentsNotConfiguredException();
+        }
+        try {
+            RequestOptions options = RequestOptions.builder()
+                    .setConnectTimeout(10_000)
+                    .setReadTimeout(20_000)
+                    .setIdempotencyKey(idempotencyKey)
+                    .build();
+            client.refunds().create(RefundCreateParams.builder().setPaymentIntent(paymentIntentId).build(), options);
+        } catch (StripeException e) {
+            // Stripe remembers an idempotency key for 24 hours; a retry after that finds the payment refunded.
+            if ("charge_already_refunded".equals(e.getCode())) {
+                return;
+            }
+            throw new PaymentProviderException("Stripe rejected the refund request: " + e.getMessage(), e);
         }
     }
 }

@@ -24,8 +24,9 @@ Rules worth knowing:
 - Nothing moves back to `pending`.
 - Asking for the status an order already has is a **no-op** (`ALREADY`), not an error. That is what a replayed
   webhook looks like. Asking for a move the rules forbid returns `ILLEGAL` and changes nothing. A payment that
-  arrives after the order was cancelled is `ILLEGAL` (`cancelled` to `paid`): phase 4.4 must handle it
-  explicitly (refund the payment) rather than ignore it.
+  arrives after the order was cancelled is `ILLEGAL` (`cancelled` to `paid`): the Stripe webhook (4.4b) handles it
+  explicitly by recording the payment and refunding it (the order stays `cancelled`; there is no
+  `cancelled` to `refunded` move), see `docs/payments.md`.
 - `transition` returns a result (`APPLIED`, `ALREADY`, `ILLEGAL`, `NOT_FOUND`) instead of throwing. A thrown
   exception from a `@Transactional` method marks the caller's transaction rollback-only even if the caller
   catches it, which would silently roll back a whole webhook.

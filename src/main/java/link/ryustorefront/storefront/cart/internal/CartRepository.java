@@ -1,5 +1,6 @@
 package link.ryustorefront.storefront.cart.internal;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -73,6 +74,15 @@ public class CartRepository {
         jdbc.sql("DELETE FROM cart_items WHERE cart_id = :cart AND variant_id = :variant")
                 .param("cart", cartId).param("variant", variantId).update();
         touch(cartId);
+    }
+
+    /** Deletes the cart's lines for these variants; other lines are untouched. */
+    public void removeItems(UUID cartId, Collection<Long> variantIds) {
+        int removed = jdbc.sql("DELETE FROM cart_items WHERE cart_id = :cart AND variant_id IN (:variants)")
+                .param("cart", cartId).param("variants", variantIds).update();
+        if (removed > 0) {
+            touch(cartId);
+        }
     }
 
     public List<Line> lines(UUID cartId) {
