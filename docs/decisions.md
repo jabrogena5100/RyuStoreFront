@@ -36,3 +36,27 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Stock | The cart never reserves stock; `PUT` rejects quantities above current stock (409) and lines are flagged when stock later falls | Another buyer can take the last pair; reservation happens at checkout (3d). |
 | Merge on sign-in | `auth` publishes a `SignedInEvent`; `cart` listens, merges in one transaction under a row lock, larger quantity wins, then retires the cookie | The event carries the servlet request/response (listeners need the cookie). A failed merge is logged and never blocks login; it retries at the next sign-in. Dependency is cart to auth only, checked by Modulith. |
 | Error contract | `ApiError`/`ApiException` and one handler moved to `shared` (marker `@StructuredErrors`); auth and cart use it | Small refactor of slice 3b; the auth tests assert the same codes. |
+
+## Slice 3d (checkout start), settled 2026-11-14
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Who can buy | Signed-in customers only; guests may fill a cart (merged at sign-in) | Fewer abandoned-account surprises and one owner for every order; costs a sign-in step before payment. |
+| Atomicity | One transaction: lock, replay check, supersede, snapshot order, reserve stock. `StockReservations` joins the caller's transaction (`@Transactional` REQUIRED) | A failure anywhere leaves no order and no hold. Stock row locks are held until commit (a short time). |
+| Idempotency | Required `Idempotency-Key` header, unique per customer (V8 partial unique index), replay returns the stored order | A replay with a different body is not compared; documented. |
+| Concurrency per customer | `pg_advisory_xact_lock(customerId)` at the start | One customer's checkouts serialise; it also removes the unique-violation race on a duplicate key. |
+| Abandoned attempts | A new checkout cancels the customer's other pending orders and releases their stock before validating (rolled back if the new attempt fails) | A minimal `cancelPending` lives in `orders` until phase 4's state machine replaces it. |
+| Cart after checkout | Kept until payment succeeds (phase 4) | Cart and order can briefly show the same items. |
+| Reservation TTL, shipping | `storefront.checkout.reservation-ttl-minutes` (30), `storefront.checkout.shipping-flat-minor` (800) | Flat rate only; no tax engine. |
+| Order expiry | `orders.expires_at` (V8) holds the reservation expiry, indexed for pending orders | The worker can find overdue pending orders without joining reservations. |
+
+## Phase 4, slice 1 (order state machine), settled 2026-11-14
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Where the rules live | One table in the `OrderStatus` enum; every change goes through `Orders.transition` (see `docs/order-lifecycle.md`) | The database has only the CHECK on valid values; the legal moves are application code, tested in full (all 36 pairs). |
+| Concurrency | `SELECT ... FOR UPDATE` on the order row inside `transition` | Pessimistic and simple; concurrent webhooks for one order serialise. The `version` column is still incremented for any future optimistic use. |
+| Results, not exceptions | `TransitionResult` (`APPLIED`, `ALREADY`, `ILLEGAL`, `NOT_FOUND`) | Callers must check the outcome; avoids poisoning the caller's transaction. |
+| Lock order | order row, then reservations, then variants, application-wide | Checkout's supersede step was reordered to cancel before releasing stock (fixes a possible deadlock with a webhook that pays the same order). |
+| Queue (phase 4 decision) | The worker drains the Postgres outbox directly (`FOR UPDATE SKIP LOCKED`), behind a small publisher interface so SQS can be added later | Matches the plan's "SQS in AWS" only if added later; no emulator needed locally. |
+| Design phase D | Deferred by the owner until after the backend phases; phase 5 (frontend) cannot start without it | The API contracts in `docs/api/` are the input to design when it happens. |

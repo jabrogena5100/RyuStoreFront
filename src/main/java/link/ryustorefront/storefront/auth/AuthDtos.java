@@ -16,7 +16,7 @@ public final class AuthDtos {
      * in a VARCHAR(100) column, and ASCII keeps Java's lowercasing identical to Postgres' lower().
      */
     public record RegisterRequest(
-            @NotBlank @Size(max = 100) @Email @Pattern(regexp = "^[\\x21-\\x7E]+$") String email,
+            @NotBlank @Size(max = 100) @Email @Pattern(regexp = "^[\\x21-\\x7E]+$", message = "invalid_email") String email,
             @NotBlank @Size(min = 10, max = 72) String password,
             @Size(max = 80) String displayName) {
 

@@ -15,13 +15,13 @@ public class CartRepository {
     public record Variant(long id, boolean active, int stock) {
     }
 
-    public record Line(String sku, String productSlug, String productName, String brand, String sizeLabel,
+    public record Line(long variantId, String sku, String productSlug, String productName, String brand, String sizeLabel,
                        String colour, long unitPriceMinor, String currency, int quantity,
                        boolean active, int stock) {
     }
 
     private static final RowMapper<Line> LINE = (rs, n) -> new Line(
-            rs.getString("sku"), rs.getString("slug"), rs.getString("name"), rs.getString("brand"),
+            rs.getLong("variant_id"), rs.getString("sku"), rs.getString("slug"), rs.getString("name"), rs.getString("brand"),
             rs.getString("size_label"), rs.getString("colour"), rs.getLong("price_minor"),
             rs.getString("currency").trim(), rs.getInt("quantity"), rs.getBoolean("active"), rs.getInt("stock"));
 
@@ -76,7 +76,7 @@ public class CartRepository {
     }
 
     public List<Line> lines(UUID cartId) {
-        return jdbc.sql("SELECT v.sku, p.slug, p.name, p.brand, v.size_label, v.colour, v.price_minor, v.currency, "
+        return jdbc.sql("SELECT v.id AS variant_id, v.sku, p.slug, p.name, p.brand, v.size_label, v.colour, v.price_minor, v.currency, "
                         + "ci.quantity, (v.active AND p.active) AS active, v.stock "
                         + "FROM cart_items ci JOIN variants v ON v.id = ci.variant_id "
                         + "JOIN products p ON p.id = v.product_id "
