@@ -1,0 +1,253 @@
+Pager usage is off.
+=== table sizes ===
+ products | variants 
+----------+----------
+    50000 |   750680
+(1 row)
+
+VACUUM
+=== Q1: default listing, newest first, page 1 ===
+                                                                              QUERY PLAN                                                                              
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=5.33..130.48 rows=24 width=148) (actual time=0.150..2.638 rows=24.00 loops=1)
+   Buffers: shared hit=90 read=25
+   ->  Nested Loop  (cost=5.33..258218.17 rows=49517 width=148) (actual time=0.148..2.628 rows=24.00 loops=1)
+         Buffers: shared hit=90 read=25
+         ->  Nested Loop  (cost=0.43..14965.90 rows=49517 width=107) (actual time=0.073..0.498 rows=24.00 loops=1)
+               Buffers: shared hit=33 read=9
+               ->  Index Scan using products_active_newest_idx on products p  (cost=0.29..13798.86 rows=49517 width=97) (actual time=0.034..0.342 rows=24.00 loops=1)
+                     Index Searches: 1
+                     Buffers: shared hit=17 read=9
+               ->  Memoize  (cost=0.14..0.16 rows=1 width=26) (actual time=0.004..0.004 rows=1.00 loops=24)
+                     Cache Key: p.category_id
+                     Cache Mode: logical
+                     Hits: 16  Misses: 8  Evictions: 0  Overflows: 0  Memory Usage: 2kB
+                     Buffers: shared hit=16
+                     ->  Index Scan using categories_pkey on categories cat  (cost=0.13..0.15 rows=1 width=26) (actual time=0.005..0.005 rows=1.00 loops=8)
+                           Index Cond: (id = p.category_id)
+                           Index Searches: 8
+                           Buffers: shared hit=16
+         ->  Aggregate  (cost=4.89..4.90 rows=1 width=41) (actual time=0.087..0.087 rows=1.00 loops=24)
+               Filter: (min(variants.price_minor) IS NOT NULL)
+               Buffers: shared hit=57 read=16
+               ->  Index Only Scan using variants_product_cover_idx on variants  (cost=0.42..4.72 rows=17 width=16) (actual time=0.079..0.081 rows=14.12 loops=24)
+                     Index Cond: (product_id = p.id)
+                     Heap Fetches: 0
+                     Index Searches: 24
+                     Buffers: shared hit=57 read=16
+ Planning:
+   Buffers: shared hit=160 read=1
+ Planning Time: 11.336 ms
+ Execution Time: 2.939 ms
+(30 rows)
+
+=== Q2: full-text search "chelsea boot", ranked ===
+                                                                                QUERY PLAN                                                                                 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2158.09..2158.15 rows=24 width=144) (actual time=729.074..729.087 rows=24.00 loops=1)
+   Buffers: shared hit=4142 read=1422 written=23
+   ->  Sort  (cost=2158.09..2158.75 rows=266 width=144) (actual time=729.070..729.078 rows=24.00 loops=1)
+         Sort Key: (ts_rank_cd(p.search_vector, '''chelsea'' & ''boot'''::tsquery)) DESC, p.id
+         Sort Method: top-N heapsort  Memory: 30kB
+         Buffers: shared hit=4142 read=1422 written=23
+         ->  Nested Loop  (cost=32.04..2150.66 rows=266 width=144) (actual time=6.010..722.726 rows=1461.00 loops=1)
+               Buffers: shared hit=4142 read=1422 written=23
+               ->  Nested Loop  (cost=27.15..843.27 rows=266 width=338) (actual time=3.889..168.114 rows=1461.00 loops=1)
+                     Buffers: shared hit=573 read=607
+                     ->  Bitmap Heap Scan on products p  (cost=27.00..835.31 rows=266 width=328) (actual time=3.817..156.306 rows=1461.00 loops=1)
+                           Recheck Cond: (search_vector @@ '''chelsea'' & ''boot'''::tsquery)
+                           Filter: active
+                           Rows Removed by Filter: 10
+                           Heap Blocks: exact=1169
+                           Buffers: shared hit=571 read=607
+                           ->  Bitmap Index Scan on products_search_idx  (cost=0.00..26.94 rows=269 width=0) (actual time=1.434..1.435 rows=1471.00 loops=1)
+                                 Index Cond: (search_vector @@ '''chelsea'' & ''boot'''::tsquery)
+                                 Index Searches: 1
+                                 Buffers: shared hit=9
+                     ->  Memoize  (cost=0.14..0.21 rows=1 width=26) (actual time=0.003..0.003 rows=1.00 loops=1461)
+                           Cache Key: p.category_id
+                           Cache Mode: logical
+                           Hits: 1460  Misses: 1  Evictions: 0  Overflows: 0  Memory Usage: 1kB
+                           Buffers: shared hit=2
+                           ->  Index Scan using categories_pkey on categories cat  (cost=0.13..0.20 rows=1 width=26) (actual time=0.057..0.057 rows=1.00 loops=1)
+                                 Index Cond: (id = p.category_id)
+                                 Index Searches: 1
+                                 Buffers: shared hit=2
+               ->  Aggregate  (cost=4.89..4.90 rows=1 width=41) (actual time=0.061..0.061 rows=1.00 loops=1461)
+                     Filter: (min(variants.price_minor) IS NOT NULL)
+                     Buffers: shared hit=3569 read=815 written=23
+                     ->  Index Only Scan using variants_product_cover_idx on variants  (cost=0.42..4.72 rows=17 width=16) (actual time=0.044..0.049 rows=15.10 loops=1461)
+                           Index Cond: (product_id = p.id)
+                           Heap Fetches: 0
+                           Index Searches: 1461
+                           Buffers: shared hit=3569 read=815 written=23
+ Planning:
+   Buffers: shared hit=44 read=7
+ Planning Time: 13.046 ms
+ Execution Time: 729.987 ms
+(41 rows)
+
+=== Q3: category boots, price ascending ===
+                                                                                QUERY PLAN                                                                                 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=64856.61..64856.67 rows=24 width=140) (actual time=650.463..650.480 rows=24.00 loops=1)
+   Buffers: shared hit=26923 read=2748 written=2363
+   InitPlan 1
+     ->  Seq Scan on categories  (cost=0.00..1.10 rows=1 width=8) (actual time=0.026..0.030 rows=1.00 loops=1)
+           Filter: (slug = 'boots'::text)
+           Rows Removed by Filter: 7
+           Buffers: shared hit=1
+   ->  Sort  (cost=64855.51..64886.46 rows=12379 width=140) (actual time=650.459..650.468 rows=24.00 loops=1)
+         Sort Key: (min(variants.price_minor)), p.id
+         Sort Method: top-N heapsort  Memory: 30kB
+         Buffers: shared hit=26923 read=2748 written=2363
+         ->  Nested Loop  (cost=6.04..64509.83 rows=12379 width=140) (actual time=1.282..638.122 rows=8890.00 loops=1)
+               Buffers: shared hit=26923 read=2748 written=2363
+               ->  Hash Join  (cost=1.15..3697.99 rows=12379 width=99) (actual time=1.193..309.989 rows=8890.00 loops=1)
+                     Hash Cond: (p.category_id = cat.id)
+                     Buffers: shared hit=2057 read=943 written=799
+                     ->  Seq Scan on products p  (cost=0.00..3498.00 rows=49517 width=89) (actual time=0.970..288.215 rows=49507.00 loops=1)
+                           Filter: active
+                           Rows Removed by Filter: 493
+                           Buffers: shared hit=2055 read=943 written=799
+                     ->  Hash  (cost=1.12..1.12 rows=2 width=26) (actual time=0.140..0.143 rows=1.00 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                           Buffers: shared hit=2
+                           ->  Seq Scan on categories cat  (cost=0.00..1.12 rows=2 width=26) (actual time=0.103..0.105 rows=1.00 loops=1)
+                                 Filter: ((slug = 'boots'::text) OR (parent_id = (InitPlan 1).col1))
+                                 Rows Removed by Filter: 7
+                                 Buffers: shared hit=2
+               ->  Aggregate  (cost=4.89..4.90 rows=1 width=41) (actual time=0.035..0.035 rows=1.00 loops=8890)
+                     Filter: (min(variants.price_minor) IS NOT NULL)
+                     Buffers: shared hit=24866 read=1805 written=1564
+                     ->  Index Only Scan using variants_product_cover_idx on variants  (cost=0.42..4.72 rows=17 width=16) (actual time=0.024..0.027 rows=14.97 loops=8890)
+                           Index Cond: (product_id = p.id)
+                           Heap Fetches: 0
+                           Index Searches: 8890
+                           Buffers: shared hit=24866 read=1805 written=1564
+ Planning:
+   Buffers: shared hit=7
+ Planning Time: 5.527 ms
+ Execution Time: 650.904 ms
+(39 rows)
+
+=== Q4: women, size 8 in stock, newest ===
+                                                                                 QUERY PLAN                                                                                 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=5.75..161.53 rows=24 width=148) (actual time=0.397..2.185 rows=24.00 loops=1)
+   Buffers: shared hit=195 read=27 written=21
+   ->  Nested Loop  (cost=5.75..159201.45 rows=24526 width=148) (actual time=0.395..2.176 rows=24.00 loops=1)
+         Buffers: shared hit=195 read=27 written=21
+         ->  Nested Loop  (cost=0.86..38717.48 rows=24526 width=107) (actual time=0.260..1.520 rows=24.00 loops=1)
+               Buffers: shared hit=123 read=26 written=20
+               ->  Nested Loop Semi Join  (cost=0.71..38138.77 rows=24526 width=97) (actual time=0.217..1.389 rows=24.00 loops=1)
+                     Buffers: shared hit=107 read=26 written=20
+                     ->  Index Scan using products_active_newest_idx on products p  (cost=0.29..14046.45 rows=28296 width=97) (actual time=0.092..0.231 rows=29.00 loops=1)
+                           Filter: ((gender = 'women'::text) OR (gender = 'unisex'::text))
+                           Rows Removed by Filter: 14
+                           Index Searches: 1
+                           Buffers: shared hit=45
+                     ->  Index Only Scan using variants_size_idx on variants sv  (cost=0.42..0.92 rows=1 width=8) (actual time=0.039..0.039 rows=0.83 loops=29)
+                           Index Cond: ((size_label = '8'::text) AND (product_id = p.id))
+                           Heap Fetches: 0
+                           Index Searches: 29
+                           Buffers: shared hit=62 read=26 written=20
+               ->  Memoize  (cost=0.14..0.16 rows=1 width=26) (actual time=0.004..0.004 rows=1.00 loops=24)
+                     Cache Key: p.category_id
+                     Cache Mode: logical
+                     Hits: 16  Misses: 8  Evictions: 0  Overflows: 0  Memory Usage: 2kB
+                     Buffers: shared hit=16
+                     ->  Index Scan using categories_pkey on categories cat  (cost=0.13..0.15 rows=1 width=26) (actual time=0.006..0.006 rows=1.00 loops=8)
+                           Index Cond: (id = p.category_id)
+                           Index Searches: 8
+                           Buffers: shared hit=16
+         ->  Aggregate  (cost=4.89..4.90 rows=1 width=41) (actual time=0.026..0.026 rows=1.00 loops=24)
+               Filter: (min(variants.price_minor) IS NOT NULL)
+               Buffers: shared hit=72 read=1 written=1
+               ->  Index Only Scan using variants_product_cover_idx on variants  (cost=0.42..4.72 rows=17 width=16) (actual time=0.015..0.017 rows=14.29 loops=24)
+                     Index Cond: (product_id = p.id)
+                     Heap Fetches: 0
+                     Index Searches: 24
+                     Buffers: shared hit=72 read=1 written=1
+ Planning:
+   Buffers: shared hit=51 read=3
+ Planning Time: 9.354 ms
+ Execution Time: 2.627 ms
+(39 rows)
+
+=== Q5: deep page (offset 960), newest ===
+                                                                              QUERY PLAN                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=5011.37..5136.52 rows=24 width=148) (actual time=23.793..24.130 rows=24.00 loops=1)
+   Buffers: shared hit=3911 read=49 written=48
+   ->  Nested Loop  (cost=5.33..258218.17 rows=49517 width=148) (actual time=3.525..24.044 rows=984.00 loops=1)
+         Buffers: shared hit=3911 read=49 written=48
+         ->  Nested Loop  (cost=0.43..14965.90 rows=49517 width=107) (actual time=3.415..7.625 rows=984.00 loops=1)
+               Buffers: shared hit=1007
+               ->  Index Scan using products_active_newest_idx on products p  (cost=0.29..13798.86 rows=49517 width=97) (actual time=0.054..3.141 rows=984.00 loops=1)
+                     Index Searches: 1
+                     Buffers: shared hit=991
+               ->  Memoize  (cost=0.14..0.16 rows=1 width=26) (actual time=0.004..0.004 rows=1.00 loops=984)
+                     Cache Key: p.category_id
+                     Cache Mode: logical
+                     Hits: 976  Misses: 8  Evictions: 0  Overflows: 0  Memory Usage: 2kB
+                     Buffers: shared hit=16
+                     ->  Index Scan using categories_pkey on categories cat  (cost=0.13..0.15 rows=1 width=26) (actual time=0.412..0.412 rows=1.00 loops=8)
+                           Index Cond: (id = p.category_id)
+                           Index Searches: 8
+                           Buffers: shared hit=16
+         ->  Aggregate  (cost=4.89..4.90 rows=1 width=41) (actual time=0.016..0.016 rows=1.00 loops=984)
+               Filter: (min(variants.price_minor) IS NOT NULL)
+               Buffers: shared hit=2904 read=49 written=48
+               ->  Index Only Scan using variants_product_cover_idx on variants  (cost=0.42..4.72 rows=17 width=16) (actual time=0.011..0.013 rows=15.11 loops=984)
+                     Index Cond: (product_id = p.id)
+                     Heap Fetches: 0
+                     Index Searches: 984
+                     Buffers: shared hit=2904 read=49 written=48
+ Planning:
+   Buffers: shared hit=4
+ Planning Time: 4.004 ms
+ Execution Time: 25.156 ms
+(30 rows)
+
+=== Q6: the count query that runs beside every listing ===
+                                                                                QUERY PLAN                                                                                 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=242222.85..242222.86 rows=1 width=8) (actual time=437.774..437.779 rows=1.00 loops=1)
+   Buffers: shared hit=151349 read=180 written=76
+   ->  Nested Loop  (cost=4.91..242099.06 rows=49517 width=0) (actual time=40.681..433.630 rows=49507.00 loops=1)
+         Buffers: shared hit=151349 read=180 written=76
+         ->  Nested Loop  (cost=4.77..240932.02 rows=49517 width=8) (actual time=40.616..409.404 rows=49507.00 loops=1)
+               Buffers: shared hit=151340 read=180 written=76
+               ->  Seq Scan on products p  (cost=0.00..3498.00 rows=49517 width=16) (actual time=40.456..76.579 rows=49507.00 loops=1)
+                     Filter: active
+                     Rows Removed by Filter: 493
+                     Buffers: shared hit=2998
+               ->  Aggregate  (cost=4.77..4.78 rows=1 width=41) (actual time=0.006..0.006 rows=1.00 loops=49507)
+                     Filter: (min(variants.price_minor) IS NOT NULL)
+                     Buffers: shared hit=148342 read=180 written=76
+                     ->  Index Only Scan using variants_product_cover_idx on variants  (cost=0.42..4.72 rows=17 width=8) (actual time=0.003..0.004 rows=15.02 loops=49507)
+                           Index Cond: (product_id = p.id)
+                           Heap Fetches: 0
+                           Index Searches: 49507
+                           Buffers: shared hit=148342 read=180 written=76
+         ->  Memoize  (cost=0.14..0.16 rows=1 width=8) (actual time=0.000..0.000 rows=1.00 loops=49507)
+               Cache Key: p.category_id
+               Cache Mode: logical
+               Hits: 49499  Misses: 8  Evictions: 0  Overflows: 0  Memory Usage: 1kB
+               Buffers: shared hit=9
+               ->  Index Only Scan using categories_pkey on categories cat  (cost=0.13..0.15 rows=1 width=8) (actual time=0.006..0.006 rows=1.00 loops=8)
+                     Index Cond: (id = p.category_id)
+                     Heap Fetches: 0
+                     Index Searches: 8
+                     Buffers: shared hit=9
+ Planning:
+   Buffers: shared hit=4
+ Planning Time: 3.909 ms
+ JIT:
+   Functions: 17
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 3.956 ms (Deform 1.222 ms), Inlining 0.000 ms, Optimization 2.185 ms, Emission 38.321 ms, Total 44.463 ms
+ Execution Time: 581.061 ms
+(36 rows)
+
