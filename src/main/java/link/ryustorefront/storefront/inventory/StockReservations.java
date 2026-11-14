@@ -10,8 +10,10 @@ import java.util.UUID;
  *
  * Stock is taken out of {@code variants.stock} when a reservation is made, with a single atomic
  * conditional UPDATE, so concurrent buyers can never oversell: the database serialises them on the
- * variant row and the CHECK (stock >= 0) constraint is only a backstop. Every method runs in its
- * own transaction and the order must already exist (reservations reference it).
+ * variant row and the CHECK (stock >= 0) constraint is only a backstop. Every method is
+ * {@code @Transactional} (REQUIRED): it joins the caller's transaction when there is one (checkout
+ * reserves stock in the same transaction that creates the order) and runs in its own otherwise. The
+ * order must already exist (reservations reference it).
  */
 public interface StockReservations {
 
