@@ -1,6 +1,7 @@
 package link.ryustorefront.storefront.inventory;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -46,4 +47,13 @@ public interface StockReservations {
      * @return how many reservations were released
      */
     int releaseExpired(int batchSize);
+
+    /**
+     * Moves the expiry of the order's active reservations later, never earlier. Used when a payment
+     * session is created: the hold must outlast the payment page. Reservations that are already
+     * committed or released are untouched.
+     *
+     * @return how many reservations were extended
+     */
+    int extendHold(UUID orderId, Instant newExpiresAt);
 }

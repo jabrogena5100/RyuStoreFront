@@ -103,6 +103,34 @@ public class Orders {
         return transition(orderId, OrderStatus.CANCELLED, reason).applied();
     }
 
+    /** An order's payment state as the pay step needs it. {@code sessionId} is null until a session is attached. */
+    public record PaymentState(OrderStatus status, Instant expiresAt, String sessionId, String paymentUrl,
+                               Instant paymentExpiresAt) {
+    }
+
+    /**
+     * Locks the customer's own order for the rest of the transaction and returns its payment state; empty if
+     * there is no such order or it belongs to someone else (callers answer "not found" for both, so one
+     * customer cannot probe another's order ids). Take this lock before touching reservations.
+     */
+    @Transactional
+    public Optional<PaymentState> lockForPayment(UUID orderId, long customerId) {
+        return orders.lockForPayment(orderId, customerId).map(r -> new PaymentState(OrderStatus.fromDb(r.status()),
+                r.expiresAt(), r.sessionId(), r.paymentUrl(), r.paymentExpiresAt()));
+    }
+
+    /** Stores the payment session on a pending order. */
+    @Transactional
+    public boolean attachPayment(UUID orderId, String sessionId, String url, Instant paymentExpiresAt) {
+        return orders.attachPayment(orderId, sessionId, url, paymentExpiresAt);
+    }
+
+    /** Moves a pending order's hold expiry later (never earlier). */
+    @Transactional
+    public boolean extendHold(UUID orderId, Instant newExpiresAt) {
+        return orders.extendHold(orderId, newExpiresAt);
+    }
+
     @Transactional(readOnly = true)
     public Optional<OrderSummary> find(UUID orderId) {
         return orders.find(orderId);

@@ -1,6 +1,7 @@
 package link.ryustorefront.storefront.inventory.internal;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -107,6 +108,16 @@ class JdbcStockReservations implements StockReservations {
                 FOR UPDATE SKIP LOCKED""")
                 .param("batch", batchSize).query(JdbcStockReservations::mapHeld).list();
         return releaseAll(expired);
+    }
+
+    @Override
+    @Transactional
+    public int extendHold(UUID orderId, Instant newExpiresAt) {
+        return jdbc.sql("""
+                UPDATE reservations SET expires_at = :t
+                WHERE order_id = :order AND status = 'active' AND expires_at < :t""")
+                .param("t", OffsetDateTime.ofInstant(newExpiresAt, java.time.ZoneOffset.UTC))
+                .param("order", orderId).update();
     }
 
     /** Releases in ascending variant order (see class comment). The status guard makes a repeat harmless. */

@@ -82,3 +82,14 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Content | Pure `OrderConfirmationEmail`, multipart text and HTML, everything dynamic HTML-escaped | Hand-written templates; fine for one email, a template engine only if there are many. |
 | Health | `management.health.mail.enabled=false` | A mail outage is invisible to the load balancer by design; it will need its own alarm (pending-event age, phase 6). |
 | Order summary | `OrderSummary` now carries the shipping address (also in the checkout response) | The checkout JSON grew one object; documented in `docs/api/checkout.md`. |
+
+## Phase 4, slice 4a (starting payment), settled 2026-11-14
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Provider integration | Stripe Checkout (hosted page), official `stripe-java` 34.1.0 (newest stable on Maven Central; the "latest" tag there is a beta), behind a `PaymentGateway` interface | A fake gateway in tests means the real Stripe call is only proven by a manual run with a test key. |
+| Hold vs payment page | Creating the page extends the order and reservation hold to page expiry + 5 min. Page lifetime 31 min (Stripe's minimum is 30 from creation, per its docs) | The hold can exceed the original 30 minutes by up to about 11 minutes. |
+| One page per order | A second page after the first expired is refused (`payment_expired`) | A shopper who is too slow starts a new checkout; in exchange stock cannot be held indefinitely. |
+| Concurrency | The order row is locked for the whole pay call, including the Stripe request | One slow Stripe call blocks that one order; two clicks create one session. No Stripe idempotency key: params (expiry) differ per attempt, so a key would fail on retry. |
+| Ownership | A customer's id is part of the lookup; someone else's order is "not found" | Indistinguishable from a missing order by design. |
+| Return URL | `STOREFRONT_PUBLIC_BASE_URL/orders/{id}/confirmation?session_id=...`; arriving there proves nothing | The order becomes `paid` only through the webhook (4.4b). |
