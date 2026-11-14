@@ -7,15 +7,17 @@ import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
-import link.ryustorefront.storefront.auth.AuthDtos.ApiException;
 import link.ryustorefront.storefront.auth.AuthDtos.CsrfView;
 import link.ryustorefront.storefront.auth.AuthDtos.CustomerView;
 import link.ryustorefront.storefront.auth.AuthDtos.LoginRequest;
 import link.ryustorefront.storefront.auth.AuthDtos.RegisterRequest;
 import link.ryustorefront.storefront.auth.AuthDtos.SessionView;
 import link.ryustorefront.storefront.auth.internal.CustomerRepository;
+import link.ryustorefront.storefront.shared.ApiException;
+import link.ryustorefront.storefront.shared.StructuredErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  * header (including register and login, which prevents login CSRF): call {@code GET /csrf} first.
  */
 @RestController
+@StructuredErrors
 @RequestMapping("/api/auth")
 class AuthController {
 
@@ -57,19 +60,22 @@ class AuthController {
     private final SessionAuthenticationStrategy sessionStrategy;
     private final SecurityContextRepository contextRepository;
     private final CsrfTokenRepository csrfRepository;
+    private final ApplicationEventPublisher events;
 
     AuthController(AuthenticationManager authenticationManager,
                    PasswordEncoder passwordEncoder,
                    CustomerRepository customers,
                    SessionAuthenticationStrategy sessionStrategy,
                    SecurityContextRepository contextRepository,
-                   CsrfTokenRepository csrfRepository) {
+                   CsrfTokenRepository csrfRepository,
+                   ApplicationEventPublisher events) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.customers = customers;
         this.sessionStrategy = sessionStrategy;
         this.contextRepository = contextRepository;
         this.csrfRepository = csrfRepository;
+        this.events = events;
     }
 
     /** Creates the session if needed and returns its CSRF token. */
@@ -152,6 +158,7 @@ class AuthController {
         context.setAuthentication(authentication);
         SecurityContextHolder.getContextHolderStrategy().setContext(context);
         contextRepository.saveContext(context, request, response);
+        events.publishEvent(new SignedInEvent(principal.id(), request, response));
 
         CsrfToken token = csrfRepository.loadToken(request);
         if (token == null) {

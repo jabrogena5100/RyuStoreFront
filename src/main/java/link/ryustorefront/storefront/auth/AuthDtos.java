@@ -4,8 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.util.Map;
-import org.springframework.http.HttpStatus;
 
 /** Request and response shapes of {@code /api/auth}. Documented in docs/api/auth.md. */
 public final class AuthDtos {
@@ -46,31 +44,5 @@ public final class AuthDtos {
     }
 
     public record SessionView(CustomerView customer, CsrfView csrf) {
-    }
-
-    /** Error body for every failure of this API: a stable code for the UI, per-field codes for forms. */
-    public record ApiError(String code, String message, Map<String, String> fields) {
-    }
-
-    static final class ApiException extends RuntimeException {
-
-        private final HttpStatus status;
-        private final String code;
-        private final Map<String, String> fields;
-
-        ApiException(HttpStatus status, String code, String message, Map<String, String> fields) {
-            super(message);
-            this.status = status;
-            this.code = code;
-            this.fields = fields;
-        }
-
-        HttpStatus status() {
-            return status;
-        }
-
-        ApiError body() {
-            return new ApiError(code, getMessage(), fields);
-        }
     }
 }
