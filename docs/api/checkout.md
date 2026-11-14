@@ -51,6 +51,8 @@ must be two capital letters), `invalid_email` (at most 100 printable ASCII chara
 {
   "id": "uuid", "status": "pending", "contactEmail": "...", "currency": "USD",
   "subtotalMinor": 30980, "shippingMinor": 800, "totalMinor": 31780,
+  "shippingAddress": { "name": "...", "line1": "...", "line2": null, "city": "...", "region": "...",
+                       "postalCode": "...", "country": "US" },
   "expiresAt": "2026-11-14T10:00:00Z", "createdAt": "...",
   "items": [ { "sku": "...", "productName": "...", "sizeLabel": "42", "colour": "black",
                "unitPriceMinor": 12990, "quantity": 2, "lineTotalMinor": 25980 } ]
