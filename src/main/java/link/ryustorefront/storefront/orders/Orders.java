@@ -131,6 +131,24 @@ public class Orders {
         return orders.extendHold(orderId, newExpiresAt);
     }
 
+    /**
+     * The payment session attached to the order, if any. Written once and never changed, so reading it
+     * without the row lock is safe. The webhook uses it to ignore events about any other session.
+     */
+    @Transactional(readOnly = true)
+    public Optional<String> checkoutSessionId(UUID orderId) {
+        return orders.checkoutSessionId(orderId);
+    }
+
+    /** Who bought and which variants; {@code customerId} is null for an order with no customer. */
+    public record Purchase(Long customerId, List<Long> variantIds) {
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Purchase> purchase(UUID orderId) {
+        return orders.purchase(orderId).map(r -> new Purchase(r.customerId(), r.variantIds()));
+    }
+
     @Transactional(readOnly = true)
     public Optional<OrderSummary> find(UUID orderId) {
         return orders.find(orderId);

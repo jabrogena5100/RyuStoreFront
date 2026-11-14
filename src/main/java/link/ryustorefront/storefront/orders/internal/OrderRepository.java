@@ -144,6 +144,29 @@ public class OrderRepository {
                 .update() == 1;
     }
 
+    /** The payment session attached to the order, if any. It is written once (see {@link #attachPayment}) and never changes. */
+    public Optional<String> checkoutSessionId(UUID orderId) {
+        return jdbc.sql("SELECT stripe_checkout_session_id FROM orders WHERE id = :id AND stripe_checkout_session_id IS NOT NULL")
+                .param("id", orderId).query(String.class).optional();
+    }
+
+    /** Who bought, and which variants; the customer is empty for an order with no customer. */
+    public record PurchaseRow(Long customerId, List<Long> variantIds) {
+    }
+
+    public Optional<PurchaseRow> purchase(UUID orderId) {
+        // Mapped to an array so a null customer_id is still a present row (a null element would read as "no order").
+        Optional<Object[]> row = jdbc.sql("SELECT customer_id FROM orders WHERE id = :id")
+                .param("id", orderId).query((rs, n) -> new Object[] {rs.getObject("customer_id")}).optional();
+        if (row.isEmpty()) {
+            return Optional.empty();
+        }
+        Long customer = row.get()[0] == null ? null : ((Number) row.get()[0]).longValue();
+        List<Long> variants = jdbc.sql("SELECT variant_id FROM order_items WHERE order_id = :id ORDER BY id")
+                .param("id", orderId).query(Long.class).list();
+        return Optional.of(new PurchaseRow(customer, variants));
+    }
+
     private static Instant instant(OffsetDateTime value) {
         return value == null ? null : value.toInstant();
     }

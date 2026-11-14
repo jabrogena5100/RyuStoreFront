@@ -19,9 +19,27 @@ public class FakePaymentGateway implements PaymentGateway {
     private static final AtomicInteger COUNTER = new AtomicInteger();
     public static volatile RuntimeException failWith;
 
+    /** One refund the application asked for. */
+    public record Refund(String paymentIntentId, String idempotencyKey) {
+    }
+
+    public static final List<Refund> REFUNDS = new CopyOnWriteArrayList<>();
+    public static volatile RuntimeException refundFailWith;
+
     public static void reset() {
         REQUESTS.clear();
+        REFUNDS.clear();
         failWith = null;
+        refundFailWith = null;
+    }
+
+    @Override
+    public void refund(String paymentIntentId, String idempotencyKey) {
+        RuntimeException failure = refundFailWith;
+        if (failure != null) {
+            throw failure;
+        }
+        REFUNDS.add(new Refund(paymentIntentId, idempotencyKey));
     }
 
     @Override

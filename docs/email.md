@@ -14,7 +14,9 @@ In AWS this becomes SES (sandbox first); only the `spring.mail.*` settings chang
 ## How a confirmation is sent
 
 1. `Orders.transition(order, PAID)` writes the status change and the `order.paid` event in one transaction.
-2. The worker claims the event and runs `OrderPaidEmailHandler`.
+2. The worker claims the event and runs its handlers; `OrderPaidEmailHandler` is one (the cart-clearing handler is
+   the other, see `docs/payments.md`). If the order is by now `refunded` or `cancelled` (the webhook paid it and
+   refunded it in one transaction because its stock hold was gone) the handler sends nothing.
 3. The handler inserts a row into `sent_emails` keyed `order.paid:<order id>` (`ON CONFLICT DO NOTHING`). If
    the row already exists the email was sent before and the handler stops: **redelivery sends no second email**.
 4. Otherwise it sends multipart text and HTML. If the mail server fails, the handler throws, the ledger row is

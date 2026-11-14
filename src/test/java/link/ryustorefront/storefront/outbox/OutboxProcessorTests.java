@@ -53,6 +53,7 @@ class OutboxProcessorTests {
         jdbc.sql("DELETE FROM outbox").update();
         jdbc.sql("DELETE FROM outbox_test_effects").update();
         RecordingHandler.reset();
+        MultiFirstHandler.RAN.clear();
     }
 
     /** Inserts a due event directly and returns its id. */
@@ -224,5 +225,33 @@ class OutboxProcessorTests {
         assertThat(RecordingHandler.CALLS.values()).allMatch(calls -> calls == 1);
         assertThat(RecordingHandler.CALLS.keySet()).containsExactlyInAnyOrderElementsOf(ids);
         assertThat(jdbc.sql("SELECT count(*) FROM outbox WHERE processed_at IS NULL").query(Long.class).single()).isZero();
+    }
+
+    @Test
+    void everyHandlerOfAnEventTypeRunsInOrderWithinOneEventAndTheEventIsProcessedOnce() {
+        long id = event("test.multi", "{}");
+
+        assertThat(processor.drain(10)).isEqualTo(new Drained(1, 0));
+
+        assertThat(MultiFirstHandler.RAN).containsExactly("first", "second");
+        assertThat(effectRows()).isEqualTo(1);
+        assertThat(processed(id)).isTrue();
+    }
+
+    @Test
+    void ifALaterHandlerFailsTheEarlierHandlersWorkRollsBackAndTheWholeEventIsRetried() {
+        long id = event("test.multi", "{\"failTimes\":\"1\"}");
+
+        assertThat(processor.drain(10)).isEqualTo(new Drained(0, 1));
+        assertThat(MultiFirstHandler.RAN).containsExactly("first", "second");
+        assertThat(effectRows()).as("the first handler's row was rolled back with the failed attempt").isZero();
+        assertThat(attempts(id)).isEqualTo(1);
+        assertThat(processed(id)).isFalse();
+
+        makeDueNow(id);
+        assertThat(processor.drain(10)).isEqualTo(new Drained(1, 0));
+        assertThat(MultiFirstHandler.RAN).containsExactly("first", "second", "first", "second");
+        assertThat(effectRows()).isEqualTo(1);
+        assertThat(processed(id)).isTrue();
     }
 }

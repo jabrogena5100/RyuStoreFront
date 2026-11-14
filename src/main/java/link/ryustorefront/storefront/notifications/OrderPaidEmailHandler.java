@@ -3,6 +3,7 @@ package link.ryustorefront.storefront.notifications;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.UUID;
+import link.ryustorefront.storefront.orders.OrderStatus;
 import link.ryustorefront.storefront.orders.OrderSummary;
 import link.ryustorefront.storefront.orders.Orders;
 import link.ryustorefront.storefront.outbox.OutboxEvent;
@@ -55,6 +56,13 @@ class OrderPaidEmailHandler implements OutboxHandler {
         UUID orderId = UUID.fromString(event.payload().get("orderId"));
         OrderSummary order = orders.find(orderId)
                 .orElseThrow(() -> new IllegalStateException("Order " + orderId + " does not exist"));
+        // A payment whose stock hold was gone is paid and then refunded in one transaction (see the Stripe
+        // webhook); the shopper must not be told the order is confirmed.
+        OrderStatus status = OrderStatus.fromDb(order.status());
+        if (status == OrderStatus.REFUNDED || status == OrderStatus.CANCELLED) {
+            log.info("Order {} is {}; sending no confirmation", orderId, order.status());
+            return;
+        }
         EmailContent content = OrderConfirmationEmail.build(order);
 
         int recorded = jdbc.sql("INSERT INTO sent_emails (dedupe_key, recipient, subject) "

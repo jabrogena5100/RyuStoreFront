@@ -75,6 +75,8 @@ class SecurityConfig {
                                             SecurityContextRepository securityContextRepository) throws Exception {
         http
                 .csrf(csrf -> csrf
+                        // Stripe calls this with no session and no CSRF token; its signature is the credential.
+                        .ignoringRequestMatchers("/api/stripe/webhook")
                         .csrfTokenRepository(csrfTokenRepository)
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
@@ -101,6 +103,8 @@ class SecurityConfig {
                         // POST to these still needs the CSRF header; they just do not need a signed-in user.
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/register", "/api/auth/login", "/api/auth/logout").permitAll()
+                        // Authenticated by Stripe's signature on the raw body (StripeWebhookController), not by a session.
+                        .requestMatchers(HttpMethod.POST, "/api/stripe/webhook").permitAll()
                         // The cart works for guests (CART cookie) and signed-in customers; CSRF still applies.
                         .requestMatchers("/api/cart", "/api/cart/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
