@@ -101,6 +101,8 @@ class SecurityConfig {
                         // POST to these still needs the CSRF header; they just do not need a signed-in user.
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/register", "/api/auth/login", "/api/auth/logout").permitAll()
+                        // The cart works for guests (CART cookie) and signed-in customers; CSRF still applies.
+                        .requestMatchers("/api/cart", "/api/cart/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
         return http.build();

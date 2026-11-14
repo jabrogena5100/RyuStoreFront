@@ -25,3 +25,14 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Errors | One body `{code, message, fields}` for the whole auth API; JSON 401 and 403, no redirects | Codes are a contract the design depends on (`docs/api/auth.md`). |
 | Email | Trimmed, lowercased, printable ASCII, at most 100 characters | Rejects internationalised addresses; the limit comes from Spring Session's `PRINCIPAL_NAME VARCHAR(100)`. |
 | Admin accounts | Never created by registration (role is always `customer`); promoted by SQL or seed | No admin UI for user management in v1. |
+
+## Slice 3c (cart), settled 2026-11-14
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Guest cart identity | Random 256-bit token in the `CART` cookie; only its SHA-256 is stored (`carts.guest_token_hash`) | Replaces the "signed cookie" idea in the old plan: no signing key to manage or rotate, nothing to forge, a database leak yields no usable cookies. Orphaned guest carts need a cleanup job (worker, phase 4). |
+| Line addressing | By SKU (what the catalogue API exposes), quantity is set not incremented | Idempotent retries; a client must know the SKU, which the product page already has. |
+| Quantity cap | 10 per line, enforced by the API (400 `max`) and by `CHECK (quantity BETWEEN 1 AND 10)` | Never silently clamps. |
+| Stock | The cart never reserves stock; `PUT` rejects quantities above current stock (409) and lines are flagged when stock later falls | Another buyer can take the last pair; reservation happens at checkout (3d). |
+| Merge on sign-in | `auth` publishes a `SignedInEvent`; `cart` listens, merges in one transaction under a row lock, larger quantity wins, then retires the cookie | The event carries the servlet request/response (listeners need the cookie). A failed merge is logged and never blocks login; it retries at the next sign-in. Dependency is cart to auth only, checked by Modulith. |
+| Error contract | `ApiError`/`ApiException` and one handler moved to `shared` (marker `@StructuredErrors`); auth and cart use it | Small refactor of slice 3b; the auth tests assert the same codes. |
