@@ -40,7 +40,17 @@ class SchemaConstraintTests {
                 .query(Long.class).single();
 
         assertThat(failed).isZero();
-        assertThat(applied).isGreaterThanOrEqualTo(4);
+        assertThat(applied).isGreaterThanOrEqualTo(6);
+    }
+
+    @Test
+    void sessionTablesExistSoAnonymousRequestsCannotFailWith500() {
+        long tables = jdbc.sql("""
+                SELECT count(*) FROM information_schema.tables
+                WHERE table_schema = current_schema() AND table_name IN ('spring_session', 'spring_session_attributes')""")
+                .query(Long.class).single();
+
+        assertThat(tables).isEqualTo(2);
     }
 
     // ---- catalog ----------------------------------------------------------------------------

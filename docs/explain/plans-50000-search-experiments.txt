@@ -1,0 +1,92 @@
+Pager usage is off.
+=== S1: current: ts_rank_cd ===
+                                                                   QUERY PLAN                                                                    
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=952.72..952.78 rows=24 width=12) (actual time=409.697..409.713 rows=24.00 loops=1)
+   Buffers: shared hit=1188
+   ->  Sort  (cost=952.72..953.40 rows=272 width=12) (actual time=409.692..409.700 rows=24.00 loops=1)
+         Sort Key: (ts_rank_cd(search_vector, '''chelsea'' & ''boot'''::tsquery)) DESC, id
+         Sort Method: top-N heapsort  Memory: 26kB
+         Buffers: shared hit=1188
+         ->  Bitmap Heap Scan on products p  (cost=35.29..945.13 rows=272 width=12) (actual time=1.512..406.700 rows=1461.00 loops=1)
+               Recheck Cond: (search_vector @@ '''chelsea'' & ''boot'''::tsquery)
+               Filter: (active AND (min_price_minor IS NOT NULL))
+               Rows Removed by Filter: 10
+               Heap Blocks: exact=1171
+               Buffers: shared hit=1182
+               ->  Bitmap Index Scan on products_search_idx  (cost=0.00..35.22 rows=275 width=0) (actual time=1.193..1.195 rows=1471.00 loops=1)
+                     Index Cond: (search_vector @@ '''chelsea'' & ''boot'''::tsquery)
+                     Index Searches: 1
+                     Buffers: shared hit=11
+ Planning:
+   Buffers: shared hit=303
+ Planning Time: 5.534 ms
+ Execution Time: 410.040 ms
+(20 rows)
+
+=== S2: ts_rank (no cover density) ===
+                                                                   QUERY PLAN                                                                    
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=952.72..952.78 rows=24 width=12) (actual time=21.810..21.820 rows=24.00 loops=1)
+   Buffers: shared hit=1182
+   ->  Sort  (cost=952.72..953.40 rows=272 width=12) (actual time=21.807..21.811 rows=24.00 loops=1)
+         Sort Key: (ts_rank(search_vector, '''chelsea'' & ''boot'''::tsquery)) DESC, id
+         Sort Method: top-N heapsort  Memory: 26kB
+         Buffers: shared hit=1182
+         ->  Bitmap Heap Scan on products p  (cost=35.29..945.13 rows=272 width=12) (actual time=5.056..18.230 rows=1461.00 loops=1)
+               Recheck Cond: (search_vector @@ '''chelsea'' & ''boot'''::tsquery)
+               Filter: (active AND (min_price_minor IS NOT NULL))
+               Rows Removed by Filter: 10
+               Heap Blocks: exact=1171
+               Buffers: shared hit=1182
+               ->  Bitmap Index Scan on products_search_idx  (cost=0.00..35.22 rows=275 width=0) (actual time=3.978..3.979 rows=1471.00 loops=1)
+                     Index Cond: (search_vector @@ '''chelsea'' & ''boot'''::tsquery)
+                     Index Searches: 1
+                     Buffers: shared hit=11
+ Planning:
+   Buffers: shared hit=1
+ Planning Time: 1.234 ms
+ Execution Time: 22.178 ms
+(20 rows)
+
+=== S3: no ranking at all (cost of the match itself) ===
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.29..723.32 rows=24 width=8) (actual time=1.122..11.489 rows=24.00 loops=1)
+   Buffers: shared hit=85
+   ->  Index Scan using products_pkey on products p  (cost=0.29..8194.63 rows=272 width=8) (actual time=1.118..11.472 rows=24.00 loops=1)
+         Filter: (active AND (min_price_minor IS NOT NULL) AND (search_vector @@ '''chelsea'' & ''boot'''::tsquery))
+         Rows Removed by Filter: 930
+         Index Searches: 1
+         Buffers: shared hit=85
+ Planning:
+   Buffers: shared hit=1
+ Planning Time: 2.013 ms
+ Execution Time: 11.560 ms
+(11 rows)
+
+=== S4: a rarer query ("kestrel carbon") with ts_rank_cd ===
+                                                                    QUERY PLAN                                                                     
+---------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=865.16..865.22 rows=24 width=12) (actual time=735.259..735.275 rows=24.00 loops=1)
+   Buffers: shared hit=1335
+   ->  Sort  (cost=865.16..865.76 rows=242 width=12) (actual time=735.254..735.261 rows=24.00 loops=1)
+         Sort Key: (ts_rank_cd(search_vector, '''kestrel'' & ''carbon'''::tsquery)) DESC, id
+         Sort Method: top-N heapsort  Memory: 26kB
+         Buffers: shared hit=1335
+         ->  Bitmap Heap Scan on products p  (cost=35.13..858.40 rows=242 width=12) (actual time=11.184..729.997 rows=1723.00 loops=1)
+               Recheck Cond: (search_vector @@ '''kestrel'' & ''carbon'''::tsquery)
+               Filter: (active AND (min_price_minor IS NOT NULL))
+               Rows Removed by Filter: 20
+               Heap Blocks: exact=1323
+               Buffers: shared hit=1335
+               ->  Bitmap Index Scan on products_search_idx  (cost=0.00..35.07 rows=245 width=0) (actual time=10.653..10.655 rows=1743.00 loops=1)
+                     Index Cond: (search_vector @@ '''kestrel'' & ''carbon'''::tsquery)
+                     Index Searches: 1
+                     Buffers: shared hit=12
+ Planning:
+   Buffers: shared hit=1
+ Planning Time: 1.204 ms
+ Execution Time: 736.904 ms
+(20 rows)
+
