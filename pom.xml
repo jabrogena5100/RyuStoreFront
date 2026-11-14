@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>25</java.version>
 		<spring-modulith.version>2.1.2</spring-modulith.version>
+		<stripe.version>34.1.0</stripe.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,6 +71,11 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>${stripe.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.modulith</groupId>

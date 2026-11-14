@@ -106,6 +106,48 @@ public class OrderRepository {
                 .param("n", limit).query(UUID.class).list();
     }
 
+    /** Raw payment-related columns of an order, as read by {@link #lockForPayment}. */
+    public record PaymentRow(String status, Instant expiresAt, String sessionId, String paymentUrl,
+                             Instant paymentExpiresAt) {
+    }
+
+    /** Locks the customer's own order row; empty if it does not exist or belongs to someone else. */
+    public Optional<PaymentRow> lockForPayment(UUID orderId, long customerId) {
+        return jdbc.sql("""
+                SELECT status, expires_at, stripe_checkout_session_id, payment_url, payment_expires_at
+                FROM orders WHERE id = :id AND customer_id = :c FOR UPDATE""")
+                .param("id", orderId).param("c", customerId)
+                .query((rs, n) -> new PaymentRow(rs.getString("status"),
+                        instant(rs.getObject("expires_at", OffsetDateTime.class)),
+                        rs.getString("stripe_checkout_session_id"), rs.getString("payment_url"),
+                        instant(rs.getObject("payment_expires_at", OffsetDateTime.class))))
+                .optional();
+    }
+
+    /** Attaches the payment session to a pending order; false if the order is no longer pending. */
+    public boolean attachPayment(UUID orderId, String sessionId, String url, Instant paymentExpiresAt) {
+        return jdbc.sql("""
+                UPDATE orders SET stripe_checkout_session_id = :s, payment_url = :u, payment_expires_at = :t,
+                                  updated_at = now()
+                WHERE id = :id AND status = 'pending'""")
+                .param("s", sessionId).param("u", url)
+                .param("t", OffsetDateTime.ofInstant(paymentExpiresAt, ZoneOffset.UTC)).param("id", orderId)
+                .update() == 1;
+    }
+
+    /** Moves a pending order's hold expiry later, never earlier. */
+    public boolean extendHold(UUID orderId, Instant newExpiresAt) {
+        return jdbc.sql("""
+                UPDATE orders SET expires_at = :t, updated_at = now()
+                WHERE id = :id AND status = 'pending' AND (expires_at IS NULL OR expires_at < :t)""")
+                .param("t", OffsetDateTime.ofInstant(newExpiresAt, ZoneOffset.UTC)).param("id", orderId)
+                .update() == 1;
+    }
+
+    private static Instant instant(OffsetDateTime value) {
+        return value == null ? null : value.toInstant();
+    }
+
     public Optional<UUID> findIdByKey(long customerId, String key) {
         return jdbc.sql("SELECT id FROM orders WHERE customer_id = :c AND idempotency_key = :k")
                 .param("c", customerId).param("k", key).query(UUID.class).optional();
