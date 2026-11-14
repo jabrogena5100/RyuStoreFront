@@ -100,6 +100,12 @@ public class OrderRepository {
                 .param("c", customerId).query(UUID.class).list();
     }
 
+    public List<UUID> overduePendingIds(int limit) {
+        return jdbc.sql("SELECT id FROM orders WHERE status = 'pending' AND expires_at <= now() "
+                        + "ORDER BY expires_at LIMIT :n")
+                .param("n", limit).query(UUID.class).list();
+    }
+
     public Optional<UUID> findIdByKey(long customerId, String key) {
         return jdbc.sql("SELECT id FROM orders WHERE customer_id = :c AND idempotency_key = :k")
                 .param("c", customerId).param("k", key).query(UUID.class).optional();

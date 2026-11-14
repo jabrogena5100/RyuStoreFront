@@ -60,3 +60,15 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Lock order | order row, then reservations, then variants, application-wide | Checkout's supersede step was reordered to cancel before releasing stock (fixes a possible deadlock with a webhook that pays the same order). |
 | Queue (phase 4 decision) | The worker drains the Postgres outbox directly (`FOR UPDATE SKIP LOCKED`), behind a small publisher interface so SQS can be added later | Matches the plan's "SQS in AWS" only if added later; no emulator needed locally. |
 | Design phase D | Deferred by the owner until after the backend phases; phase 5 (frontend) cannot start without it | The API contracts in `docs/api/` are the input to design when it happens. |
+
+## Phase 4, slice 2 (outbox and worker), settled 2026-11-14
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Where events come from | `Outbox.publish` is `MANDATORY`-transactional; `Orders.transition` publishes `order.<status>` in its own transaction | An event can never exist without its change, or vice versa. Callers cannot publish "fire and forget". |
+| Delivery | Claim, handle and mark processed in one transaction, one event at a time, `FOR UPDATE SKIP LOCKED` | At-least-once: handlers must be idempotent. A kill redelivers instead of losing. Throughput is one event per transaction (fine for a shop; not a stream). |
+| Failures | Rollback, then record in a separate step; backoff 5 s doubling to 15 min; dead after 10 attempts | A killed process is not counted as an attempt (see `docs/worker.md`). |
+| No handler | Mark processed with a trace in `last_error` | A misconfigured deployment could drop events silently; the trace is visible in the table. |
+| Packaging | `worker` profile sets `storefront.worker.enabled`; jobs are `@ConditionalOnProperty`; the worker still serves HTTP | Health checks keep working; the API image and the worker image are the same. |
+| Sweep order | Cancel overdue orders first (order row, then reservations), only then release stray expired reservations | A reservation is never released while its order could still be paid. |
+| JSON | Flat string payloads written by a small `Json` helper, read back with `jsonb_each_text` | No JSON library coupling; payloads are flat maps. Nested payloads would need a library. |

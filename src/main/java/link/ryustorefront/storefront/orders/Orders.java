@@ -4,7 +4,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.Map;
 import link.ryustorefront.storefront.orders.internal.OrderRepository;
+import link.ryustorefront.storefront.outbox.Outbox;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class Orders {
 
     private final OrderRepository orders;
+    private final Outbox outbox;
 
-    Orders(OrderRepository orders) {
+    Orders(OrderRepository orders, Outbox outbox) {
         this.orders = orders;
+        this.outbox = outbox;
     }
 
     /** Takes a transaction-scoped lock so one customer's checkouts run one at a time. */
@@ -37,6 +41,12 @@ public class Orders {
     @Transactional(readOnly = true)
     public List<UUID> pendingOrderIds(long customerId) {
         return orders.pendingOrderIds(customerId);
+    }
+
+    /** Pending orders whose hold has run out, oldest first. The caller cancels them with {@link #cancelPending}. */
+    @Transactional(readOnly = true)
+    public List<UUID> overduePendingIds(int limit) {
+        return orders.overduePendingIds(limit);
     }
 
     /** Inserts the order, its item snapshot and a null-to-pending history row. */
@@ -80,6 +90,10 @@ public class Orders {
         }
         orders.updateStatus(orderId, to.dbValue());
         orders.insertHistory(orderId, from.dbValue(), to.dbValue(), reason);
+        // Same transaction as the status change: the event exists if and only if the change committed.
+        outbox.publish("order", orderId.toString(), "order." + to.dbValue(), Map.of(
+                "orderId", orderId.toString(), "from", from.dbValue(), "to", to.dbValue(),
+                "reason", reason == null ? "" : reason));
         return new TransitionResult(TransitionResult.Outcome.APPLIED, from);
     }
 
