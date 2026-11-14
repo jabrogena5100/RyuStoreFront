@@ -1,0 +1,29 @@
+# Secrets and local config (never commit)
+.env
+*.tfvars
+!*.tfvars.example
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+errored.tfstate
+tfplan
+*.tfplan
+crash.log
+
+# Java / Maven
+target/
+*.log
+hs_err_pid*
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# Editors and OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
