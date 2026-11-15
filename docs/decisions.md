@@ -107,3 +107,13 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Cancelling on expiry | Only when the event's session id equals the order's stored session id | An event for any other session is ignored (logged), even if its metadata names the order. |
 | Cart emptied | A second `order.paid` handler in `checkout` deletes the purchased variants' lines from the customer's cart | Runs when the worker runs, not inside the webhook request; a few seconds of delay. If a later handler (the e-mail, ordered last) fails, the cart deletion rolls back and is redone on retry. |
 | Outbox handlers | Several handlers per event type, run in `@Order` inside the claim transaction | All-or-nothing per event: one failing handler retries the others too, so every handler must be idempotent (they are). |
+
+## Phase 4b (cloud infrastructure layout), settled 2026-11-15
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Domain | Registered at Squarespace, delegated to a Route 53 hosted zone (Route 53 registration failed with no reason given) | Name servers are pasted by hand at the registrar; no transfer, which a new registration could not do for 60 days anyway. |
+| Stages | `infra/foundation` (zone, ECR; kept) and a later per-session stage (VPC, RDS, ECS, ALB, ACM, secrets; destroyed after each session) | Two states to manage; the destroy can never touch DNS or the registry. |
+| Zone adoption | The hand-made zone is imported, with `prevent_destroy` | A second zone would have different name servers and silently break the delegation. |
+| State | S3 bucket created by CLI (versioned, public access blocked), native lockfile (`use_lockfile`), no DynamoDB | The bucket itself is not in Terraform; losing it loses the state history. |
+| ECR | Immutable tags, scan on push, keep the last 15 images | A tag cannot be re-pushed; each build needs a new tag (commit SHA). |
