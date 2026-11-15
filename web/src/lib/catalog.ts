@@ -166,8 +166,16 @@ export interface ListingQuery {
   size?: string;
   colour?: string;
   stock?: string;
+  price?: string;
   sort?: string;
 }
+
+/** Price bands for the listing filter; the bounds are in minor units (cents). */
+export const PRICE_BANDS = [
+  { value: "u150", label: "Under $150", test: (m: number) => m < 15000 },
+  { value: "150-300", label: "$150 to $300", test: (m: number) => m >= 15000 && m <= 30000 },
+  { value: "o300", label: "Over $300", test: (m: number) => m > 30000 },
+] as const;
 
 export function filterProducts(q: ListingQuery): Product[] {
   const occasion = OCCASIONS.find((o) => o.slug === q.occasion);
@@ -177,6 +185,8 @@ export function filterProducts(q: ListingQuery): Product[] {
     if (q.colour === "white" && !WHITES.has(p.colour)) return false;
     if (q.size && !p.variants.some((v) => v.sizeLabel === q.size && v.available)) return false;
     if (q.stock === "1" && !p.inStock) return false;
+    const band = PRICE_BANDS.find((b) => b.value === q.price);
+    if (band && !band.test(p.minPriceMinor)) return false;
     if (q.q) {
       const hay = `${p.name} ${p.brand} ${p.categoryName} ${p.colour} ${p.material}`.toLowerCase();
       if (!q.q.toLowerCase().split(/\s+/).filter(Boolean).every((w) => hay.includes(w))) return false;
@@ -219,4 +229,9 @@ export function demoCartLines() {
       qty: i === 0 ? 2 : 1,
     };
   });
+}
+
+/** How many pairs a filter option would show: the current filters with that one option applied. Drives the counts beside each option. */
+export function countWith(q: ListingQuery, patch: Partial<ListingQuery>): number {
+  return filterProducts({ ...q, ...patch, sort: undefined }).length;
 }

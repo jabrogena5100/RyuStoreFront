@@ -10,10 +10,8 @@ export function ProductCard({ product, priority = false }: { product: ProductSum
       href={`/products/${product.slug}`}
       className="group block rounded-lg focus-visible:outline-offset-4"
     >
-      <div className="relative overflow-hidden rounded-lg border border-line">
-        <div className="transition-transform duration-(--duration-slower) ease-emphasized [@media(hover:hover)]:group-hover:scale-[1.03]">
-          <ProductImage product={product} label={false} decorative />
-        </div>
+      <div className="relative overflow-hidden rounded-lg border border-line transition-colors duration-(--duration-base) group-hover:border-line-strong">
+        <ProductImage product={product} label={false} decorative />
         {!product.inStock ? (
           <div className="absolute left-3 top-3">
             <Badge>Sold out</Badge>

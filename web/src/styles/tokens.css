@@ -48,13 +48,11 @@
   /* Elevation: only overlays get a shadow; everything else is a surface step plus a line */
   --shadow-overlay: 0 12px 40px rgb(0 0 0 / 0.55);
 
-  /* Motion: four durations, two easings. Animate transform and opacity only. */
-  --duration-fast: 120ms;
-  --duration-base: 200ms;
-  --duration-slow: 320ms;
-  --duration-slower: 500ms;
+  /* Motion: minimal. Colour and opacity changes only, three durations, one easing. No movement, no scroll effects. */
+  --duration-fast: 100ms;
+  --duration-base: 150ms;
+  --duration-slow: 200ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Type: one family (Instrument Sans, loaded in layout.tsx). Fluid sizes, capped so nothing is oversized */
   --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;

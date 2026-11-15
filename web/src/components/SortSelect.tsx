@@ -14,7 +14,7 @@ export function SortSelect({ base, value }: { base: string; value: string }) {
   return (
     <div className="flex items-center gap-2">
       <label htmlFor="sort" className="text-small text-fg-muted">
-        Sort
+        Sort by
       </label>
       <select
         id="sort"

@@ -4,6 +4,7 @@ import { ToastDemo } from "@/components/ToastDemo";
 import { Badge } from "@/components/ui/Badge";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
+import { Container } from "@/components/ui/Container";
 import { Field } from "@/components/ui/Field";
 import { Price } from "@/components/ui/Price";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -37,7 +38,7 @@ const SWATCHES: { token: string; bg: string; hex: string; role: string; note?: s
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
     <section aria-labelledby={id} className="border-t border-line py-10">
-      <h2 id={id} className="mb-6 text-h1 font-semibold text-fg-strong">
+      <h2 id={id} className="mb-6 text-h2 font-semibold text-fg-strong">
         {title}
       </h2>
       {children}
@@ -47,7 +48,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 
 export default function DesignPage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <Container className="py-10">
       <p className="text-caption font-medium uppercase text-accent-text">Design system</p>
       <h1 className="mt-2 text-display font-semibold text-fg-strong">Tokens and components</h1>
       <p className="mt-4 max-w-2xl text-body text-fg-muted">
@@ -159,10 +160,10 @@ export default function DesignPage() {
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <ul className="space-y-2 text-small text-fg-muted">
-              <li>Durations: 120 ms (fast), 200 ms (base), 320 ms (slow), 500 ms (slower).</li>
-              <li>Easings: standard <code className="text-fg">cubic-bezier(0.2, 0, 0, 1)</code> and emphasised <code className="text-fg">cubic-bezier(0.16, 1, 0.3, 1)</code>.</li>
-              <li>Only transform and opacity animate. Reduced motion turns every animation into a still change.</li>
-              <li>Depth is a lighter surface plus a line; only overlays (menu, toast) cast a shadow.</li>
+              <li>Durations: 100 ms (fast), 150 ms (base), 200 ms (slow). One easing: <code className="text-fg">cubic-bezier(0.2, 0, 0, 1)</code>.</li>
+              <li>Only colour and opacity change, on hover, focus and press. Nothing moves, scales or reveals on scroll; no shimmer.</li>
+              <li>Reduced motion makes every transition instant.</li>
+              <li>Depth is a lighter surface plus a line; only overlays (filter drawer, toast) cast a shadow.</li>
             </ul>
             <div className="mt-4">
               <ToastDemo />
@@ -177,6 +178,6 @@ export default function DesignPage() {
           </div>
         </div>
       </Section>
-    </div>
+    </Container>
   );
 }
