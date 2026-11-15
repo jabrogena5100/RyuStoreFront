@@ -63,3 +63,26 @@ Push (needs a clean, committed tree; tags are immutable, so each commit SHA is p
 export AWS_PROFILE=ryustorefront
 scripts/ecr-push.sh
 ```
+
+## Session stage, slice 1: network and database (`infra/session/`)
+
+Status: **written, not yet planned or applied.** Contents: VPC (10.20.0.0/16), two public subnets, internet gateway,
+three security groups (ALB, app, database), and a single-AZ `db.t4g.micro` Postgres 18.6 whose password RDS keeps in Secrets Manager.
+Later slices add ECS, the ALB, ACM and the DNS record.
+
+```
+export AWS_PROFILE=ryustorefront
+BUCKET=storefront-tfstate-$(aws sts get-caller-identity --query Account --output text)
+scripts/aws-terraform.sh -chdir=infra/session init -backend-config="bucket=$BUCKET"
+scripts/aws-terraform.sh -chdir=infra/session validate
+scripts/aws-terraform.sh -chdir=infra/session plan -out=tfplan
+# read the whole plan, then:
+scripts/aws-terraform.sh -chdir=infra/session apply tfplan
+```
+
+Destroy when the session ends (never touches `foundation/`):
+
+```
+scripts/aws-terraform.sh -chdir=infra/session plan -destroy -out=tfplan
+scripts/aws-terraform.sh -chdir=infra/session apply tfplan
+```
