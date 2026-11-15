@@ -145,6 +145,14 @@ Real data (the owner's local API, 49,507 products; Playwright against `scripts/w
 | After dark, women, page 2 of 450 | ![](screens-live/listing-filtered-desktop.png) | ![](screens-live/listing-filtered-mobile.png) |
 | Product page (three colours) | ![](screens-live/pdp-desktop.png) | ![](screens-live/pdp-mobile.png) |
 
+## Batch 4 (phase 5, slice 2): sign in, register and the cart use the API
+
+No new screens; behaviour changed. The screenshots above come from the mock API (a guest with an empty cart). What is new and not visible there: the header shows a menu (orders, admin for admins, sign out) once signed in; the cart page shows live prices, a per-line "no longer available" note, a stock-limit error banner and disabled steppers while a change is saving; the "Race day" tile now reads "Road racers and daily trainers". The signed-in menu has not been screenshotted yet (it needs a session the mock does not have).
+
+## Batch 5 (phase 5, slice 3): checkout, pay, confirmation and order pages are live
+
+No visual changes; the same screens now run on the API. Not visible in the mock-based screenshots: the checkout posts to the API with an idempotency key and shows the API's field errors; `cart_changed` marks lines by SKU and offers Remove or "Reduce to N" from the live stock; guests get the sign-in prompt; the pay step reads the real order and hold; the confirmation polls every 3 seconds until the webhook has marked the order paid; another customer's order shows "We could not find that order". The review `?state=` URLs still show the fixture versions. The live flow has been written and typechecked but **not yet run** against the API (it needs a restart for the new endpoint).
+
 ## Things to look at
 
 - The five category tiles use the first product of each category as their picture; the placeholders are still typographic.

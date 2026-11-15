@@ -53,10 +53,9 @@ export interface OrderItem {
   unitPriceMinor: number;
   quantity: number;
   lineTotalMinor: number;
-  /** PROPOSED: the snapshot needs these two to link and picture the item. */
-  slug: string;
+  /** GET /api/orders/{id} adds the product link and brand to the snapshot (from the variant's product). */
+  productSlug: string;
   brand: string;
-  categorySlug: string;
 }
 
 export interface StatusEvent {
@@ -64,7 +63,8 @@ export interface StatusEvent {
   at: string;
 }
 
-export interface Order {
+/** GET /api/orders/{id}: the checkout response plus item links and the status history. */
+export interface ApiOrder {
   id: string;
   status: OrderStatus;
   contactEmail: string;
@@ -73,12 +73,14 @@ export interface Order {
   shippingMinor: number;
   totalMinor: number;
   shippingAddress: Address;
-  expiresAt: string;
+  expiresAt: string | null;
   createdAt: string;
   items: OrderItem[];
-  /** PROPOSED: from order_status_history. */
   history: StatusEvent[];
-  /** PROPOSED: admin list only. */
+}
+
+/** The admin list and the fixtures add the customer's name (PROPOSED: no admin endpoint yet). */
+export interface Order extends ApiOrder {
   customerName: string;
 }
 
@@ -94,9 +96,8 @@ function line(p: Product, qty: number, size?: string): OrderItem {
     unitPriceMinor: v.priceMinor,
     quantity: qty,
     lineTotalMinor: v.priceMinor * qty,
-    slug: p.slug,
+    productSlug: p.slug,
     brand: p.brand,
-    categorySlug: p.categorySlug,
   };
 }
 
@@ -159,6 +160,8 @@ export function getOrder(id: string): Order | undefined {
 /** The short reference shown to people: the first eight characters of the id, upper case. */
 export const orderRef = (id: string) => id.slice(0, 8).toUpperCase();
 
+/** The earlier screens took an `Order`; the API has no customer name, so most views only need this. */
+
 const date = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "UTC" });
 const time = new Intl.DateTimeFormat("en-US", { timeStyle: "short", timeZone: "UTC" });
 /** Dates are shown in UTC so the server and the browser agree; the label says so where time of day matters. */
@@ -166,7 +169,7 @@ export const fmtDate = (iso: string) => date.format(new Date(iso));
 export const fmtDateTime = (iso: string) => `${date.format(new Date(iso))}, ${time.format(new Date(iso))} UTC`;
 export const fmtTime = (iso: string) => `${time.format(new Date(iso))} UTC`;
 
-export const itemCount = (o: Order) => o.items.reduce((n, i) => n + i.quantity, 0);
+export const itemCount = (o: ApiOrder) => o.items.reduce((n, i) => n + i.quantity, 0);
 
 /** PROPOSED: stock per variant for the admin product screen (the public API only exposes "available"). */
 export function stockOf(p: Product): { sku: string; sizeLabel: string; priceMinor: number; stock: number }[] {
@@ -181,7 +184,7 @@ export function stockOf(p: Product): { sku: string; sizeLabel: string; priceMino
 export const money = formatPrice;
 
 /** Design review only: the same order shown in another status, with a matching history. */
-export function withStatus(o: Order, status: OrderStatus): Order {
+export function withStatus<T extends ApiOrder>(o: T, status: OrderStatus): T {
   const path: OrderStatus[] = ["pending", "paid", "fulfilled", "shipped"];
   const t0 = new Date(o.createdAt).getTime();
   const at = (m: number) => new Date(t0 + m * 60_000).toISOString();

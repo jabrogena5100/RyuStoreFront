@@ -1,5 +1,5 @@
 import { AddressBlock, ItemRow, StatusBadge, StatusTimeline, Totals } from "@/components/OrderParts";
-import { fmtDate, itemCount, orderRef, type Order } from "@/lib/orders";
+import { fmtDate, itemCount, orderRef, type ApiOrder } from "@/lib/orders";
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -11,7 +11,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 }
 
 /** What was ordered, where it goes and what happened to it. Used by the order page, the confirmation and (with `admin`) the admin order page. */
-export function OrderDetail({ order, admin = false, children }: { order: Order; admin?: boolean; children?: React.ReactNode }) {
+export function OrderDetail({ order, admin = false, children }: { order: ApiOrder; admin?: boolean; children?: React.ReactNode }) {
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[1fr_22rem]">
       <div className="flex flex-col gap-6">

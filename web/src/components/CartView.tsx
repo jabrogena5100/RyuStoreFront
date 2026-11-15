@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { Minus, Plus, X } from "lucide-react";
-import { useCart } from "@/components/CartProvider";
+import { useState } from "react";
+import { useCart, type CartResult } from "@/components/CartProvider";
+import { Alert } from "@/components/ui/Alert";
 import { ProductImage } from "@/components/ProductImage";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Price } from "@/components/ui/Price";
@@ -11,9 +13,16 @@ import { EmptyState, ErrorState } from "@/components/ui/StatePanel";
 import { formatPrice } from "@/lib/catalog";
 
 export function CartView({ state }: { state?: string }) {
-  const { lines, subtotalMinor, shippingMinor, totalMinor, setQty, remove, count } = useCart();
+  const { lines, subtotalMinor, shippingMinor, totalMinor, setQty, remove, count, status, busy, refresh } = useCart();
+  const [problem, setProblem] = useState<string | null>(null);
 
-  if (state === "loading") {
+  async function act(run: Promise<CartResult>) {
+    setProblem(null);
+    const r = await run;
+    if (!r.ok) setProblem(r.message);
+  }
+
+  if (state === "loading" || (!state && status === "loading")) {
     return (
       <div role="status" className="grid gap-8 lg:grid-cols-[1fr_22rem]" aria-busy="true" aria-label="Loading your cart">
         <div className="flex flex-col gap-4">
@@ -32,9 +41,9 @@ export function CartView({ state }: { state?: string }) {
       </div>
     );
   }
-  if (state === "error") {
+  if (state === "error" || (!state && status === "error")) {
     return (
-      <ErrorState title="We could not load your cart" action={<Button onClick={() => window.location.reload()}>Try again</Button>}>
+      <ErrorState title="We could not load your cart" action={<Button onClick={() => (state ? window.location.reload() : refresh())}>Try again</Button>}>
         Your items are safe. Check your connection and try again.
       </ErrorState>
     );
@@ -49,6 +58,8 @@ export function CartView({ state }: { state?: string }) {
 
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[1fr_22rem]">
+      <div className="flex flex-col gap-4">
+      {problem ? <Alert tone="danger" title="That change was not saved">{problem}</Alert> : null}
       <ul className="flex flex-col gap-4" aria-label="Items in your cart">
         {lines.map((l) => (
             <li
@@ -66,11 +77,12 @@ export function CartView({ state }: { state?: string }) {
                     <p className="text-small text-fg-muted">
                       <span className="capitalize">{l.colour}</span> · Size {l.sizeLabel}
                     </p>
+                    {!l.available ? <p className="mt-1 text-small font-medium text-warning">No longer available in this quantity. Remove it or lower the quantity to check out.</p> : null}
                   </div>
                   <button
                     type="button"
                     aria-label={`Remove ${l.name}, size ${l.sizeLabel}`}
-                    onClick={() => remove(l.sku)}
+                    onClick={() => act(remove(l.sku))} disabled={busy.has(l.sku)}
                     className="-mr-2 -mt-2 grid size-11 shrink-0 place-items-center rounded-md text-fg-subtle hover:bg-surface-3 hover:text-fg"
                   >
                     <X aria-hidden="true" className="size-5" />
@@ -78,13 +90,13 @@ export function CartView({ state }: { state?: string }) {
                 </div>
                 <div className="mt-auto flex items-end justify-between pt-3">
                   <div role="group" aria-label={`Quantity for ${l.name}`} className="inline-flex items-center rounded-md border border-line-strong">
-                    <button type="button" aria-label="Decrease quantity" disabled={l.qty <= 1} onClick={() => setQty(l.sku, l.qty - 1)} className="grid size-11 place-items-center rounded-l-md hover:bg-surface-3 disabled:opacity-40">
+                    <button type="button" aria-label="Decrease quantity" disabled={l.qty <= 1 || busy.has(l.sku)} onClick={() => act(setQty(l.sku, l.qty - 1))} className="grid size-11 place-items-center rounded-l-md hover:bg-surface-3 disabled:opacity-40">
                       <Minus aria-hidden="true" className="size-4" />
                     </button>
                     <span className="tabular w-8 text-center text-small font-medium" aria-live="polite">
                       {l.qty}
                     </span>
-                    <button type="button" aria-label="Increase quantity" disabled={l.qty >= 10} onClick={() => setQty(l.sku, l.qty + 1)} className="grid size-11 place-items-center rounded-r-md hover:bg-surface-3 disabled:opacity-40">
+                    <button type="button" aria-label="Increase quantity" disabled={l.qty >= Math.min(10, l.maxQuantity || 10) || !l.available || busy.has(l.sku)} onClick={() => act(setQty(l.sku, l.qty + 1))} className="grid size-11 place-items-center rounded-r-md hover:bg-surface-3 disabled:opacity-40">
                       <Plus aria-hidden="true" className="size-4" />
                     </button>
                   </div>
@@ -94,6 +106,7 @@ export function CartView({ state }: { state?: string }) {
             </li>
           ))}
       </ul>
+      </div>
 
       <aside aria-label="Order summary" className="rounded-lg border border-line bg-surface-1 p-5 lg:sticky lg:top-6">
         <h2 className="text-h2 font-semibold text-fg-strong">Summary</h2>

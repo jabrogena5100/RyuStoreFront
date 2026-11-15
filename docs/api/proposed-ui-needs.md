@@ -15,4 +15,5 @@ frontend wiring (phase 5) has to settle with the backend. Existing contracts: `a
 | Admin: product read and update, per-variant `stock` and `priceMinor` | Product edit | The public API only exposes `available`. Validation codes the screen shows: `required`, `min` (price), `negative` (stock). |
 | Admin: presigned image upload | Photos | S3 presigned URL; the screen says files never pass through the shop server. |
 | Low-stock threshold | Admin product list | Fixed at 12 pairs in the screen; a setting in real life. |
-| Account menu state (`GET /api/auth/me`) | Header | The header shows a static "Sign in" link; the signed-in menu (name, orders, sign out) is not designed yet. |
+| Account menu state (`GET /api/auth/me`) | Header | **Done 2026-11-15:** wired (menu with orders, admin for admins, sign out). Not designed beyond a plain menu. |
+| Cart lines carry `categorySlug` | Cart thumbnails | Not needed: the placeholder picture only uses brand and name. Real photos will need an image URL on the cart line. |

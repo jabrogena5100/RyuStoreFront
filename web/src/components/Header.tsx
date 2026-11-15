@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Search, User } from "lucide-react";
+import { Search } from "lucide-react";
+import { AccountMenu } from "@/components/AccountMenu";
 import { CartLink } from "@/components/CartLink";
 import { Container } from "@/components/ui/Container";
 import { OCCASIONS } from "@/lib/catalog";
@@ -58,13 +59,7 @@ export function Header() {
         </Link>
         <SearchForm className="order-last col-span-2 md:order-none md:col-span-1" />
         <div className="flex items-center">
-          <Link
-            href="/sign-in"
-            className="inline-flex min-h-11 items-center gap-2 rounded-md px-3 text-small font-medium text-fg transition-colors duration-(--duration-base) hover:bg-surface-2"
-          >
-            <User aria-hidden="true" className="size-5" />
-            <span className="sr-only sm:not-sr-only">Sign in</span>
-          </Link>
+          <AccountMenu />
           <CartLink />
         </div>
       </Container>

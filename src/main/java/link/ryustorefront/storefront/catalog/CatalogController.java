@@ -30,6 +30,7 @@ class CatalogController {
     PageResult<ProductSummary> search(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "false") boolean categoryExact,
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) Long minPrice,
@@ -73,7 +74,7 @@ class CatalogController {
         }
 
         return products.search(new SearchCriteria(
-                query, blankToNull(category), blankToNull(gender), blankToNull(brand),
+                query, blankToNull(category), categoryExact, blankToNull(gender), blankToNull(brand),
                 minPrice, maxPrice, blankToNull(size), inStock, effective, page, pageSize));
     }
 

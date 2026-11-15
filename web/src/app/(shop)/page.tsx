@@ -39,7 +39,7 @@ function CategoryTile({ slug, total, cheapest }: { slug: (typeof OCCASIONS)[numb
 export default async function Home() {
   // The API's cheapest-first page of one gives each tile its count, its "from" price and a picture; the rows are plain searches.
   const [tiles, newest, under150, finder] = await Promise.all([
-    Promise.all(OCCASIONS.map((o) => searchProducts({ category: o.categories.join(","), sort: "price_asc", pageSize: 1 }))),
+    Promise.all(OCCASIONS.map((o) => searchProducts({ category: o.categories.join(","), categoryExact: true, sort: "price_asc", pageSize: 1 }))),
     searchProducts({ sort: "newest", pageSize: 8 }),
     searchProducts(toSearch({ price: "u150", sort: "price-asc" }, { page: "1" })).then((r) => r.items),
     searchProducts({ inStock: true, pageSize: 1 }),

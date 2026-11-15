@@ -8,16 +8,16 @@ export function StatusBadge({ status }: { status: OrderStatus }) {
 }
 
 /** One order or cart line: picture, names, size and colour, quantity and price. */
-export function ItemRow({ item, linkTo = true }: { item: Pick<OrderItem, "slug" | "brand" | "productName" | "categorySlug" | "colour" | "sizeLabel" | "quantity" | "unitPriceMinor" | "lineTotalMinor">; linkTo?: boolean }) {
+export function ItemRow({ item, linkTo = true }: { item: Pick<OrderItem, "productSlug" | "brand" | "productName" | "colour" | "sizeLabel" | "quantity" | "lineTotalMinor">; linkTo?: boolean }) {
   const pic = (
     <div className="w-16 shrink-0 overflow-hidden rounded-md border border-line sm:w-20">
-      <ProductImage product={{ brand: item.brand, name: item.productName, categorySlug: item.categorySlug }} label={false} decorative />
+      <ProductImage product={{ brand: item.brand, name: item.productName }} label={false} decorative />
     </div>
   );
   return (
     <div className="flex gap-4">
       {linkTo ? (
-        <Link href={`/products/${item.slug}`} aria-label={`${item.productName} product page`}>
+        <Link href={`/products/${item.productSlug}`} aria-label={`${item.productName} product page`}>
           {pic}
         </Link>
       ) : (

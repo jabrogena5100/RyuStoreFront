@@ -8,7 +8,7 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
   const { state, next } = await searchParams;
   return (
     <Container className="py-10 sm:py-14">
-      <AuthForm mode="sign-in" state={state} next={next} />
+      <AuthForm mode="sign-in" reviewState={state} next={next} />
     </Container>
   );
 }

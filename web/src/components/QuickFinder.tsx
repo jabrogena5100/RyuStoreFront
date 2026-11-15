@@ -24,7 +24,10 @@ export function QuickFinder({ initialCount }: { initialCount: number }) {
     if (gender) q.set("gender", gender);
     if (size) q.set("size", size);
     const o = OCCASIONS.find((x) => x.slug === occasion);
-    if (o) q.set("category", o.categories.join(","));
+    if (o) {
+      q.set("category", o.categories.join(","));
+      q.set("categoryExact", "true");
+    }
     const ctl = new AbortController();
     fetch(`/api/products?${q}`, { signal: ctl.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))

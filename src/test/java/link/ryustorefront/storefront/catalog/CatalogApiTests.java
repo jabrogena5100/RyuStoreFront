@@ -130,6 +130,38 @@ class CatalogApiTests {
     }
 
     @Test
+    void exactCategoryLeavesOutItsChildren() throws Exception {
+        String exact = ok("/api/products?category=sneakers&categoryExact=true&pageSize=48");
+        List<String> categories = JsonPath.read(exact, "$.items[*].categorySlug");
+        assertThat(categories).isNotEmpty().allMatch(c -> c.equals("sneakers"));
+
+        long expected = jdbc.sql("SELECT count(*) FROM products p JOIN categories c ON c.id = p.category_id "
+                + "WHERE p.active AND c.slug = 'sneakers' "
+                + "AND EXISTS (SELECT 1 FROM variants v WHERE v.product_id = p.id AND v.active)")
+                .query(Long.class).single();
+        assertThat(total(exact)).isEqualTo(expected);
+        assertThat(total(exact)).isLessThan(total(ok("/api/products?category=sneakers")));
+    }
+
+    @Test
+    void runningIsRoadOnlyAndRacersKeepRaceCopy() throws Exception {
+        String body = ok("/api/products?category=running&categoryExact=true&pageSize=48");
+        List<String> names = JsonPath.read(body, "$.items[*].name");
+        List<String> descriptions = new ArrayList<>();
+        for (String slug : JsonPath.<List<String>>read(body, "$.items[*].slug")) {
+            descriptions.add(JsonPath.read(ok("/api/products/" + slug), "$.description"));
+        }
+        assertThat(names).isNotEmpty().noneMatch(n -> n.contains("Trail"));
+        assertThat(descriptions).noneMatch(d -> d.toLowerCase().contains("debris"));
+        for (int i = 0; i < names.size(); i++) {
+            if (names.get(i).contains("Racer")) {
+                // Race-day copy only: nothing from the trainers' pool.
+                assertThat(descriptions.get(i).toLowerCase()).doesNotContain("daily miles", "tempo runs", "rubber outsole");
+            }
+        }
+    }
+
+    @Test
     void severalCategoriesMatchAnyOfThem() throws Exception {
         String body = ok("/api/products?category=heels,loafers,oxfords&pageSize=48");
 
