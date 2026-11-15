@@ -27,3 +27,9 @@ out/
 .vscode/
 *.iml
 .DS_Store
+
+# Frontend generated
+web/test-results/
+web/playwright-report/
+web/next-env.d.ts
+*.tsbuildinfo

@@ -137,3 +137,15 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Read-only root | Off for the first run (`read_only_root = false`) | CLAUDE.md section 5 wants it on; a writable `/tmp` volume owned by a non-root user is the unknown, so it is tried after the first success. |
 | Demo data | `seed` profile, 100 products, only when the database is empty | The cloud API starts with a profile that is not "production"; acceptable for a demo, noted for the write-up. |
 | Database TLS | `sslmode=require` | Encrypts but does not verify the server certificate; `verify-full` needs the RDS CA bundle in the image (later hardening). |
+
+## Phase D (design in code), settled 2026-11-15
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| How the UI is designed | In code, in `web/`, reviewed through Playwright screenshots; not in Claude Design (a deviation from CLAUDE.md section 6) | No drag-and-drop canvas and no second tool's opinion; the risk is a generic look, managed by the brief's checklist, real catalogue data on every screen and the owner's review. The tokens and components exist once, in the app. |
+| Buyer and brand | People who want quick access to the footwear market across white shoes, streetwear, carbon-plate runners, evening shoes and women's boots; "quick, restrained, confident"; avoid cluttered, formulaic or loud layouts | Browse is by occasion and a one-screen quick finder, not by brand. |
+| Colour | Near-black warm neutrals with depth from lightness steps, off-white text, one cobalt accent (hue 258); every value computed for WCAG contrast; dark only for v1 | Two first-draft values failed AA and were corrected; a light theme is not built. |
+| Tokens | One CSS file; Tailwind's default palette is switched off so a colour outside the tokens cannot be used | Less convenient than the default palette; intended. |
+| Placeholders | Typographic: an oversized tone-on-tone initial per product, one 4:5 frame; the shoe line drawings were tried and dropped | They say nothing about the product; real photos replace them at the same ratio. |
+| Components | Native `<dialog>`, `<details>`, radio inputs and `<select>` before any component library | Less polish than a library for menus and selects; fewer dependencies and native accessibility. |
+| Frontend versions | Node 26.13.1 LTS in Docker; Next.js 16.4.6, React 19.3.1, Tailwind 4.3.5, Motion 14.14.0, TypeScript 7.0.2 (works with Next 16.4.6 here), pinned exactly | TypeScript 7 is new; revisit if a tool breaks. |
