@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans } from "next/font/google";
 import { CartProvider } from "@/components/CartProvider";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
@@ -26,9 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <CartProvider>
           <ToastProvider>
-            <Header />
-            <main id="main">{children}</main>
-            <Footer />
+            {children}
           </ToastProvider>
         </CartProvider>
       </body>

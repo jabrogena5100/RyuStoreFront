@@ -174,3 +174,16 @@ Only generic search phrases were sent to the service (for example "product listi
 | "Footer with Navigation Grid" (`footer-01` by shadcnui-blocks, 21st.dev) | The arrangement only: link columns, a rule, a bottom line | The retrieved result carried no licence text and no licence field | Not copied. `Footer.tsx` is our own and tiny. Treat the licence as unconfirmed. |
 
 The product row (scroll-snap with arrow buttons) was written from scratch; the carousels offered use animation libraries that the motion rule excludes.
+
+## Phase D, checkout, orders and admin screens, settled 2026-11-15
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Scope | Sign in, create account, checkout, pay step, confirmation, order history and detail, admin orders (list, detail with refund), admin products (list, edit) | The signed-in header menu is not designed; the header has a static "Sign in" link. |
+| Contracts | Shopper screens follow `docs/api/{auth,checkout,payment}.md` state by state (field codes, `cart_changed`, `order_expired`, `payment_expired`, "confirming" until `paid`). Order history, order detail, admin and per-variant stock do not exist in the API: listed in `docs/api/proposed-ui-needs.md` | The admin screens and history are shaped by the design, not by an agreed contract; wiring may change them. |
+| Admin chrome | Route groups: `(shop)` has the shop header and footer, `(admin)` has its own bar and navigation (sidebar, tabs on phones); same tokens and components | A route-group move of existing pages (no URL changes). |
+| Lifecycle in the UI | Admin actions come from the rules in `docs/order-lifecycle.md` (`NEXT_STATUS`); illegal moves are not offered at all, refund asks first in a native `<dialog>` | The rules exist twice (backend and this table) until the API returns the allowed moves. |
+| Pay step | Shows the hold from `expiresAt` and states for `payments_unavailable`, `payment_provider_error` and an expired order | The hold timer reads the clock after load; review screens pass a fixed clock so screenshots are stable. Dates and times are shown in UTC. |
+| Review states | Every state is a `?state=` URL, as on the earlier screens; "Place order" goes to the pay step with a fixture order | Those URLs and the fixture navigation go away when the screens are wired. |
+| Tables | Native `<table>` with captions and row headers on wide screens, a card list on phones | Two markups per list. |
+| 21st.dev | Searched once earlier for the filter and footer patterns (see the section above); for this batch no component was searched or retrieved, because native elements covered tables, forms and dialogs | None. |

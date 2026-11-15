@@ -111,9 +111,9 @@ export function CartView({ state }: { state?: string }) {
             <dd className="tabular font-semibold text-fg-strong">{formatPrice(totalMinor)}</dd>
           </div>
         </dl>
-        <Button size="lg" className="mt-5 w-full">
+        <ButtonLink href="/checkout" size="lg" className="mt-5 w-full">
           Checkout
-        </Button>
+        </ButtonLink>
         <p className="mt-3 text-caption text-fg-subtle">Stripe test mode: no real payment is taken.</p>
       </aside>
     </div>

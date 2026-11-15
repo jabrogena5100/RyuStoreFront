@@ -31,10 +31,17 @@ It rebuilds the frontend, serves it, takes the screenshots and runs the scan. Fr
 | Cart | yes | live (empty), filled, loading, error (`?state=filled|loading|error`) |
 | Design system page | yes | tokens, type, buttons, inputs, chips, badges, cards, skeleton, empty, error, motion |
 | Not found | yes | |
+| Sign in, create account | yes | idle, submitting, wrong credentials, e-mail taken, "sign in to pay" note |
+| Checkout | yes | idle, field errors, submitting, failed (retry), cart changed (per-line markers), signed out, empty |
+| Pay step | yes | idle with hold timer, starting, Stripe error, expired |
+| Order confirmation | yes | paid, confirming, cancelled, refunded |
+| Order history, order page | yes | list, empty, loading, error, signed out; shipped and pending orders |
+| Admin orders | yes | list, status filter, empty, loading, error, forbidden; order page (paid, shipped, conflict, refund dialog) |
+| Admin products | yes | list with stock filter; edit form with errors and saved |
 
 Every page shares the two-tier header, the container, the section heading and the footer (see BRIEF.md 8a). Motion is minimal (BRIEF.md section 6).
 
-**Not built yet** (from the brief): checkout, order confirmation, order history, admin product edit, admin orders. They come after the screens above are signed off.
+Everything in the brief is now built as a design. The signed-in header menu (name, orders, sign out) is not designed yet.
 
 The `?state=` URLs exist only so each state can be shown and screenshotted; they go away when the pages are wired to the real API.
 
@@ -49,10 +56,15 @@ The owner signs off each screen. Mark here when done.
 | Product detail | | |
 | Cart | | |
 | Design system | | |
+| Sign in, create account | | |
+| Checkout and pay step | | |
+| Confirmation, orders | | |
+| Admin | | |
 
 ## Known limits (not hidden)
 
 - The images are placeholders by design (typographic, one 4:5 ratio). No real product photography exists yet.
 - Reviewed by the screenshots only: no real device, no Firefox or WebKit run yet, no keyboard-only or screen-reader walkthrough, no Lighthouse numbers. The axe scan catches only the automatable part of WCAG.
 - Filter counts and the price filter are computed on the fixtures; the backend search has no price-band parameter yet.
+- Checkout, orders, stock and admin screens run on fixtures; order history, admin and per-variant stock have no API yet (`docs/api/proposed-ui-needs.md`).
 - Prices, products and sizes are fixtures that mirror the API's response shapes and the backend seed vocabulary; nothing calls the API yet.
