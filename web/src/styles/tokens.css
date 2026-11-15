@@ -1,0 +1,77 @@
+/*
+ * DESIGN TOKENS: the single source of truth (design/BRIEF.md sections 4 to 7).
+ * Components use only these. Tailwind's default palette is switched off below, so a colour that is
+ * not in this file cannot be used by accident. Contrast figures were computed with a script (WCAG);
+ * see design/BRIEF.md. Dark only for v1.
+ */
+@theme {
+  --color-*: initial;
+
+  /* Surfaces: depth comes from lightness steps, not shadows */
+  --color-canvas: #0b0a08;
+  --color-surface-1: #141211;
+  --color-surface-2: #1d1c1a;
+  --color-surface-3: #272624;
+
+  /* Veil: a faint white overlay for oversized decorative type on surfaces (placeholders, tiles) */
+  --color-veil: rgb(255 255 255 / 0.055);
+
+  /* Lines. line is decorative; line-strong is for control borders (at least 3:1 on every surface) */
+  --color-line: #343331;
+  --color-line-strong: #71706d;
+
+  /* Text (fg). fg-subtle is at least 4.5:1 on every surface; fg-strong is the heading and button-label colour */
+  --color-fg-subtle: #8f8d8b;
+  --color-fg-muted: #a6a4a2;
+  --color-fg: #e9e8e6;
+  --color-fg-strong: #fbfaf9;
+
+  /* The one accent: cobalt blue. accent with an fg-strong label is at least 4.6:1 */
+  --color-accent: #1a6fe1;
+  --color-accent-hover: #0462d3;
+  --color-accent-press: #0054bd;
+  --color-accent-soft: #132643;
+  --color-accent-line: #1e4b8d;
+  --color-accent-text: #5b90dd;
+
+  /* Status: muted, and clearly apart from the accent. All at least 4.7:1 on every surface */
+  --color-success: #64c897;
+  --color-warning: #e8be62;
+  --color-danger: #ef7e7c;
+
+  /* Radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+
+  /* Elevation: only overlays get a shadow; everything else is a surface step plus a line */
+  --shadow-overlay: 0 12px 40px rgb(0 0 0 / 0.55);
+
+  /* Motion: four durations, two easings. Animate transform and opacity only. */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --duration-slower: 500ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Type: one family (Instrument Sans, loaded in layout.tsx). Fluid sizes, capped so nothing is oversized */
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text-display: clamp(2.25rem, 1.55rem + 2.8vw, 3.75rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.01em;
+  --text-body: 1rem;
+  --text-body--line-height: 1.55;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.45;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.04em;
+}
