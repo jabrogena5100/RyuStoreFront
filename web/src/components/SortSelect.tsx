@@ -3,13 +3,13 @@
 import { useRouter } from "next/navigation";
 
 const OPTIONS = [
-  { value: "featured", label: "Featured" },
+  { value: "relevance", label: "Best match" },
   { value: "newest", label: "Newest" },
   { value: "price-asc", label: "Price: low to high" },
   { value: "price-desc", label: "Price: high to low" },
 ];
 
-export function SortSelect({ base, value }: { base: string; value: string }) {
+export function SortSelect({ base, value, searching }: { base: string; value: string; searching: boolean }) {
   const router = useRouter();
   return (
     <div className="flex items-center gap-2">
@@ -22,7 +22,7 @@ export function SortSelect({ base, value }: { base: string; value: string }) {
         onChange={(e) => router.push(`${base}${base.includes("?") ? "&" : "?"}sort=${e.target.value}`)}
         className="min-h-11 rounded-md border border-line-strong bg-surface-2 px-3 text-small text-fg"
       >
-        {OPTIONS.map((o) => (
+        {OPTIONS.filter((o) => o.value !== "relevance" || searching).map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}
           </option>

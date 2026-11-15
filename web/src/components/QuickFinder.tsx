@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
-import { ALL_SIZES, OCCASIONS, filterProducts } from "@/lib/catalog";
+import { ALL_SIZES, OCCASIONS } from "@/lib/catalog";
 
 const WHO = [
   { value: "women", label: "Women" },
@@ -12,12 +12,28 @@ const WHO = [
 ];
 
 /** The quick path: who, what for, size, then straight to the matching pairs with a live count. */
-export function QuickFinder() {
+export function QuickFinder({ initialCount }: { initialCount: number }) {
   const [gender, setGender] = useState("");
   const [occasion, setOccasion] = useState("");
   const [size, setSize] = useState("");
+  const [count, setCount] = useState(initialCount);
 
-  const count = useMemo(() => filterProducts({ gender, occasion, size, stock: "1" }).length, [gender, occasion, size]);
+  // The live count asks the API (through the /api proxy) how many pairs are in stock for the current picks.
+  useEffect(() => {
+    const q = new URLSearchParams({ inStock: "true", pageSize: "1" });
+    if (gender) q.set("gender", gender);
+    if (size) q.set("size", size);
+    const o = OCCASIONS.find((x) => x.slug === occasion);
+    if (o) q.set("category", o.categories.join(","));
+    const ctl = new AbortController();
+    fetch(`/api/products?${q}`, { signal: ctl.signal })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((body: { total: number }) => setCount(body.total))
+      .catch(() => {
+        /* keep the last count; the button still leads to the listing */
+      });
+    return () => ctl.abort();
+  }, [gender, occasion, size]);
   const params = new URLSearchParams();
   if (gender) params.set("gender", gender);
   if (occasion) params.set("occasion", occasion);

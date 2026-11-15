@@ -51,20 +51,20 @@ The owner signs off each screen. Mark here when done.
 
 | Screen | Signed off | Notes |
 | --- | --- | --- |
-| Home | | Revised 2026-11-15, awaiting review |
-| Listing | | Revised 2026-11-15, awaiting review |
-| Product detail | | |
-| Cart | | |
-| Design system | | |
-| Sign in, create account | | |
-| Checkout and pay step | | |
-| Confirmation, orders | | |
-| Admin | | |
+| Home | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Listing | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Product detail | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Cart | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Design system | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Sign in, create account | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Checkout and pay step | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Confirmation, orders | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
+| Admin | Approved 2026-11-15 (owner, from `REVIEW.md`) | |
 
 ## Known limits (not hidden)
 
 - The images are placeholders by design (typographic, one 4:5 ratio). No real product photography exists yet.
 - Reviewed by the screenshots only: no real device, no Firefox or WebKit run yet, no keyboard-only or screen-reader walkthrough, no Lighthouse numbers. The axe scan catches only the automatable part of WCAG.
-- Filter counts and the price filter are computed on the fixtures; the backend search has no price-band parameter yet.
+- Filter counts and the price filter are computed on the fixtures; the backend search filters by `minPrice`/`maxPrice` already but returns no facet counts (it returns `items, page, pageSize, total`).
 - Checkout, orders, stock and admin screens run on fixtures; order history, admin and per-variant stock have no API yet (`docs/api/proposed-ui-needs.md`).
 - Prices, products and sizes are fixtures that mirror the API's response shapes and the backend seed vocabulary; nothing calls the API yet.

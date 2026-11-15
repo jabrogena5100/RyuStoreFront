@@ -17,6 +17,8 @@ class CatalogController {
     static final int MAX_PAGE_SIZE = 48;
     static final int MAX_PAGE = 10_000;
     static final int MAX_QUERY_LENGTH = 100;
+    /** Enough for a handful of comma-separated category slugs. */
+    static final int MAX_CATEGORY_LENGTH = 200;
 
     private final ProductSearchRepository products;
 
@@ -49,6 +51,9 @@ class CatalogController {
         }
         if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
             throw badRequest("minPrice must not exceed maxPrice");
+        }
+        if (category != null && category.length() > MAX_CATEGORY_LENGTH) {
+            throw badRequest("category must be at most " + MAX_CATEGORY_LENGTH + " characters");
         }
         String query = blankToNull(q);
         if (query != null && query.length() > MAX_QUERY_LENGTH) {

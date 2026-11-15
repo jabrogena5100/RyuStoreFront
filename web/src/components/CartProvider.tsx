@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { SHIPPING_FLAT_MINOR, type Product } from "@/lib/catalog";
+import { SHIPPING_FLAT_MINOR, type ProductDetail } from "@/lib/catalog";
 
 export interface CartLine {
   sku: string;
@@ -21,7 +21,7 @@ interface CartApi {
   subtotalMinor: number;
   shippingMinor: number;
   totalMinor: number;
-  add: (product: Product, sku: string) => void;
+  add: (product: ProductDetail, sku: string) => void;
   setQty: (sku: string, qty: number) => void;
   remove: (sku: string) => void;
   replace: (lines: CartLine[]) => void;
@@ -39,7 +39,7 @@ export function useCart() {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
 
-  const add = useCallback((product: Product, sku: string) => {
+  const add = useCallback((product: ProductDetail, sku: string) => {
     const v = product.variants.find((x) => x.sku === sku);
     if (!v) return;
     setLines((cur) => {

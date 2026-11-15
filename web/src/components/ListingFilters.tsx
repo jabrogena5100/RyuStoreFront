@@ -1,13 +1,14 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { Check } from "lucide-react";
-import { ALL_SIZES, OCCASIONS, PRICE_BANDS, countWith, type ListingQuery } from "@/lib/catalog";
+import { ALL_SIZES, OCCASIONS, PRICE_BANDS, type ListingQuery } from "@/lib/catalog";
+import type { FacetCounts } from "@/lib/listing-data";
 import { listingHref } from "@/lib/listing";
 
 /*
  * Filter panel for the listing: one panel, used as the desktop sidebar and inside the phone drawer.
  * Every option is a link to a URL (server-rendered, works without scripts, shareable), with the number of pairs
- * it would show given the other filters. Layout pattern (grouped options with counts at the right edge) follows
+ * it would show given the other filters (from the API, see lib/listing-data.ts). Layout pattern (grouped options with counts at the right edge) follows
  * a 21st.dev category page (MIT); the code is our own, on native elements. See docs/decisions.md.
  */
 
@@ -51,7 +52,7 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-export function ListingFilters({ q }: { q: ListingQuery }) {
+export function ListingFilters({ q, counts }: { q: ListingQuery; counts: FacetCounts }) {
   const toggle = <K extends keyof ListingQuery>(key: K, value: string) => listingHref(q, { [key]: q[key] === value ? undefined : value });
   return (
     <div role="group" aria-label="Filters">
@@ -59,7 +60,7 @@ export function ListingFilters({ q }: { q: ListingQuery }) {
         <ul>
           {OCCASIONS.map((o) => (
             <li key={o.slug}>
-              <Option kind="radio" href={toggle("occasion", o.slug)} selected={q.occasion === o.slug} label={o.label} count={countWith(q, { occasion: o.slug })} />
+              <Option kind="radio" href={toggle("occasion", o.slug)} selected={q.occasion === o.slug} label={o.label} count={counts.occasion[o.slug]} />
             </li>
           ))}
         </ul>
@@ -68,7 +69,7 @@ export function ListingFilters({ q }: { q: ListingQuery }) {
         <ul>
           {(["women", "men"] as const).map((g) => (
             <li key={g}>
-              <Option kind="radio" href={toggle("gender", g)} selected={q.gender === g} label={g === "women" ? "Women" : "Men"} count={countWith(q, { gender: g })} />
+              <Option kind="radio" href={toggle("gender", g)} selected={q.gender === g} label={g === "women" ? "Women" : "Men"} count={counts.gender[g]} />
             </li>
           ))}
         </ul>
@@ -77,7 +78,7 @@ export function ListingFilters({ q }: { q: ListingQuery }) {
         <ul>
           {PRICE_BANDS.map((b) => (
             <li key={b.value}>
-              <Option kind="radio" href={toggle("price", b.value)} selected={q.price === b.value} label={b.label} count={countWith(q, { price: b.value })} />
+              <Option kind="radio" href={toggle("price", b.value)} selected={q.price === b.value} label={b.label} count={counts.price[b.value]} />
             </li>
           ))}
         </ul>
@@ -86,7 +87,7 @@ export function ListingFilters({ q }: { q: ListingQuery }) {
         <ul className="grid grid-cols-4 gap-2 px-2">
           {ALL_SIZES.map((s) => {
             const selected = q.size === s;
-            const n = countWith(q, { size: s });
+            const n = counts.size[s];
             const cls = clsx(
               "tabular grid min-h-11 place-items-center rounded-md border text-small font-medium",
               selected ? "border-accent-line bg-accent-soft text-accent-text" : n === 0 ? "border-line text-fg-subtle line-through" : "border-line-strong text-fg",
@@ -111,11 +112,8 @@ export function ListingFilters({ q }: { q: ListingQuery }) {
           })}
         </ul>
       </Group>
-      <Group title="Colour">
-        <Option kind="check" href={toggle("colour", "white")} selected={q.colour === "white"} label="White and off-white" count={countWith(q, { colour: "white" })} />
-      </Group>
       <Group title="Availability">
-        <Option kind="check" href={toggle("stock", "1")} selected={q.stock === "1"} label="In stock" count={countWith(q, { stock: "1" })} />
+        <Option kind="check" href={toggle("stock", "1")} selected={q.stock === "1"} label="In stock" count={counts.stock} />
       </Group>
     </div>
   );

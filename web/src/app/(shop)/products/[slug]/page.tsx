@@ -9,22 +9,22 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
 import { Price } from "@/components/ui/Price";
-import { PRODUCTS, SHIPPING_FLAT_MINOR, formatPrice, getProduct, occasionOf } from "@/lib/catalog";
-
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
-}
+import { fetchProduct, searchProducts } from "@/lib/api";
+import { SHIPPING_FLAT_MINOR, formatPrice, occasionOf } from "@/lib/catalog";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const p = getProduct((await params).slug);
+  const p = await fetchProduct((await params).slug).catch(() => null);
   return { title: p ? `${p.name} by ${p.brand}` : "Not found" };
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const product = getProduct((await params).slug);
+  const product = await fetchProduct((await params).slug);
   if (!product) notFound();
   const occasion = occasionOf(product);
-  const related = PRODUCTS.filter((p) => p.id !== product.id && occasionOf(p)?.slug === occasion?.slug).slice(0, 4);
+  const related = (await searchProducts({ category: product.categorySlug, sort: "newest", pageSize: 5 }).catch(() => null))?.items.filter((p) => p.id !== product.id).slice(0, 4) ?? [];
+  const minPriceMinor = Math.min(...product.variants.map((v) => v.priceMinor));
+  const inStock = product.variants.some((v) => v.available);
+  const colours = [...new Set(product.variants.map((v) => v.colour))];
 
   return (
     <Container className="py-8">
@@ -45,16 +45,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="text-caption font-medium uppercase text-fg-subtle">{product.brand}</p>
           <h1 className="mt-1 text-h1 font-semibold text-fg-strong">{product.name}</h1>
           <div className="mt-3 flex items-center gap-3">
-            <Price minor={product.minPriceMinor} className="text-h2" />
-            {!product.inStock ? <Badge>Sold out</Badge> : null}
+            <Price minor={minPriceMinor} className="text-h2" />
+            {!inStock ? <Badge>Sold out</Badge> : null}
           </div>
           <p className="mt-4 text-body text-fg-muted">{product.description}</p>
-          <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-small">
-            <dt className="text-fg-subtle">Colour</dt>
-            <dd className="text-fg capitalize">{product.colour}</dd>
-            <dt className="text-fg-subtle">Upper</dt>
-            <dd className="text-fg capitalize">{product.material}</dd>
-          </dl>
+          {colours.length === 1 ? (
+            <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-small">
+              <dt className="text-fg-subtle">{colours.length === 1 ? "Colour" : "Colours"}</dt>
+              <dd className="text-fg capitalize">{colours.join(", ")}</dd>
+            </dl>
+          ) : null}
 
           <div className="mt-6">
             <Purchase product={product} />
@@ -62,24 +62,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           <div className="mt-8 divide-y divide-line border-y border-line">
             <details className="group py-1" open>
-              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-small font-medium text-fg">
-                Details
-                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle group-open:rotate-180" />
-              </summary>
-              <ul className="list-disc space-y-1.5 pb-4 pl-5 text-small text-fg-muted">
-                {product.details.map((d) => (
-                  <li key={d}>{d}</li>
-                ))}
-              </ul>
-            </details>
-            <details className="group py-1">
-              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-small font-medium text-fg">
-                Materials
-                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle group-open:rotate-180" />
-              </summary>
-              <p className="pb-4 text-small text-fg-muted capitalize">{product.material}</p>
-            </details>
-            <details className="group py-1">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-small font-medium text-fg">
                 Shipping and payment
                 <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle group-open:rotate-180" />
