@@ -22,3 +22,19 @@ output "db_secret_arn" {
   description = "Secrets Manager secret holding the generated master password (JSON keys: username, password)"
   value       = aws_db_instance.main.master_user_secret[0].secret_arn
 }
+
+output "api_url" {
+  value = "https://${var.api_domain}"
+}
+
+output "alb_dns_name" {
+  value = aws_lb.main.dns_name
+}
+
+output "ecs_cluster" {
+  value = aws_ecs_cluster.main.name
+}
+
+output "log_group" {
+  value = aws_cloudwatch_log_group.api.name
+}

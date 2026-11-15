@@ -125,3 +125,15 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Task networking | Fargate tasks in public subnets with public IPs, no NAT gateway; security groups allow inbound only from the ALB, RDS only from the tasks | Saves the NAT gateway's hourly charge (not measured; verify in Cost Explorer) and one resource to destroy. Tasks are reachable at the IP level in principle, so the security group is the only barrier; say so in the write-up rather than call it a private network. |
 | API hostname | `api.ryustorefront.net` (Route 53 alias to the ALB, ACM certificate for that name) | Earlier plan (slice 3b) was same-domain `/api/*` routing to avoid CORS. A subdomain is the same site (SameSite=lax cookies still work) but a different origin, so the frontend must either proxy `/api` through Next.js server-side or the API must send CORS headers with credentials. Settle that before phase 5; phase 4b needs only the API. |
 | RDS engine | PostgreSQL 18.6 on `db.t4g.micro`, single-AZ, pinned exactly with automatic minor upgrades off | Local and Testcontainers run 18.7, which RDS did not offer for this class on 2026-11-15; one patch version of difference, not tested against RDS yet. |
+
+## Phase 4b (API slice), settled 2026-11-15
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Where Stripe secrets live | Empty Secrets Manager shells in the persistent foundation stage; values loaded by the owner from `.env`, never through Terraform | About $0.40 per secret per month (list price, unverified) instead of reloading each session; the values do not appear in Terraform state. |
+| Certificate | ACM certificate and its DNS validation records in the foundation stage | Free and no per-session validation wait; the cert outlives a destroyed session. |
+| Services in this slice | API only; the worker (emails, cart clearing, reservation expiry) comes later | A paid order will not clear the cart or send mail in this slice; outbox rows accumulate. Matches phase 4b in CLAUDE.md ("API alone with one real checkout"). |
+| Task start gating | `desired_count` is 0 until the secrets hold values | One extra apply; avoids a crash loop on a missing secret. |
+| Read-only root | Off for the first run (`read_only_root = false`) | CLAUDE.md section 5 wants it on; a writable `/tmp` volume owned by a non-root user is the unknown, so it is tried after the first success. |
+| Demo data | `seed` profile, 100 products, only when the database is empty | The cloud API starts with a profile that is not "production"; acceptable for a demo, noted for the write-up. |
+| Database TLS | `sslmode=require` | Encrypts but does not verify the server certificate; `verify-full` needs the RDS CA bundle in the image (later hardening). |
