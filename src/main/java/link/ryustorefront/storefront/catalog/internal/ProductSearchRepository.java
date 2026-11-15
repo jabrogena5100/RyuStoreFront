@@ -124,8 +124,11 @@ public class ProductSearchRepository {
         if (!categories.isEmpty()) {
             // One slug or several (comma-separated, any of them matches). A parent category matches its
             // children too (sneakers includes chunky sneakers).
-            sql.append(" AND p.category_id IN (SELECT id FROM categories WHERE slug IN (:categories)"
-                    + " OR parent_id IN (SELECT id FROM categories WHERE slug IN (:categories)))");
+            // With categoryExact only the named categories match, not their children.
+            sql.append(c.categoryExact()
+                    ? " AND p.category_id IN (SELECT id FROM categories WHERE slug IN (:categories))"
+                    : " AND p.category_id IN (SELECT id FROM categories WHERE slug IN (:categories)"
+                            + " OR parent_id IN (SELECT id FROM categories WHERE slug IN (:categories)))");
             params.put("categories", categories);
         }
         if (c.gender() != null) {

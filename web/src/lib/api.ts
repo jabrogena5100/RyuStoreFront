@@ -56,6 +56,8 @@ async function get<T>(path: string, params: Params = {}, revalidate: number | fa
 export interface SearchParams {
   q?: string;
   category?: string;
+  /** Match the named categories only, not their child categories (sneakers without chunky sneakers). */
+  categoryExact?: boolean;
   gender?: Gender | string;
   minPrice?: number;
   maxPrice?: number;
@@ -69,7 +71,7 @@ export interface SearchParams {
 
 /** GET /api/products. Lists are cached for 30 seconds so the filter counts (many small queries) stay cheap. */
 export function searchProducts(p: SearchParams): Promise<PageResult<ProductSummary>> {
-  return get("/api/products", { ...p, inStock: p.inStock ? true : undefined }, 30);
+  return get("/api/products", { ...p, inStock: p.inStock ? true : undefined, categoryExact: p.categoryExact ? true : undefined }, 30);
 }
 
 /** Only the `total` of a search: one item per page keeps the response tiny. Used for the counts beside filter options. */

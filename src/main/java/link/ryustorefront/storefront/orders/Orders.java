@@ -153,4 +153,10 @@ public class Orders {
     public Optional<OrderSummary> find(UUID orderId) {
         return orders.find(orderId);
     }
+
+    /** The customer's own order with item links and history; empty if it does not exist or belongs to someone else. */
+    @Transactional(readOnly = true)
+    public Optional<OrderDetail> findForCustomer(UUID orderId, long customerId) {
+        return orders.findDetail(orderId, customerId);
+    }
 }

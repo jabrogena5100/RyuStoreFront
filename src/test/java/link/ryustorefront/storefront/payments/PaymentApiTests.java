@@ -121,6 +121,66 @@ class PaymentApiTests {
                 .param("id", orderId).query(Long.class).single();
     }
 
+    // ---- reading an order (GET /api/orders/{id}) ---------------------------------------------
+
+    @Test
+    void anOrderIsReadWithItsItemLinksAndHistory() throws Exception {
+        Placed order = pendingOrder();
+
+        Response r = order.shopper().browser().get("/api/orders/" + order.orderId());
+
+        assertThat(r.status()).isEqualTo(200);
+        assertThat(r.str("$.id")).isEqualTo(order.orderId().toString());
+        assertThat(r.str("$.status")).isEqualTo("pending");
+        assertThat(r.num("$.totalMinor")).isEqualTo(2 * 12_990 + 800);
+        assertThat(r.str("$.items[0].sku")).isEqualTo(order.sku());
+        assertThat(r.str("$.items[0].productSlug")).startsWith("pay-test-p-");
+        assertThat(r.str("$.items[0].brand")).isEqualTo("Test");
+        assertThat(r.num("$.items[0].lineTotalMinor")).isEqualTo(2 * 12_990);
+        assertThat(r.str("$.history[0].status")).isEqualTo("pending");
+        assertThat(r.str("$.shippingAddress.postalCode")).isEqualTo("97201");
+        assertThat(r.str("$.expiresAt")).isNotBlank();
+    }
+
+    @Test
+    void thePaidOrderShowsItsHistoryInOrderAndNoMoreHold() throws Exception {
+        Placed order = pendingOrder();
+        assertThat(orders.transition(order.orderId(), OrderStatus.PAID, "test").applied()).isTrue();
+
+        Response r = order.shopper().browser().get("/api/orders/" + order.orderId());
+
+        assertThat(r.status()).isEqualTo(200);
+        assertThat(r.str("$.status")).isEqualTo("paid");
+        assertThat(r.str("$.history[0].status")).isEqualTo("pending");
+        assertThat(r.str("$.history[1].status")).isEqualTo("paid");
+        assertThat(r.body()).contains("\"expiresAt\":null");
+    }
+
+    @Test
+    void anotherCustomersOrderAndAnUnknownIdAreBothNotFound() throws Exception {
+        Placed order = pendingOrder();
+        Shopper other = signedIn();
+
+        Response theirs = other.browser().get("/api/orders/" + order.orderId());
+        Response unknown = other.browser().get("/api/orders/" + UUID.randomUUID());
+
+        assertThat(theirs.status()).isEqualTo(404);
+        assertThat(theirs.str("$.code")).isEqualTo("order_not_found");
+        assertThat(unknown.status()).isEqualTo(404);
+        assertThat(unknown.str("$.code")).isEqualTo("order_not_found");
+        assertThat(theirs.body()).doesNotContain(order.orderId().toString());
+    }
+
+    @Test
+    void aGuestIsToldToSignIn() throws Exception {
+        Placed order = pendingOrder();
+
+        Response r = CartTestClient.guest(base()).get("/api/orders/" + order.orderId());
+
+        assertThat(r.status()).isEqualTo(401);
+        assertThat(r.str("$.code")).isEqualTo("unauthenticated");
+    }
+
     // ---- the happy path ---------------------------------------------------------------------
 
     @Test

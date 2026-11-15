@@ -21,6 +21,8 @@ export function Purchase({ product }: { product: ProductDetail }) {
   const [sku, setSku] = useState<string | null>(null);
   const [missing, setMissing] = useState(false);
   const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
   const { add } = useCart();
   const { show } = useToast();
 
@@ -30,13 +32,20 @@ export function Purchase({ product }: { product: ProductDetail }) {
     [product.variants, colour],
   );
 
-  function submit() {
+  async function submit() {
     if (!sku) {
       setMissing(true);
       return;
     }
     const v = product.variants.find((x) => x.sku === sku);
-    add(product, sku);
+    setProblem(null);
+    setAdding(true);
+    const result = await add(sku);
+    setAdding(false);
+    if (!result.ok) {
+      setProblem(result.message);
+      return;
+    }
     show(`Added ${product.name}, size ${v?.sizeLabel}${colours.length > 1 ? `, ${v?.colour}` : ""}`);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1800);
@@ -113,6 +122,7 @@ export function Purchase({ product }: { product: ProductDetail }) {
                   onChange={() => {
                     setSku(v.sku);
                     setMissing(false);
+                    setProblem(null);
                   }}
                   className="sr-only"
                   aria-label={`Size ${v.sizeLabel}${v.available ? "" : ", sold out"}`}
@@ -127,9 +137,16 @@ export function Purchase({ product }: { product: ProductDetail }) {
         </p>
       </fieldset>
 
-      <Button size="lg" onClick={submit} disabled={soldOut} className="w-full">
+      {problem ? (
+        <p role="alert" className="-mt-2 text-small text-danger">
+          {problem}
+        </p>
+      ) : null}
+      <Button size="lg" onClick={submit} disabled={soldOut || adding} aria-busy={adding || undefined} className="w-full">
         {soldOut ? (
           "Sold out"
+        ) : adding ? (
+          "Adding"
         ) : added ? (
           <>
             <Check aria-hidden="true" className="size-5" /> Added to cart

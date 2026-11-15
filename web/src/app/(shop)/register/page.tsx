@@ -8,7 +8,7 @@ export default async function Register({ searchParams }: { searchParams: Promise
   const { state, next } = await searchParams;
   return (
     <Container className="py-10 sm:py-14">
-      <AuthForm mode="register" state={state} next={next} />
+      <AuthForm mode="register" reviewState={state} next={next} />
     </Container>
   );
 }

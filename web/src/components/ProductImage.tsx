@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import type { ProductSummary } from "@/lib/catalog";
 
 type View = 0 | 1 | 2 | 3;
 
@@ -22,7 +21,7 @@ export function ProductImage({
   label = true,
   decorative = false,
 }: {
-  product: Pick<ProductSummary, "brand" | "name" | "categorySlug">;
+  product: { brand: string; name: string; categorySlug?: string };
   view?: View;
   className?: string;
   label?: boolean;

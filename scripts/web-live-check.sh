@@ -13,6 +13,12 @@ export API_ORIGIN="${API_ORIGIN:-http://localhost:8080}"
 
 curl -sf -o /dev/null "$API_ORIGIN/api/categories" || { echo "The API is not answering at $API_ORIGIN (start it with the seed profile first)."; exit 1; }
 
+# Both web pipelines use port 3000, web/.next and web/test-results; running them at once corrupts both.
+for c in storefront-web storefront-web-live; do
+  if [ -n "$(docker ps -q -f "name=^${c}$")" ]; then echo "Another web pipeline is running ($c). Wait for it, then run this again."; exit 1; fi
+done
+if curl -sf -o /dev/null http://localhost:3000/; then echo "Something is already serving http://localhost:3000. Stop it first."; exit 1; fi
+
 cleanup() { docker rm -f storefront-web-live >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 cleanup

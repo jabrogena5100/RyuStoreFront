@@ -8,7 +8,7 @@ import { fmtTime } from "@/lib/orders";
  * Time left on the stock hold. `now` is for design review (a fixed clock so screenshots are stable);
  * without it the timer reads the real clock after the page loads and updates every 15 seconds.
  */
-export function HoldTimer({ expiresAt, now }: { expiresAt: string; now?: string }) {
+export function HoldTimer({ expiresAt, now }: { expiresAt: string | null; now?: string }) {
   const [clock, setClock] = useState<number | null>(now ? new Date(now).getTime() : null);
   useEffect(() => {
     if (now) return;
@@ -17,6 +17,7 @@ export function HoldTimer({ expiresAt, now }: { expiresAt: string; now?: string 
     const id = window.setInterval(tick, 15_000);
     return () => window.clearInterval(id);
   }, [now]);
+  if (!expiresAt) return null;
   const end = new Date(expiresAt).getTime();
   const left = clock === null ? null : Math.max(0, Math.ceil((end - clock) / 60_000));
   return (

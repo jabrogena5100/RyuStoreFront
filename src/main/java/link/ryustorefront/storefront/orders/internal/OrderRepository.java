@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import link.ryustorefront.storefront.orders.NewOrder;
+import link.ryustorefront.storefront.orders.OrderDetail;
 import link.ryustorefront.storefront.orders.OrderSummary;
 import link.ryustorefront.storefront.orders.ShippingAddress;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -207,5 +208,38 @@ public class OrderRepository {
                             rs.getObject("created_at", OffsetDateTime.class).toInstant(), items);
                 })
                 .optional();
+    }
+
+    /**
+     * The order with item links and history, only if it belongs to the customer. The product link and brand come from
+     * the variant each item was bought as (order_items.variant_id is a restricting foreign key, so it always exists).
+     */
+    public Optional<OrderDetail> findDetail(UUID orderId, long customerId) {
+        Boolean owned = jdbc.sql("SELECT EXISTS (SELECT 1 FROM orders WHERE id = :id AND customer_id = :c)")
+                .param("id", orderId).param("c", customerId).query(Boolean.class).single();
+        if (!owned) {
+            return Optional.empty();
+        }
+        List<OrderDetail.Item> items = jdbc.sql("""
+                SELECT oi.sku, oi.product_name, p.slug, p.brand, oi.size_label, oi.colour, oi.unit_price_minor, oi.quantity
+                FROM order_items oi
+                JOIN variants v ON v.id = oi.variant_id
+                JOIN products p ON p.id = v.product_id
+                WHERE oi.order_id = :id ORDER BY oi.id""")
+                .param("id", orderId)
+                .query((rs, n) -> new OrderDetail.Item(rs.getString("sku"), rs.getString("product_name"),
+                        rs.getString("slug"), rs.getString("brand"), rs.getString("size_label"), rs.getString("colour"),
+                        rs.getLong("unit_price_minor"), rs.getInt("quantity"),
+                        Math.multiplyExact(rs.getLong("unit_price_minor"), (long) rs.getInt("quantity"))))
+                .list();
+        List<OrderDetail.StatusChange> history = jdbc.sql(
+                        "SELECT to_status, changed_at FROM order_status_history WHERE order_id = :id ORDER BY changed_at, id")
+                .param("id", orderId)
+                .query((rs, n) -> new OrderDetail.StatusChange(rs.getString("to_status"),
+                        rs.getObject("changed_at", OffsetDateTime.class).toInstant()))
+                .list();
+        return find(orderId).map(o -> new OrderDetail(o.id(), o.status(), o.contactEmail(), o.currency(),
+                o.subtotalMinor(), o.shippingMinor(), o.totalMinor(), o.shippingAddress(), o.expiresAt(), o.createdAt(),
+                items, history));
     }
 }

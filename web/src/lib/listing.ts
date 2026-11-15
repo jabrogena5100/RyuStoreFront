@@ -48,6 +48,7 @@ export function toSearch(q: ListingQuery, patch: Partial<ListingQuery> = {}): Se
   return {
     q: n.q,
     category: occasion ? occasion.categories.join(",") : undefined,
+    categoryExact: occasion ? true : undefined,
     gender: n.gender === "women" || n.gender === "men" ? n.gender : undefined,
     minPrice: band && "min" in band ? band.min : undefined,
     maxPrice: band && "max" in band ? band.max : undefined,

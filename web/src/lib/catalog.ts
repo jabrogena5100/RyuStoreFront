@@ -65,7 +65,7 @@ export const CATEGORY_NAMES: Record<string, string> = {
 export const OCCASIONS = [
   { slug: "everyday", label: "Everyday sneakers", blurb: "Clean, low and easy", categories: ["sneakers"] },
   { slug: "street", label: "Street", blurb: "Chunky soles, big attitude", categories: ["chunky-sneakers"] },
-  { slug: "race", label: "Race day", blurb: "Carbon-plate runners", categories: ["running"] },
+  { slug: "race", label: "Race day", blurb: "Road racers and daily trainers", categories: ["running"] },
   { slug: "night", label: "After dark", blurb: "Heels, loafers, oxfords", categories: ["heels", "loafers", "oxfords"] },
   { slug: "boots", label: "Boots", blurb: "Chelsea, combat, lace-up", categories: ["boots"] },
 ] as const;
@@ -245,6 +245,8 @@ export function demoCartLines() {
       colour: v.colour,
       priceMinor: v.priceMinor,
       qty: i === 0 ? 2 : 1,
+      available: true,
+      maxQuantity: 10,
     };
   });
 }

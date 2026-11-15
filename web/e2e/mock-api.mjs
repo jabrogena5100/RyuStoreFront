@@ -29,7 +29,8 @@ function search(q) {
   const cats = (q.get("category") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   const text = q.get("q")?.toLowerCase().split(/\s+/).filter(Boolean);
   let list = ALL.filter((p) => {
-    if (cats.length && !cats.some((c) => p.categorySlug === c || PARENT[p.categorySlug] === c)) return false;
+    const exact = q.get("categoryExact") === "true";
+    if (cats.length && !cats.some((c) => p.categorySlug === c || (!exact && PARENT[p.categorySlug] === c))) return false;
     const g = q.get("gender");
     if (g && p.gender !== g && p.gender !== "unisex") return false;
     if (q.get("minPrice") && p.minPriceMinor < Number(q.get("minPrice"))) return false;
@@ -58,6 +59,10 @@ createServer((req, res) => {
     res.writeHead(code, { "content-type": "application/json" });
     res.end(JSON.stringify(body));
   };
+  // Every page now asks who the visitor is and what is in the cart: a guest with an empty cart.
+  if (url.pathname === "/api/auth/me") return send(401, { code: "unauthenticated", message: "Sign in required." });
+  if (url.pathname === "/api/auth/csrf") return send(200, { headerName: "X-CSRF-TOKEN", token: "mock" });
+  if (url.pathname === "/api/cart" && req.method === "GET") return send(200, { itemCount: 0, subtotalMinor: 0, currency: "USD", lines: [] });
   if (url.pathname === "/api/products") return send(200, search(url.searchParams));
   if (url.pathname === "/api/categories")
     return send(200, Object.entries(CATEGORY_NAMES).map(([slug, name]) => ({ slug, name, parentSlug: PARENT[slug] ?? null })));
