@@ -41,7 +41,7 @@ name servers match the Squarespace delegation (`ns-96.awsdns-12.com` and the oth
 ## Image (Dockerfile at the repo root)
 
 One image, two services: the API as-is, the worker with `SPRING_PROFILES_ACTIVE=worker`.
-Status: **built and run locally once (see `docs/verification.md`); not yet pushed to ECR or run in AWS.**
+Status: **built, run locally, pushed to ECR and run on Fargate (see `docs/verification.md`).**
 
 Build and run locally against the Compose Postgres (the `.env` file holds the database password):
 
@@ -66,7 +66,7 @@ scripts/ecr-push.sh
 
 ## Session stage, slice 1: network and database (`infra/session/`)
 
-Status: **applied once and checked (see `docs/verification.md`); destroy not yet run or audited.** Contents: VPC (10.20.0.0/16), two public subnets, internet gateway,
+Status: **applied, checked, destroyed and audited once on 2026-11-15 (see `docs/verification.md`).** Contents: VPC (10.20.0.0/16), two public subnets, internet gateway,
 three security groups (ALB, app, database), and a single-AZ `db.t4g.micro` Postgres 18.6 whose password RDS keeps in Secrets Manager.
 Later slices add ECS, the ALB, ACM and the DNS record.
 
@@ -90,7 +90,7 @@ scripts/aws-audit.sh
 
 ## Session stage, slice 2: the API behind HTTPS (`infra/session/` plus new `foundation/` resources)
 
-Status: **foundation part applied and checked (certificate issued, secret shells created); the session part is written but not yet planned or applied.** Adds to `foundation/`: two empty Stripe secret shells and the ACM certificate for
+Status: **applied once with a real Stripe test checkout, then destroyed and audited on 2026-11-15 (see `docs/verification.md`).** Adds to `foundation/`: two empty Stripe secret shells and the ACM certificate for
 `api.ryustorefront.net` with its validation records. Adds to `session/`: IAM roles, log group, ECS cluster, one Fargate task definition and service
 (0.5 vCPU / 1 GB, API only, no worker yet), an ALB (HTTP redirects to HTTPS), the DNS alias, and a start-up seed of 100 products.
 
@@ -115,3 +115,15 @@ Order matters (a task cannot start while a secret has no value):
 7. `BASE=https://api.ryustorefront.net bash scripts/manual-checkout.sh <sku>`, pay with card 4242, then check the order in the database logs/API.
 
 Destroy of the session stage is unchanged; the secrets, certificate and zone stay.
+
+## Open items after the first cloud session
+
+Not done or not measured; each belongs in a later session, not in a claim:
+
+- Real cost of the session (Cost Explorer, about a day after the run; tag `Project=storefront`).
+- Memory use and the heap setting (`MaxRAMPercentage=70`) under load; the first Fargate start took 55 s at 0.5 vCPU.
+- Read-only root filesystem with a writable `/tmp` (CLAUDE.md section 5).
+- The worker service in AWS (confirmation e-mail, cart clearing, reservation expiry) and an e-mail path (SES).
+- Reading the database in the cloud without opening RDS (ECS Exec or an order endpoint); the checkout was proven through the API's own `order_not_payable (paid)` answer and Stripe's delivery log.
+- Webhook replay and out-of-order delivery against the cloud endpoint; refunds.
+- `sslmode=verify-full` with the RDS CA bundle; the `seed` profile in a deployed API.
