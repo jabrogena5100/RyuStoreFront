@@ -1,6 +1,6 @@
 # Review gallery: layout and motion revision, then checkout, orders and admin
 
-Branch `design/layout-and-calm-motion`, 2026-11-15. Screenshots are Chromium at 1440 px and 390 px wide, made by `scripts/design-shots.sh` from the production build; the axe scan found 0 violations on all 117 pages (33 before batch 2). **Owner sign-off: not done.** What was not checked is listed at the end.
+Branch `design/layout-and-calm-motion`, 2026-11-15. Screenshots are Chromium at 1440 px and 390 px wide, made by `scripts/design-shots.sh` from the production build; the axe scan found 0 violations on all 119 pages (33 before batch 2). **Owner sign-off: not done.** What was not checked is listed at the end.
 
 What changed everywhere: two-tier header and a four-column footer on every page; one container width and one section heading style; minimal motion (colour and opacity only, no scroll-reveal, shared-layout, exit or hover-zoom animations, no shimmer, toast by CSS, the `motion` dependency removed). Reasons and trade-offs are in [docs/decisions.md](../docs/decisions.md).
 
@@ -118,6 +118,32 @@ Every screen below shares the header, container, cards, fields and tokens of bat
 | Admin product edit | ![](screens/admin-product-desktop.png) | ![](screens/admin-product-mobile.png) |
 | Admin product edit, errors | ![](screens/admin-product-errors-desktop.png) | ![](screens/admin-product-errors-mobile.png) |
 | Admin product edit, saved | ![](screens/admin-product-saved-desktop.png) | ![](screens/admin-product-saved-mobile.png) |
+
+## Batch 3 (phase 5, slice 1): the catalogue pages now read the API
+
+Home, listing and product page fetch from `/api/products` through the Next.js proxy. The screenshots in the first table come from a mock of those endpoints (76 fixture products); the second table is **real data** from the API with 49,507 products. What changed on screen:
+
+- Cards show the category name (the API has no colour on a summary); the product page lists variant colours and the description, and lost the Materials and Details accordions (the database never had them).
+- The listing paginates (24 per page, numbered links) and has no "Featured" sort or colour filter (no API equivalent); "Best match" appears when searching.
+- Real variants are size x colour, so products with several colours get colour pills above the sizes (found on real data: sizes were repeating).
+- Counts beside filter options come from the API (about 25 small queries per view; 20 to 90 ms each on this VM).
+- "Everyday sneakers" counts its sub-type "Street" too (the API's `sneakers` includes `chunky-sneakers`): rename the tile to "Sneakers" or ask for an exact match.
+
+| Screen | Desktop | Phone |
+| --- | --- | --- |
+| Home | ![](screens/home-desktop.png) | ![](screens/home-mobile.png) |
+| Listing (page 1 of 4) | ![](screens/listing-desktop.png) | ![](screens/listing-mobile.png) |
+| Product page | ![](screens/pdp-desktop.png) | ![](screens/pdp-mobile.png) |
+| Product page, two colours | ![](screens/pdp-colours-desktop.png) | ![](screens/pdp-colours-mobile.png) |
+
+Real data (the owner's local API, 49,507 products; Playwright against `scripts/web-live-check.sh`):
+
+| Screen | Desktop | Phone |
+| --- | --- | --- |
+| Home | ![](screens-live/home-desktop.png) | ![](screens-live/home-mobile.png) |
+| Listing | ![](screens-live/listing-desktop.png) | ![](screens-live/listing-mobile.png) |
+| After dark, women, page 2 of 450 | ![](screens-live/listing-filtered-desktop.png) | ![](screens-live/listing-filtered-mobile.png) |
+| Product page (three colours) | ![](screens-live/pdp-desktop.png) | ![](screens-live/pdp-mobile.png) |
 
 ## Things to look at
 

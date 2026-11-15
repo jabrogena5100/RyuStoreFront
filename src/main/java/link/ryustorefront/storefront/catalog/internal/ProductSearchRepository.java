@@ -120,11 +120,13 @@ public class ProductSearchRepository {
             sql.append(" AND p.search_vector @@ websearch_to_tsquery('english', :q)");
             params.put("q", c.q());
         }
-        if (c.category() != null) {
-            // A parent category matches its children too (sneakers includes chunky sneakers).
-            sql.append(" AND p.category_id IN (SELECT id FROM categories"
-                    + " WHERE slug = :category OR parent_id = (SELECT id FROM categories WHERE slug = :category))");
-            params.put("category", c.category());
+        List<String> categories = categorySlugs(c.category());
+        if (!categories.isEmpty()) {
+            // One slug or several (comma-separated, any of them matches). A parent category matches its
+            // children too (sneakers includes chunky sneakers).
+            sql.append(" AND p.category_id IN (SELECT id FROM categories WHERE slug IN (:categories)"
+                    + " OR parent_id IN (SELECT id FROM categories WHERE slug IN (:categories)))");
+            params.put("categories", categories);
         }
         if (c.gender() != null) {
             sql.append(" AND (p.gender = :gender OR p.gender = 'unisex')");
@@ -152,6 +154,15 @@ public class ProductSearchRepository {
                     + " WHERE sv2.product_id = p.id AND sv2.active AND sv2.stock > 0)");
         }
         return sql.toString();
+    }
+
+    /** Splits the category parameter: blank entries are dropped, so "," or "boots,," are harmless. */
+    private static List<String> categorySlugs(String category) {
+        if (category == null) {
+            return List.of();
+        }
+        return java.util.Arrays.stream(category.split(","))
+                .map(String::trim).filter(s -> !s.isEmpty()).distinct().toList();
     }
 
     /** The same ordering is applied inside the page subquery (alias p) and again outside it (alias t). */

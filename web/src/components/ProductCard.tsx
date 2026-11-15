@@ -22,7 +22,7 @@ export function ProductCard({ product, priority = false }: { product: ProductSum
         <div className="min-w-0">
           <p className="text-caption font-medium uppercase text-fg-subtle">{product.brand}</p>
           <h3 className="line-clamp-2 text-body font-medium text-fg-strong">{product.name}</h3>
-          <p className="text-small text-fg-muted capitalize">{product.colour}</p>
+          <p className="text-small text-fg-muted">{product.categoryName}</p>
         </div>
         <Price minor={product.minPriceMinor} currency={product.currency} className="text-body sm:pt-4" />
       </div>

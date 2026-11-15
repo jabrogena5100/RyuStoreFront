@@ -11,15 +11,30 @@ REPO="$PWD"
 UIDGID="$(id -u):$(id -g)"
 PW_IMAGE="${PW_IMAGE:-mcr.microsoft.com/playwright:v1.65.1-noble}"   # must match @playwright/test in web/package.json
 
-cleanup() { docker rm -f storefront-web >/dev/null 2>&1 || true; }
+cleanup() { docker rm -f storefront-web storefront-mock-api >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 cleanup
 
 rm -rf design/screens web/test-results
 mkdir -p design/screens
 
+# The catalogue screens read /api/products; the screenshots run against a mock of those endpoints (web/e2e/mock-api.mjs),
+# not the real API.
+# Its own port, so a real API on 8080 (for example `./mvnw spring-boot:run`) can run at the same time and is never used here.
+MOCK_PORT="${MOCK_API_PORT:-8089}"
+export API_ORIGIN="http://localhost:$MOCK_PORT"
+if curl -sf -o /dev/null "$API_ORIGIN/api/categories"; then echo "Port $MOCK_PORT is already in use; set MOCK_API_PORT."; exit 1; fi
+docker run -d --name storefront-mock-api --network host --user "$UIDGID" -e HOME=/tmp/home -e MOCK_API_PORT="$MOCK_PORT" \
+  -v "$REPO":/workspace -w /workspace/web node:26-bookworm-slim node e2e/mock-api.mjs >/dev/null
+for _ in $(seq 1 30); do curl -sf -o /dev/null "$API_ORIGIN/api/categories" && break; sleep 1; done
+# Prove the mock (not another server) answers: it serves 76 fixture products.
+curl -sf "$API_ORIGIN/api/products?pageSize=1" | grep -q '"total":76' || { echo "The mock API is not answering on $MOCK_PORT."; exit 1; }
+
+# Start from a clean build: Next keeps fetched API responses in web/.next/cache, and a stale entry from an earlier run
+# (for example the mock API) would be served once after its 30 s expiry.
+rm -rf web/.next
 scripts/web.sh npm run build
-docker run -d --name storefront-web --network host --user "$UIDGID" -e HOME=/tmp/home -e NEXT_TELEMETRY_DISABLED=1 \
+docker run -d --name storefront-web --network host --user "$UIDGID" -e HOME=/tmp/home -e NEXT_TELEMETRY_DISABLED=1 -e API_ORIGIN \
   -v "$REPO":/workspace -w /workspace/web node:26-bookworm-slim npm run start >/dev/null
 for _ in $(seq 1 30); do curl -sf -o /dev/null http://localhost:3000/ && break; sleep 1; done
 

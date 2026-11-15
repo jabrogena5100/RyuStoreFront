@@ -7,6 +7,7 @@
 
 export type Gender = "men" | "women" | "unisex";
 
+/** GET /api/products items: exactly the backend's ProductSummary record. */
 export interface ProductSummary {
   id: number;
   slug: string;
@@ -18,7 +19,6 @@ export interface ProductSummary {
   minPriceMinor: number;
   currency: "USD";
   inStock: boolean;
-  colour: string;
 }
 
 export interface Variant {
@@ -30,11 +30,24 @@ export interface Variant {
   available: boolean;
 }
 
-export interface Product extends ProductSummary {
+/** GET /api/products/{slug}: the backend's ProductDetail record (it has no `inStock`, `minPriceMinor`, material or detail bullets). */
+export interface ProductDetail {
+  id: number;
+  slug: string;
+  name: string;
+  brand: string;
   description: string;
+  gender: Gender;
+  categorySlug: string;
+  categoryName: string;
+  variants: Variant[];
+}
+
+/** Design-phase fixture: the API shapes plus fields the real API does not have (colour on the summary, material, detail bullets). */
+export interface Product extends ProductSummary, ProductDetail {
+  colour: string;
   material: string;
   details: string[];
-  variants: Variant[];
 }
 
 export const CATEGORY_NAMES: Record<string, string> = {
@@ -153,7 +166,7 @@ export function formatPrice(minor: number, currency: string = "USD"): string {
   }).format(minor / 100);
 }
 
-export function occasionOf(p: ProductSummary) {
+export function occasionOf(p: { categorySlug: string }) {
   return OCCASIONS.find((o) => (o.categories as readonly string[]).includes(p.categorySlug));
 }
 
@@ -165,6 +178,8 @@ export interface ListingQuery {
   gender?: string;
   size?: string;
   colour?: string;
+  /** 1-based page number (the API's is 0-based). */
+  page?: string;
   stock?: string;
   price?: string;
   sort?: string;
@@ -172,10 +187,13 @@ export interface ListingQuery {
 
 /** Price bands for the listing filter; the bounds are in minor units (cents). */
 export const PRICE_BANDS = [
-  { value: "u150", label: "Under $150", test: (m: number) => m < 15000 },
-  { value: "150-300", label: "$150 to $300", test: (m: number) => m >= 15000 && m <= 30000 },
-  { value: "o300", label: "Over $300", test: (m: number) => m > 30000 },
+  { value: "u150", label: "Under $150", max: 14999 },
+  { value: "150-300", label: "$150 to $300", min: 15000, max: 30000 },
+  { value: "o300", label: "Over $300", min: 30001 },
 ] as const;
+
+type Band = { min?: number; max?: number };
+export const inBand = (b: Band, minor: number) => (b.min === undefined || minor >= b.min) && (b.max === undefined || minor <= b.max);
 
 export function filterProducts(q: ListingQuery): Product[] {
   const occasion = OCCASIONS.find((o) => o.slug === q.occasion);
@@ -186,7 +204,7 @@ export function filterProducts(q: ListingQuery): Product[] {
     if (q.size && !p.variants.some((v) => v.sizeLabel === q.size && v.available)) return false;
     if (q.stock === "1" && !p.inStock) return false;
     const band = PRICE_BANDS.find((b) => b.value === q.price);
-    if (band && !band.test(p.minPriceMinor)) return false;
+    if (band && !inBand(band, p.minPriceMinor)) return false;
     if (q.q) {
       const hay = `${p.name} ${p.brand} ${p.categoryName} ${p.colour} ${p.material}`.toLowerCase();
       if (!q.q.toLowerCase().split(/\s+/).filter(Boolean).every((w) => hay.includes(w))) return false;

@@ -9,8 +9,11 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { EmptyState, ErrorState } from "@/components/ui/StatePanel";
-import { OCCASIONS, filterProducts, type ListingQuery } from "@/lib/catalog";
-import { activeFilters, listingHref } from "@/lib/listing";
+import { Pagination } from "@/components/Pagination";
+import { ApiError, searchProducts, type PageResult } from "@/lib/api";
+import { OCCASIONS, type ListingQuery, type ProductSummary } from "@/lib/catalog";
+import { PAGE_SIZE, activeFilters, effectiveSort, listingHref, toSearch } from "@/lib/listing";
+import { facetCounts } from "@/lib/listing-data";
 
 type Raw = Record<string, string | string[] | undefined>;
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
@@ -21,9 +24,9 @@ function clean(raw: Raw): ListingQuery & { state?: string } {
     occasion: first(raw.occasion),
     gender: first(raw.gender),
     size: first(raw.size),
-    colour: first(raw.colour),
     stock: first(raw.stock),
     price: first(raw.price),
+    page: first(raw.page),
     sort: first(raw.sort),
     state: first(raw.state),
   };
@@ -39,12 +42,30 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
   const query = clean(await searchParams);
   const { state, ...q } = query;
   const occasion = OCCASIONS.find((o) => o.slug === q.occasion);
-  const results = filterProducts(q);
   const active = activeFilters(q);
-  const baseNoSort = listingHref({ ...q, sort: undefined });
-  const shown = state === "loading" || state === "error" ? null : results.length;
-  const countText = shown === null ? (state === "loading" ? "Loading shoes" : "") : `${shown} ${shown === 1 ? "pair" : "pairs"}`;
+  const baseNoSort = listingHref({ ...q, sort: undefined, page: undefined });
+  const page = Math.max(1, Number.parseInt(q.page ?? "1", 10) || 1);
+
+  // Real data, unless a review URL (?state=loading|error|empty) asks for one of those states to be shown.
+  let results: PageResult<ProductSummary> | null = null;
+  let counts = null;
+  let failed = state === "error";
+  if (!state || state === "empty") {
+    try {
+      [results, counts] = await Promise.all([searchProducts(toSearch(q)), facetCounts(q)]);
+    } catch (e) {
+      if (!(e instanceof ApiError)) throw e;
+      failed = true;
+    }
+  }
+  const items = state === "empty" ? [] : (results?.items ?? []);
+  const total = state === "empty" ? 0 : (results?.total ?? 0);
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const showLoading = state === "loading";
+  const shown = showLoading || failed ? null : total;
+  const countText = shown === null ? (showLoading ? "Loading shoes" : "") : `${shown} ${shown === 1 ? "pair" : "pairs"}`;
   const grid = "grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 xl:grid-cols-4";
+  const filters = counts ? <ListingFilters q={q} counts={counts} /> : null;
 
   return (
     <Container className="py-8">
@@ -59,16 +80,16 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
         <aside aria-label="Filter shoes" className="hidden lg:block">
-          <ListingFilters q={q} />
+          {filters}
         </aside>
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <FilterDrawer activeCount={active.length} resultLabel={shown === null ? "Show results" : `Show ${shown} ${shown === 1 ? "pair" : "pairs"}`}>
-              <ListingFilters q={q} />
+              {filters}
             </FilterDrawer>
             <p className="tabular order-last w-full text-small text-fg-muted lg:order-none lg:w-auto" role="status" aria-live="polite">{countText}</p>
-            <SortSelect base={baseNoSort} value={q.sort ?? "featured"} />
+            <SortSelect base={baseNoSort} value={effectiveSort(q)} searching={Boolean(q.q)} />
           </div>
 
           {active.length > 0 ? (
@@ -94,7 +115,7 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
           ) : null}
 
           <div className="mt-6">
-            {state === "loading" ? (
+            {showLoading ? (
               <ul aria-busy="true" className={grid}>
                 {Array.from({ length: 8 }, (_, i) => (
                   <li key={i} className="flex flex-col gap-3">
@@ -104,23 +125,24 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
                   </li>
                 ))}
               </ul>
-            ) : state === "error" ? (
+            ) : failed ? (
               <ErrorState title="We could not load the shoes" action={<ButtonLink href="/products">Try again</ButtonLink>}>
                 Something went wrong on our side. Nothing is lost; try again in a moment.
               </ErrorState>
-            ) : state === "empty" || results.length === 0 ? (
+            ) : items.length === 0 ? (
               <EmptyState title="No pairs match these filters" action={<ButtonLink href="/products" variant="secondary">Clear all filters</ButtonLink>}>
                 Try another size or occasion, or remove a filter. Sizes sell out quickly.
               </EmptyState>
             ) : (
               <ul className={grid}>
-                {results.map((p, i) => (
+                {items.map((p, i) => (
                   <li key={p.id}>
                     <ProductCard product={p} priority={i < 4} />
                   </li>
                 ))}
               </ul>
             )}
+            {!showLoading && !failed ? <Pagination page={page} pages={pages} hrefFor={(n) => listingHref({ ...q, page: n > 1 ? String(n) : undefined })} /> : null}
           </div>
         </div>
       </div>

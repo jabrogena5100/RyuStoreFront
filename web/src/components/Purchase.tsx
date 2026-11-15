@@ -2,22 +2,33 @@
 
 import clsx from "clsx";
 import { Check, ShoppingBag } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
-import type { Product } from "@/lib/catalog";
+import type { ProductDetail } from "@/lib/catalog";
 
-/** Size picker plus add to cart: native radio inputs (arrow keys and screen readers for free), selected state by colour. */
-export function Purchase({ product }: { product: Product }) {
+/**
+ * Colour and size pickers plus add to cart. Real variants are size x colour, so the colour is chosen first (only when there is
+ * more than one) and the sizes shown are that colour's. Native radio inputs: arrow keys and screen readers for free.
+ */
+export function Purchase({ product }: { product: ProductDetail }) {
   const groupId = useId();
+  const colourGroupId = useId();
+  // Colours in the API's order; start on the first one that has a pair left.
+  const colours = useMemo(() => [...new Set(product.variants.map((v) => v.colour))], [product.variants]);
+  const [colour, setColour] = useState(() => colours.find((c) => product.variants.some((v) => v.colour === c && v.available)) ?? colours[0]);
   const [sku, setSku] = useState<string | null>(null);
   const [missing, setMissing] = useState(false);
   const [added, setAdded] = useState(false);
   const { add } = useCart();
   const { show } = useToast();
 
-  const soldOut = !product.inStock;
+  const soldOut = !product.variants.some((v) => v.available);
+  const sizes = useMemo(
+    () => product.variants.filter((v) => v.colour === colour).sort((a, b) => Number.parseFloat(a.sizeLabel) - Number.parseFloat(b.sizeLabel)),
+    [product.variants, colour],
+  );
 
   function submit() {
     if (!sku) {
@@ -26,20 +37,59 @@ export function Purchase({ product }: { product: Product }) {
     }
     const v = product.variants.find((x) => x.sku === sku);
     add(product, sku);
-    show(`Added ${product.name}, size ${v?.sizeLabel}`);
+    show(`Added ${product.name}, size ${v?.sizeLabel}${colours.length > 1 ? `, ${v?.colour}` : ""}`);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1800);
   }
 
   return (
     <div className="flex flex-col gap-5">
+      {colours.length > 1 ? (
+        <fieldset>
+          <legend className="mb-3 text-small font-medium text-fg">
+            Colour: <span className="font-normal capitalize text-fg-muted">{colour}</span>
+          </legend>
+          <div className="flex flex-wrap gap-2">
+            {colours.map((c) => {
+              const any = product.variants.some((v) => v.colour === c && v.available);
+              const selected = c === colour;
+              return (
+                <label
+                  key={c}
+                  className={clsx(
+                    "inline-flex min-h-11 cursor-pointer items-center rounded-pill border px-4 text-small font-medium capitalize has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent-text",
+                    "transition-colors duration-(--duration-base)",
+                    selected ? "border-accent-line bg-accent-soft text-accent-text" : "border-line-strong text-fg hover:bg-surface-2",
+                    !any && "text-fg-subtle line-through",
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name={colourGroupId}
+                    value={c}
+                    checked={selected}
+                    onChange={() => {
+                      setColour(c);
+                      setSku(null);
+                      setMissing(false);
+                    }}
+                    className="sr-only"
+                    aria-label={`${c}${any ? "" : ", sold out"}`}
+                  />
+                  {c}
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+      ) : null}
       <fieldset>
         <div className="mb-3 flex items-baseline justify-between">
           <legend className="text-small font-medium text-fg">Size (US)</legend>
           <span className="text-small text-fg-subtle capitalize">{product.gender === "unisex" ? "Unisex sizing" : `${product.gender}'s sizing`}</span>
         </div>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(3.5rem,1fr))] gap-2">
-          {product.variants.map((v) => {
+          {sizes.map((v) => {
             const selected = sku === v.sku;
             return (
               <label

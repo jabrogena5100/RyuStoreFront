@@ -15,7 +15,7 @@ mkdir -p "$CACHE"
 exec docker run --rm --network host \
   --user "$(id -u):$(id -g)" \
   -e HOME=/tmp/home -e npm_config_cache=/npm-cache -e NPM_CONFIG_UPDATE_NOTIFIER=false \
-  -e NEXT_TELEMETRY_DISABLED=1 \
+  -e NEXT_TELEMETRY_DISABLED=1 ${API_ORIGIN:+-e API_ORIGIN} \
   -v "$REPO_ROOT":/workspace -v "$CACHE":/npm-cache \
   -w /workspace/web \
   "$NODE_IMAGE" "$@"

@@ -36,6 +36,7 @@ const PAGES: { name: string; path: string; only?: "mobile" | "desktop"; act?: (p
   { name: "listing-empty", path: "/products?state=empty" },
   { name: "listing-error", path: "/products?state=error" },
   { name: "pdp", path: "/products/aurel-court-sneaker" },
+  { name: "pdp-colours", path: "/products/aurel-court-sneaker-mk-2" },
   { name: "pdp-soldout", path: "/products/alder-slingback" },
   {
     name: "pdp-added",

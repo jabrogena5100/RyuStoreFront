@@ -130,6 +130,26 @@ class CatalogApiTests {
     }
 
     @Test
+    void severalCategoriesMatchAnyOfThem() throws Exception {
+        String body = ok("/api/products?category=heels,loafers,oxfords&pageSize=48");
+
+        List<String> categories = JsonPath.read(body, "$.items[*].categorySlug");
+        assertThat(categories).isNotEmpty().allMatch(c -> Set.of("heels", "loafers", "oxfords").contains(c));
+        long expected = jdbc.sql("SELECT count(*) FROM products p JOIN categories c ON c.id = p.category_id "
+                + "WHERE p.active AND c.slug IN ('heels', 'loafers', 'oxfords') "
+                + "AND EXISTS (SELECT 1 FROM variants v WHERE v.product_id = p.id AND v.active)")
+                .query(Long.class).single();
+        assertThat(total(ok("/api/products?category=heels,loafers,oxfords"))).isEqualTo(expected);
+    }
+
+    @Test
+    void blankCategoryEntriesAreIgnored() throws Exception {
+        assertThat(total(ok("/api/products?category=,"))).isEqualTo(total(ok("/api/products")));
+        assertThat(total(ok("/api/products?category=boots,,")))
+                .isEqualTo(total(ok("/api/products?category=boots")));
+    }
+
+    @Test
     void priceRangeFiltersOnTheCheapestVariant() throws Exception {
         String body = ok("/api/products?minPrice=20000&maxPrice=30000&pageSize=48");
 
