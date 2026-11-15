@@ -66,7 +66,7 @@ scripts/ecr-push.sh
 
 ## Session stage, slice 1: network and database (`infra/session/`)
 
-Status: **written, not yet planned or applied.** Contents: VPC (10.20.0.0/16), two public subnets, internet gateway,
+Status: **applied once and checked (see `docs/verification.md`); destroy not yet run or audited.** Contents: VPC (10.20.0.0/16), two public subnets, internet gateway,
 three security groups (ALB, app, database), and a single-AZ `db.t4g.micro` Postgres 18.6 whose password RDS keeps in Secrets Manager.
 Later slices add ECS, the ALB, ACM and the DNS record.
 
