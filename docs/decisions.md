@@ -117,3 +117,11 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Zone adoption | The hand-made zone is imported, with `prevent_destroy` | A second zone would have different name servers and silently break the delegation. |
 | State | S3 bucket created by CLI (versioned, public access blocked), native lockfile (`use_lockfile`), no DynamoDB | The bucket itself is not in Terraform; losing it loses the state history. |
 | ECR | Immutable tags, scan on push, keep the last 15 images | A tag cannot be re-pushed; each build needs a new tag (commit SHA). |
+
+## Phase 4b (per-session stage), settled 2026-11-15
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Task networking | Fargate tasks in public subnets with public IPs, no NAT gateway; security groups allow inbound only from the ALB, RDS only from the tasks | Saves the NAT gateway's hourly charge (not measured; verify in Cost Explorer) and one resource to destroy. Tasks are reachable at the IP level in principle, so the security group is the only barrier; say so in the write-up rather than call it a private network. |
+| API hostname | `api.ryustorefront.net` (Route 53 alias to the ALB, ACM certificate for that name) | Earlier plan (slice 3b) was same-domain `/api/*` routing to avoid CORS. A subdomain is the same site (SameSite=lax cookies still work) but a different origin, so the frontend must either proxy `/api` through Next.js server-side or the API must send CORS headers with credentials. Settle that before phase 5; phase 4b needs only the API. |
+| RDS engine | PostgreSQL 18.6 on `db.t4g.micro`, single-AZ, pinned exactly with automatic minor upgrades off | Local and Testcontainers run 18.7, which RDS did not offer for this class on 2026-11-15; one patch version of difference, not tested against RDS yet. |
