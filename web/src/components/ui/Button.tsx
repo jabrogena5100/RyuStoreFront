@@ -2,7 +2,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import type { ComponentProps, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "md" | "lg" | "icon";
 
 const base =
@@ -14,6 +14,7 @@ const variants: Record<Variant, string> = {
   primary: "bg-accent text-fg-strong hover:bg-accent-hover active:bg-accent-press",
   secondary: "bg-surface-2 text-fg border border-line hover:bg-surface-3",
   ghost: "text-fg-muted hover:text-fg hover:bg-surface-2",
+  danger: "bg-danger text-canvas hover:opacity-90",
 };
 
 const sizes: Record<Size, string> = {

@@ -43,6 +43,12 @@ export function Footer() {
           <li>
             <Link href="/cart" className={link}>Your cart</Link>
           </li>
+          <li>
+            <Link href="/orders" className={link}>Your orders</Link>
+          </li>
+          <li>
+            <Link href="/sign-in" className={link}>Sign in</Link>
+          </li>
         </Column>
         <Column title="How it works">
           <li className="py-2 text-small text-fg-muted">Flat {formatPrice(SHIPPING_FLAT_MINOR)} shipping per order</li>
@@ -51,8 +57,9 @@ export function Footer() {
         </Column>
       </Container>
       <div className="border-t border-line">
-        <Container className="py-5 text-caption text-fg-subtle">
-          Brands are invented. Product pictures are placeholders until real photography is licensed.
+        <Container className="flex flex-wrap items-center justify-between gap-x-6 py-3 text-caption text-fg-subtle">
+          <span className="py-2">Brands are invented. Product pictures are placeholders until real photography is licensed.</span>
+          <Link href="/admin" className="inline-flex min-h-11 items-center hover:text-fg">Admin (demo)</Link>
         </Container>
       </div>
     </footer>
