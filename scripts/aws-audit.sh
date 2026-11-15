@@ -30,6 +30,8 @@ check "ECS clusters"           "$(aws ecs list-clusters --query 'clusterArns' --
 check "VPCs tagged storefront" "$(aws ec2 describe-vpcs --filters Name=tag:Project,Values=storefront --query 'Vpcs[].VpcId' --output text)"
 check "NAT gateways"           "$(aws ec2 describe-nat-gateways --filter Name=state,Values=pending,available --query 'NatGateways[].NatGatewayId' --output text)"
 check "unattached Elastic IPs" "$(aws ec2 describe-addresses --query 'Addresses[?AssociationId==null].PublicIp' --output text)"
+check "ACTIVE ECS task definitions" "$(aws ecs list-task-definitions --family-prefix storefront --status ACTIVE --query 'taskDefinitionArns' --output text)"
+check "security groups storefront-*" "$(aws ec2 describe-security-groups --filters Name=group-name,Values='storefront-*' --query 'SecurityGroups[].GroupId' --output text)"
 check "log group /storefront"  "$(aws logs describe-log-groups --log-group-name-prefix /storefront --query 'logGroups[].logGroupName' --output text)"
 check "IAM roles storefront-*" "$(aws iam list-roles --query "Roles[?starts_with(RoleName, 'storefront')].RoleName" --output text)"
 check "DNS record api.ryustorefront.net" "$(aws route53 list-resource-record-sets --hosted-zone-id "$ZONE_ID" --query "ResourceRecordSets[?Name=='api.ryustorefront.net.' && Type=='A'].Name" --output text)"
