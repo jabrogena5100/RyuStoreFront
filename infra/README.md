@@ -80,11 +80,12 @@ scripts/aws-terraform.sh -chdir=infra/session plan -out=tfplan
 scripts/aws-terraform.sh -chdir=infra/session apply tfplan
 ```
 
-Destroy when the session ends (never touches `foundation/`):
+Destroy when the session ends (never touches `foundation/`). `image_tag` is a required variable, so pass any value:
 
 ```
-scripts/aws-terraform.sh -chdir=infra/session plan -destroy -out=tfplan
+scripts/aws-terraform.sh -chdir=infra/session plan -destroy -out=tfplan -var image_tag=unused
 scripts/aws-terraform.sh -chdir=infra/session apply tfplan
+scripts/aws-audit.sh
 ```
 
 ## Session stage, slice 2: the API behind HTTPS (`infra/session/` plus new `foundation/` resources)
