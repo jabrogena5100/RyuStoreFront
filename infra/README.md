@@ -37,3 +37,29 @@ scripts/aws-terraform.sh -chdir=infra/foundation apply tfplan
 
 If `list-hosted-zones-by-name` shows more than one zone for the domain, stop: keep only the one whose
 name servers match the Squarespace delegation (`ns-96.awsdns-12.com` and the other three) and delete the empty duplicate.
+
+## Image (Dockerfile at the repo root)
+
+One image, two services: the API as-is, the worker with `SPRING_PROFILES_ACTIVE=worker`.
+Status: **built and run locally once (see `docs/verification.md`); not yet pushed to ECR or run in AWS.**
+
+Build and run locally against the Compose Postgres (the `.env` file holds the database password):
+
+```
+docker compose up -d postgres mailpit
+docker build --network host -t storefront:local .
+set -a; . ./.env; set +a
+docker run --rm --network host \
+  -e SPRING_DATASOURCE_PASSWORD="$POSTGRES_PASSWORD" \
+  storefront:local
+# in another terminal:
+curl -s localhost:8080/actuator/health
+docker run --rm --network host --entrypoint id storefront:local     # expect uid=10001, not root
+```
+
+Push (needs a clean, committed tree; tags are immutable, so each commit SHA is pushed once):
+
+```
+export AWS_PROFILE=ryustorefront
+scripts/ecr-push.sh
+```
