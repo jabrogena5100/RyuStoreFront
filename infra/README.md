@@ -89,7 +89,7 @@ scripts/aws-terraform.sh -chdir=infra/session apply tfplan
 
 ## Session stage, slice 2: the API behind HTTPS (`infra/session/` plus new `foundation/` resources)
 
-Status: **written, not yet planned or applied.** Adds to `foundation/`: two empty Stripe secret shells and the ACM certificate for
+Status: **foundation part applied and checked (certificate issued, secret shells created); the session part is written but not yet planned or applied.** Adds to `foundation/`: two empty Stripe secret shells and the ACM certificate for
 `api.ryustorefront.net` with its validation records. Adds to `session/`: IAM roles, log group, ECS cluster, one Fargate task definition and service
 (0.5 vCPU / 1 GB, API only, no worker yet), an ALB (HTTP redirects to HTTPS), the DNS alias, and a start-up seed of 100 products.
 
