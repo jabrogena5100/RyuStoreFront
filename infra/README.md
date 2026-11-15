@@ -86,3 +86,31 @@ Destroy when the session ends (never touches `foundation/`):
 scripts/aws-terraform.sh -chdir=infra/session plan -destroy -out=tfplan
 scripts/aws-terraform.sh -chdir=infra/session apply tfplan
 ```
+
+## Session stage, slice 2: the API behind HTTPS (`infra/session/` plus new `foundation/` resources)
+
+Status: **foundation part applied and checked (certificate issued, secret shells created); the session part is written but not yet planned or applied.** Adds to `foundation/`: two empty Stripe secret shells and the ACM certificate for
+`api.ryustorefront.net` with its validation records. Adds to `session/`: IAM roles, log group, ECS cluster, one Fargate task definition and service
+(0.5 vCPU / 1 GB, API only, no worker yet), an ALB (HTTP redirects to HTTPS), the DNS alias, and a start-up seed of 100 products.
+
+Order matters (a task cannot start while a secret has no value):
+
+1. Push an image from a clean `main`: `scripts/ecr-push.sh` (note the tag it prints).
+2. Foundation: `plan -out=tfplan`, read it, `apply` (expect the certificate to take a few minutes to validate).
+3. Load the Stripe key from `.env` into the shell and into Secrets Manager (the value never prints):
+   ```
+   set -a; . ./.env; set +a
+   printf %s "$STRIPE_SECRET_KEY" | aws secretsmanager put-secret-value --region us-west-2 \
+     --secret-id storefront/stripe-secret-key --secret-string file:///dev/stdin
+   ```
+   The webhook secret is loaded only after step 6 (it comes from the Stripe dashboard endpoint).
+   Until then put a placeholder so the task can start: `printf %s placeholder | aws secretsmanager put-secret-value ... --secret-id storefront/stripe-webhook-secret --secret-string file:///dev/stdin`.
+4. Session: `plan -out=tfplan -var image_tag=<tag>` (service created with 0 tasks), read, `apply`.
+5. Start the task: `plan -out=tfplan -var image_tag=<tag> -var desired_count=1`, read, `apply`.
+6. In the Stripe dashboard (test mode) add an endpoint `https://api.ryustorefront.net/api/stripe/webhook` for the four events
+   `checkout.session.completed`, `.expired`, `.async_payment_succeeded`, `.async_payment_failed`. Copy its signing secret into
+   `storefront/stripe-webhook-secret` (same `put-secret-value` form), then restart the task:
+   `aws ecs update-service --cluster storefront --service api --force-new-deployment --region us-west-2`.
+7. `BASE=https://api.ryustorefront.net bash scripts/manual-checkout.sh <sku>`, pay with card 4242, then check the order in the database logs/API.
+
+Destroy of the session stage is unchanged; the secrets, certificate and zone stay.
