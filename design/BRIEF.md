@@ -1,6 +1,6 @@
 # Design brief
 
-Status: draft v2 (2026-11-15), the owner has answered the open questions. Design-in-code (section 1) is treated as approved because the
+Status: draft v3 (2026-11-15). Layout and motion revised after the owner reviewed the first screens (sections 3, 6 and 8a). The owner has answered the open questions. Design-in-code (section 1) is treated as approved because the
 owner answered every question and asked for the work to go ahead; they can still reverse it. Nothing here is built or measured yet.
 
 ## 1. How design gets done (and why not Claude Design or an MCP server)
@@ -29,7 +29,7 @@ Confident: short copy and clear type, nothing apologetic. (Proposal; change free
 
 **What to avoid (owner's dislikes, each with what it means here):**
 - *Amazon: looks obsolete.* No dense, cluttered grids, no walls of badges and ratings, no ad-like blocks, no dated form styling.
-- *Adidas: too formulaic.* No template rhythm of full-bleed hero, then a row of identical tiles, then a banner. Layouts should respond to the content (an occasion, a category, a launch), not repeat one pattern.
+- *Adidas: too formulaic.* Revised 2026-11-15 after the owner reviewed the first screens: the owner now prefers the familiar, widely used shop layout (section 8a) as long as it is applied consistently and does not look generated. The first draft's bespoke, uneven occasion grid was replaced by equal tiles. What still applies: no banners, no ad-like blocks, no claim the data cannot back.
 - *Race-car sites: huge layouts and loud, racy colours.* No oversized type that fills the screen, no saturated reds and yellows, no speed lines, italic slants or diagonal cuts. Quick means calm and efficient, not fast-looking.
 
 Positive references: none given yet. Not required to start; add two or three sites and what you like about them if you find some, and the system will be checked against them.
@@ -80,13 +80,14 @@ Where real images could come from is in the working notes, not here.
 One variable sans (UI and headlines). **Chosen: Instrument Sans**, loaded and self-hosted through `next/font` (Google Fonts, open licence; the exact licence text is still to be confirmed before launch). Prices use tabular numbers.
 Large, tight display sizes for headlines; a fluid scale with `clamp()`. Candidates to try side by side with real product names: Geist, Instrument Sans, Manrope. The licence of whichever is chosen gets checked before use.
 
-## 6. Motion (animations)
+## 6. Motion (animations): minimal
 
-No stack makes animation good by itself; discipline does. Rules:
-- Animate **transform and opacity only** (compositor-friendly). Never animate layout properties on scroll.
-- Motion tokens: durations 120 / 200 / 320 / 500 ms and two easings (standard, emphasised), used everywhere instead of ad-hoc values.
-- Honour `prefers-reduced-motion`: every animation has a still equivalent.
-- Motion explains, it does not decorate: image gallery cross-fade, cart drawer slide, add-to-cart confirmation, filter sheet, skeleton to content, gentle hover on cards (`@media (hover: hover)` only).
+Revised 2026-11-15 at the owner's request: the first screens had scroll-reveal, shared-layout and exit animations, hover zoom and a skeleton shimmer; all removed. Rules now:
+- **Colour and opacity changes only**, on hover, focus and press, 100 to 200 ms, one easing. Nothing moves, scales or reveals on scroll. No shimmer; skeletons are still blocks.
+- Motion tokens: durations 100 / 150 / 200 ms (fast, base, slow) and one easing (standard). No other values in components.
+- The only keyframe is the toast's 150 ms fade-in (CSS); it leaves without an exit animation.
+- `prefers-reduced-motion` makes every transition and animation instant, and the product row's arrow buttons jump instead of scrolling smoothly.
+- The `motion` package is no longer a dependency.
 - Never block interaction on an animation. Measure Lighthouse performance and INP on the product page; no performance claim until measured.
 
 ## 7. Responsiveness on all platforms
@@ -101,12 +102,21 @@ No stack makes animation good by itself; discipline does. Rules:
 Next.js (App Router) and TypeScript, as in CLAUDE.md, with:
 - **Tailwind CSS** with the tokens as CSS variables (one source of truth, components use only tokens).
 - **Native HTML first** (revised during the build): `<dialog>` for the menu, `<details>` for accordions, radio inputs for the size picker, a native `<select>` for sort. They give focus handling, keyboard support and screen-reader semantics for free and add no dependency. Radix/shadcn is added only if a component needs something native HTML cannot do.
-- **Motion** (the `motion` package, formerly Framer Motion) for orchestration, layout animations and gestures; plain CSS transitions for simple hover and focus; the View Transitions API as progressive enhancement where it works.
+- **No animation library** (revised 2026-11-15, section 6): plain CSS transitions for colour and opacity.
 - `next/image` for responsive images (CloudFront later), `next/font` for fonts, Playwright and axe for tests.
-- Versions pinned 2026-11-15 after checking the npm registry and Docker Hub: Node 26.13.1 (LTS) in Docker, Next.js 16.4.6, React 19.3.1, Tailwind CSS 4.3.5, Motion 14.14.0, TypeScript 7.0.2, lucide-react 1.73.0, Playwright 1.65.1, axe-core for Playwright 4.14.0. See `web/package.json`.
+- Versions pinned 2026-11-15 after checking the npm registry and Docker Hub: Node 26.13.1 (LTS) in Docker, Next.js 16.4.6, React 19.3.1, Tailwind CSS 4.3.5, Motion 14.14.0, TypeScript 7.0.2 (Motion 14.14.0 was pinned and has been removed), lucide-react 1.73.0, Playwright 1.65.1, axe-core for Playwright 4.14.0. See `web/package.json`.
 
 Considered and not recommended for v1: SvelteKit (excellent built-in animation, but CLAUDE.md commits to Next.js and a switch costs the ecosystem), Astro (great for content, awkward for a cart-heavy app), a WebGL/3D shoe viewer (a lovely optional later feature; expensive in performance and effort, so lazy-loaded if ever).
 The API is on its own subdomain (`api.ryustorefront.net`, see `docs/decisions.md`): the frontend should proxy `/api` through Next.js server-side, or CORS with credentials is needed. Settle before phase 5.
+
+## 8a. Layout system (2026-11-15)
+
+One familiar shop layout, applied everywhere. Container: `max-w-7xl` with 16/24/32 px gutters (`Container`). Section: one heading size (`text-h2`), 48/64 px gap above (`Section`). Cards: `ProductCard` for products, rounded border cards for tiles and panels.
+
+- **Header, two tiers:** logo, prominent search with a button, cart with count; below it a category bar (All shoes, the five occasions, then Women, Men, New in, Under $150). Not sticky. On phones the search drops to its own row and the category bar scrolls sideways.
+- **Home:** hero (headline plus the quick finder card), equal-size category tiles, product rows ("New in" is the newest by id; "Under $150" is the products priced below $150; no "best seller" or popularity claims, the data has none), a value strip with three statements the product can back (flat $8 shipping, Stripe test mode, US sizes with the sizes still available shown), a four-column footer.
+- **Listing:** filter sidebar on desktop (occasion, who it is for, price, size, colour, availability, each option with the number of pairs it would show), a filter drawer on phones, active-filter pills above the grid with "Clear all", sort at the top right. Filters are links to URLs: server-rendered, shareable, no client state.
+- **Product page and cart:** unchanged in content, moved onto the same container, section heading and card style.
 
 ## 9. Screens, states and the anti-slop checklist
 

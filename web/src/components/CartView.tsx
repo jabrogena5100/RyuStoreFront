@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Minus, Plus, X } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import { ProductImage } from "@/components/ProductImage";
@@ -13,7 +12,6 @@ import { formatPrice } from "@/lib/catalog";
 
 export function CartView({ state }: { state?: string }) {
   const { lines, subtotalMinor, shippingMinor, totalMinor, setQty, remove, count } = useCart();
-  const reduce = useReducedMotion();
 
   if (state === "loading") {
     return (
@@ -52,14 +50,9 @@ export function CartView({ state }: { state?: string }) {
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[1fr_22rem]">
       <ul className="flex flex-col gap-4" aria-label="Items in your cart">
-        <AnimatePresence initial={false}>
-          {lines.map((l) => (
-            <motion.li
+        {lines.map((l) => (
+            <li
               key={l.sku}
-              layout={!reduce}
-              initial={false}
-              exit={reduce ? { opacity: 0 } : { opacity: 0, x: -24 }}
-              transition={{ duration: 0.28, ease: [0.2, 0, 0, 1] }}
               className="flex gap-4 rounded-lg border border-line bg-surface-1 p-3 sm:p-4"
             >
               <Link href={`/products/${l.slug}`} className="w-24 shrink-0 overflow-hidden rounded-md border border-line sm:w-28" aria-label={`${l.name} product page`}>
@@ -98,12 +91,11 @@ export function CartView({ state }: { state?: string }) {
                   <Price minor={l.priceMinor * l.qty} className="text-body" />
                 </div>
               </div>
-            </motion.li>
+            </li>
           ))}
-        </AnimatePresence>
       </ul>
 
-      <aside aria-label="Order summary" className="rounded-lg border border-line bg-surface-1 p-5 lg:sticky lg:top-24">
+      <aside aria-label="Order summary" className="rounded-lg border border-line bg-surface-1 p-5 lg:sticky lg:top-6">
         <h2 className="text-h2 font-semibold text-fg-strong">Summary</h2>
         <dl className="mt-4 flex flex-col gap-2 text-small">
           <div className="flex justify-between">

@@ -1,7 +1,6 @@
 "use client";
 
 import clsx from "clsx";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, ShoppingBag } from "lucide-react";
 import { useId, useState } from "react";
 import { useCart } from "@/components/CartProvider";
@@ -9,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import type { Product } from "@/lib/catalog";
 
-/** Size picker plus add to cart: native radio inputs (arrow keys and screen readers for free), one shared selection indicator. */
+/** Size picker plus add to cart: native radio inputs (arrow keys and screen readers for free), selected state by colour. */
 export function Purchase({ product }: { product: Product }) {
   const groupId = useId();
   const [sku, setSku] = useState<string | null>(null);
@@ -17,7 +16,6 @@ export function Purchase({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   const { add } = useCart();
   const { show } = useToast();
-  const reduce = useReducedMotion();
 
   const soldOut = !product.inStock;
 
@@ -51,7 +49,7 @@ export function Purchase({ product }: { product: Product }) {
                   "transition-colors duration-(--duration-base)",
                   v.available
                     ? selected
-                      ? "border-accent-line text-accent-text"
+                      ? "border-accent-line bg-accent-soft text-accent-text"
                       : "border-line-strong text-fg hover:bg-surface-2"
                     : "cursor-not-allowed border-line text-fg-subtle line-through",
                 )}
@@ -69,15 +67,7 @@ export function Purchase({ product }: { product: Product }) {
                   className="sr-only"
                   aria-label={`Size ${v.sizeLabel}${v.available ? "" : ", sold out"}`}
                 />
-                {selected ? (
-                  <motion.span
-                    layoutId={reduce ? undefined : `size-${product.id}`}
-                    transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
-                    className="absolute inset-0 rounded-md bg-accent-soft"
-                    aria-hidden="true"
-                  />
-                ) : null}
-                <span className="tabular relative">{v.sizeLabel}</span>
+                <span className="tabular">{v.sizeLabel}</span>
               </label>
             );
           })}
@@ -88,28 +78,17 @@ export function Purchase({ product }: { product: Product }) {
       </fieldset>
 
       <Button size="lg" onClick={submit} disabled={soldOut} className="w-full">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={soldOut ? "sold" : added ? "added" : "add"}
-            initial={reduce ? false : { opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6 }}
-            transition={{ duration: 0.16 }}
-            className="inline-flex items-center gap-2"
-          >
-            {soldOut ? (
-              "Sold out"
-            ) : added ? (
-              <>
-                <Check aria-hidden="true" className="size-5" /> Added to cart
-              </>
-            ) : (
-              <>
-                <ShoppingBag aria-hidden="true" className="size-5" /> Add to cart
-              </>
-            )}
-          </motion.span>
-        </AnimatePresence>
+        {soldOut ? (
+          "Sold out"
+        ) : added ? (
+          <>
+            <Check aria-hidden="true" className="size-5" /> Added to cart
+          </>
+        ) : (
+          <>
+            <ShoppingBag aria-hidden="true" className="size-5" /> Add to cart
+          </>
+        )}
       </Button>
     </div>
   );

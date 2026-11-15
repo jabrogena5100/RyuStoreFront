@@ -149,3 +149,28 @@ Pinned: Postgres 18.7 (local; check RDS support before phase 4b), Spring Modulit
 | Placeholders | Typographic: an oversized tone-on-tone initial per product, one 4:5 frame; the shoe line drawings were tried and dropped | They say nothing about the product; real photos replace them at the same ratio. |
 | Components | Native `<dialog>`, `<details>`, radio inputs and `<select>` before any component library | Less polish than a library for menus and selects; fewer dependencies and native accessibility. |
 | Frontend versions | Node 26.13.1 LTS in Docker; Next.js 16.4.6, React 19.3.1, Tailwind 4.3.5, Motion 14.14.0, TypeScript 7.0.2 (works with Next 16.4.6 here), pinned exactly | TypeScript 7 is new; revisit if a tool breaks. |
+
+## Phase D, layout and motion revision, settled 2026-11-15
+
+The owner reviewed the first screens on GitHub and asked for a familiar shop layout and minimal motion.
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Layout | Two-tier header, equal category tiles, product rows, value strip, four-column footer; listing with a filter sidebar, phone drawer, active-filter pills and sort at top right (`design/BRIEF.md` 8a) | Reverses the brief's "no formulaic template rhythm" rule at the owner's request; the risk of a generic look is now carried by consistency, real data and the checklist. |
+| Filters | Every option is a link to a URL with a count; the same server-rendered panel is the sidebar and the drawer content (native `<dialog>`) | Each click is a navigation, not an instant client update; in return no filter state to keep in sync, shareable URLs, and it works without scripts. Size chips carry their count in the accessible name, not on screen. |
+| Counts | `countWith`: the pairs a filter would show given the other filters | Computed on the fixtures now; with the real API this becomes facet counts from the search endpoint (not built yet). |
+| Price filter | Three bands (under $150, $150 to $300, over $300), `price` query parameter, in the fixtures only | The backend search has no price-band parameter yet; it has to be added when the listing is wired. |
+| Header | Not sticky; no menu dialog (the category bar scrolls sideways on phones) | A tall header scrolls away; cart is not reachable without scrolling up. A sticky header was left out to avoid offset bugs with sticky sidebars. |
+| Motion | Colour and opacity transitions of 100 to 200 ms with one easing; no scroll-reveal, shared-layout, exit or hover-zoom animations, no shimmer; toast is a CSS fade-in; the `motion` dependency was removed | Less polish on state changes (the gallery image, size selection and the cart line removal now switch instantly). |
+| Value strip and footer copy | Only statements the product can back: flat shipping from the API config, Stripe test mode, the size picker showing sold-out sizes. No popularity, ratings or delivery-time claims | "Live stock" is true once the page calls the API; today the data are fixtures, and the strip says "which sizes are still available", not a number. |
+
+### Components taken from 21st.dev (through its MCP server, 2026-11-15)
+
+Only generic search phrases were sent to the service (for example "product listing filter sidebar with checkbox groups and counts"); no project names, URLs, secrets or e-mail address. Two components were retrieved in full; none of their code was copied into the repository.
+
+| Where it came from | What we used | Licence | What we did |
+| --- | --- | --- | --- |
+| "Ecommerce Category Page" (`ecommerce-04` by mohammadshehadeh, 21st.dev) | The arrangement only: sticky-sidebar grouped options with counts at the right edge, removable filter chips, "Show N results" in a phone sheet | The file header states MIT (copyright holder named there) | Rewritten as `ListingFilters.tsx`, `FilterDrawer.tsx` and the pills in `products/page.tsx` on native links and `<dialog>`; none of its Radix, shadcn or default-palette classes were kept, so there is no code to attribute beyond the idea. |
+| "Footer with Navigation Grid" (`footer-01` by shadcnui-blocks, 21st.dev) | The arrangement only: link columns, a rule, a bottom line | The retrieved result carried no licence text and no licence field | Not copied. `Footer.tsx` is our own and tiny. Treat the licence as unconfirmed. |
+
+The product row (scroll-snap with arrow buttons) was written from scratch; the carousels offered use animation libraries that the motion rule excludes.

@@ -49,26 +49,19 @@
   }
 }
 
-/* Skeleton shimmer: transform only, off for reduced motion */
-@keyframes shimmer {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
+/* Skeleton: a still block. No shimmer. */
 .skeleton {
-  position: relative;
-  overflow: hidden;
   background: var(--color-surface-2);
 }
-.skeleton::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.05), transparent);
-  animation: shimmer 1.4s var(--ease-standard) infinite;
+
+/* Toast: a 150 ms fade in; it is removed without an exit animation. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+  }
+}
+.toast {
+  animation: toast-in var(--duration-base) var(--ease-standard);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,8 +72,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
-  }
-  .skeleton::after {
-    display: none;
   }
 }

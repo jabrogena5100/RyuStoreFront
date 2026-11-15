@@ -5,6 +5,8 @@ import { ChevronDown } from "lucide-react";
 import { Gallery } from "@/components/Gallery";
 import { ProductCard } from "@/components/ProductCard";
 import { Purchase } from "@/components/Purchase";
+import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Badge } from "@/components/ui/Badge";
 import { Price } from "@/components/ui/Price";
 import { PRODUCTS, SHIPPING_FLAT_MINOR, formatPrice, getProduct, occasionOf } from "@/lib/catalog";
@@ -25,7 +27,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const related = PRODUCTS.filter((p) => p.id !== product.id && occasionOf(p)?.slug === occasion?.slug).slice(0, 4);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <Container className="py-8">
       <nav aria-label="Breadcrumb" className="text-small text-fg-subtle">
         <Link href="/" className="hover:text-fg">Home</Link> <span aria-hidden="true">/</span>{" "}
         {occasion ? (
@@ -39,7 +41,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="mt-6 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
         <Gallery product={product} />
 
-        <div className="lg:sticky lg:top-24 lg:self-start">
+        <div className="lg:sticky lg:top-6 lg:self-start">
           <p className="text-caption font-medium uppercase text-fg-subtle">{product.brand}</p>
           <h1 className="mt-1 text-h1 font-semibold text-fg-strong">{product.name}</h1>
           <div className="mt-3 flex items-center gap-3">
@@ -62,7 +64,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <details className="group py-1" open>
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-small font-medium text-fg">
                 Details
-                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle transition-transform duration-(--duration-base) group-open:rotate-180" />
+                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle group-open:rotate-180" />
               </summary>
               <ul className="list-disc space-y-1.5 pb-4 pl-5 text-small text-fg-muted">
                 {product.details.map((d) => (
@@ -73,14 +75,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <details className="group py-1">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-small font-medium text-fg">
                 Materials
-                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle transition-transform duration-(--duration-base) group-open:rotate-180" />
+                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle group-open:rotate-180" />
               </summary>
               <p className="pb-4 text-small text-fg-muted capitalize">{product.material}</p>
             </details>
             <details className="group py-1">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-small font-medium text-fg">
                 Shipping and payment
-                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle transition-transform duration-(--duration-base) group-open:rotate-180" />
+                <ChevronDown aria-hidden="true" className="size-4 text-fg-subtle group-open:rotate-180" />
               </summary>
               <p className="pb-4 text-small text-fg-muted">
                 Flat-rate shipping of {formatPrice(SHIPPING_FLAT_MINOR)} per order. You pay on Stripe&rsquo;s hosted page in test mode, so no card is charged.
@@ -91,10 +93,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
 
       {related.length ? (
-        <section aria-labelledby="related" className="mt-20">
-          <h2 id="related" className="mb-5 text-h2 font-semibold text-fg-strong">
-            More in {occasion?.label}
-          </h2>
+        <Section id="related" title={`More in ${occasion?.label}`} href={`/products?occasion=${occasion?.slug}`}>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4">
             {related.map((p) => (
               <li key={p.id}>
@@ -102,8 +101,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </li>
             ))}
           </ul>
-        </section>
+        </Section>
       ) : null}
-    </div>
+    </Container>
   );
 }

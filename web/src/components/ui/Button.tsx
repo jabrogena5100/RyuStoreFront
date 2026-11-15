@@ -7,8 +7,8 @@ type Size = "md" | "lg" | "icon";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-md font-medium select-none " +
-  "transition-[background-color,color,transform,opacity] duration-(--duration-base) ease-standard " +
-  "active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
+  "transition-[background-color,color,opacity] duration-(--duration-base) ease-standard " +
+  "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
   primary: "bg-accent text-fg-strong hover:bg-accent-hover active:bg-accent-press",

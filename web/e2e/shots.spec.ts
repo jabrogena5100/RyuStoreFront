@@ -13,10 +13,20 @@ const DEVICES = {
   mobile: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
 } as const;
 
-const PAGES: { name: string; path: string; act?: (p: Page) => Promise<void> }[] = [
+const PAGES: { name: string; path: string; only?: "mobile" | "desktop"; act?: (p: Page) => Promise<void> }[] = [
   { name: "home", path: "/" },
   { name: "listing", path: "/products" },
   { name: "listing-night", path: "/products?occasion=night&gender=women" },
+  { name: "listing-price", path: "/products?price=u150&stock=1&sort=price-asc" },
+  {
+    name: "listing-drawer",
+    path: "/products?gender=women",
+    only: "mobile",
+    act: async (p) => {
+      await p.getByRole("button", { name: /^Filters/ }).click();
+      await p.waitForTimeout(200);
+    },
+  },
   { name: "listing-loading", path: "/products?state=loading" },
   { name: "listing-empty", path: "/products?state=empty" },
   { name: "listing-error", path: "/products?state=error" },
@@ -44,21 +54,13 @@ const violations: Record<string, unknown> = {};
 for (const [device, opts] of Object.entries(DEVICES)) {
   test.describe(device, () => {
     test.use(opts);
-    for (const pg of PAGES) {
+    for (const pg of PAGES.filter((x) => !x.only || x.only === device)) {
       test(`${pg.name}`, async ({ page }) => {
         await page.goto(pg.path, { waitUntil: "networkidle" });
         await page.evaluate(() => document.fonts.ready);
-        // Let scroll-reveal sections play, so the shot shows the settled page.
-        await page.evaluate(async () => {
-          for (let y = 0; y < document.body.scrollHeight; y += 500) {
-            window.scrollTo(0, y);
-            await new Promise((r) => setTimeout(r, 60));
-          }
-          window.scrollTo(0, 0);
-        });
-        await page.waitForTimeout(700);
+        await page.waitForTimeout(200);
         if (pg.act) await pg.act(page);
-        await page.screenshot({ path: `${OUT}/${pg.name}-${device}.png`, fullPage: pg.name !== "pdp-added" });
+        await page.screenshot({ path: `${OUT}/${pg.name}-${device}.png`, fullPage: pg.name !== "pdp-added" && pg.name !== "listing-drawer" });
         const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
         violations[`${pg.name}-${device}`] = results.violations.map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.length, sample: v.nodes[0]?.target }));
         writeFileSync(`${AXE_DIR}/${device}-${pg.name}.json`, JSON.stringify(violations[`${pg.name}-${device}`], null, 1));

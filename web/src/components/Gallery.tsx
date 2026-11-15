@@ -1,7 +1,6 @@
 "use client";
 
 import clsx from "clsx";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { ProductImage } from "@/components/ProductImage";
 import type { ProductSummary } from "@/lib/catalog";
@@ -11,22 +10,12 @@ const NAMES = ["Image 1", "Image 2", "Image 3", "Image 4"];
 
 export function Gallery({ product }: { product: Pick<ProductSummary, "brand" | "name" | "categorySlug"> }) {
   const [view, setView] = useState<(typeof VIEWS)[number]>(0);
-  const reduce = useReducedMotion();
   return (
     <div className="flex flex-col gap-3 lg:flex-row-reverse">
       <div className="relative aspect-[4/5] flex-1 overflow-hidden rounded-lg border border-line">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div
-            key={view}
-            className="absolute inset-0"
-            initial={{ opacity: reduce ? 1 : 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: reduce ? 1 : 0 }}
-            transition={{ duration: 0.32, ease: [0.2, 0, 0, 1] }}
-          >
-            <ProductImage product={product} view={view} className="aspect-auto! h-full" />
-          </motion.div>
-        </AnimatePresence>
+        <div className="absolute inset-0">
+          <ProductImage product={product} view={view} className="aspect-auto! h-full" />
+        </div>
       </div>
       <div role="group" aria-label="Product views" className="flex gap-2 lg:w-20 lg:flex-col">
         {VIEWS.map((v) => (
