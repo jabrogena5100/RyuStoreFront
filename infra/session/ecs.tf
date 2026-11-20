@@ -1,6 +1,6 @@
 variable "api_domain" {
   type    = string
-  default = "api.ryustorefront.net"
+  default = "api.ryustorefront.com"
 }
 
 # Required, no default: pass the commit SHA that scripts/ecr-push.sh pushed (tags are immutable).

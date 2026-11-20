@@ -5,7 +5,7 @@ Stages are applied separately so the per-session one can be destroyed without to
 
 | Stage | Contents | Lifetime |
 | --- | --- | --- |
-| `foundation/` | Route 53 zone for `ryustorefront.net`, ECR repository | Kept between sessions |
+| `foundation/` | Route 53 zone for `api.ryustorefront.com` (delegated from Cloudflare), ECR repository | Kept between sessions |
 | `session/` (not written yet) | VPC, RDS, ECS, ALB, ACM, Secrets Manager | Created and destroyed per session |
 
 Status: **written, not yet applied or verified.** Results go in `docs/verification.md` only after real output.
@@ -27,7 +27,7 @@ aws s3api put-bucket-versioning --bucket "$BUCKET" --versioning-configuration St
 
 ```
 scripts/aws-terraform.sh -chdir=infra/foundation init -backend-config="bucket=$BUCKET"
-ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name ryustorefront.net \
+ZONE_ID=$(aws route53 list-hosted-zones-by-name --dns-name api.ryustorefront.com \
   --query 'HostedZones[0].Id' --output text | sed 's|/hostedzone/||')
 scripts/aws-terraform.sh -chdir=infra/foundation import aws_route53_zone.main "$ZONE_ID"
 scripts/aws-terraform.sh -chdir=infra/foundation plan -out=tfplan
@@ -36,7 +36,7 @@ scripts/aws-terraform.sh -chdir=infra/foundation apply tfplan
 ```
 
 If `list-hosted-zones-by-name` shows more than one zone for the domain, stop: keep only the one whose
-name servers match the Squarespace delegation (`ns-96.awsdns-12.com` and the other three) and delete the empty duplicate.
+name servers match the Cloudflare NS records for `api` (`ns-1157.awsdns-16.org` and the other three) and delete the empty duplicate.
 
 ## Image (Dockerfile at the repo root)
 
@@ -91,7 +91,7 @@ scripts/aws-audit.sh
 ## Session stage, slice 2: the API behind HTTPS (`infra/session/` plus new `foundation/` resources)
 
 Status: **applied once with a real Stripe test checkout, then destroyed and audited on 2026-11-15 (see `docs/verification.md`).** Adds to `foundation/`: two empty Stripe secret shells and the ACM certificate for
-`api.ryustorefront.net` with its validation records. Adds to `session/`: IAM roles, log group, ECS cluster, one Fargate task definition and service
+`api.ryustorefront.com` with its validation records. Adds to `session/`: IAM roles, log group, ECS cluster, one Fargate task definition and service
 (0.5 vCPU / 1 GB, API only, no worker yet), an ALB (HTTP redirects to HTTPS), the DNS alias, and a start-up seed of 100 products.
 
 Order matters (a task cannot start while a secret has no value):
@@ -108,11 +108,11 @@ Order matters (a task cannot start while a secret has no value):
    Until then put a placeholder so the task can start: `printf %s placeholder | aws secretsmanager put-secret-value ... --secret-id storefront/stripe-webhook-secret --secret-string file:///dev/stdin`.
 4. Session: `plan -out=tfplan -var image_tag=<tag>` (service created with 0 tasks), read, `apply`.
 5. Start the task: `plan -out=tfplan -var image_tag=<tag> -var desired_count=1`, read, `apply`.
-6. In the Stripe dashboard (test mode) add an endpoint `https://api.ryustorefront.net/api/stripe/webhook` for the four events
+6. In the Stripe dashboard (test mode) add an endpoint `https://api.ryustorefront.com/api/stripe/webhook` for the four events
    `checkout.session.completed`, `.expired`, `.async_payment_succeeded`, `.async_payment_failed`. Copy its signing secret into
    `storefront/stripe-webhook-secret` (same `put-secret-value` form), then restart the task:
    `aws ecs update-service --cluster storefront --service api --force-new-deployment --region us-west-2`.
-7. `BASE=https://api.ryustorefront.net bash scripts/manual-checkout.sh <sku>`, pay with card 4242, then check the order in the database logs/API.
+7. `BASE=https://api.ryustorefront.com bash scripts/manual-checkout.sh <sku>`, pay with card 4242, then check the order in the database logs/API.
 
 Destroy of the session stage is unchanged; the secrets, certificate and zone stay.
 

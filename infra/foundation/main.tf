@@ -37,10 +37,10 @@ variable "region" {
 
 variable "domain" {
   type    = string
-  default = "ryustorefront.net"
+  default = "api.ryustorefront.com"
 }
 
-# The public hosted zone already exists (created by hand and delegated from Squarespace).
+# The public hosted zone already exists (created by hand and delegated from Cloudflare as the api subdomain).
 # Import it before the first apply so Terraform adopts it instead of creating a second zone
 # with different name servers: terraform import aws_route53_zone.main <zone-id>
 resource "aws_route53_zone" "main" {
