@@ -1,7 +1,8 @@
 # Storefront web
 
-Next.js (App Router), TypeScript, Tailwind CSS with the design tokens, Motion for animation. Design phase: pages run on fixtures that mirror the API;
-nothing calls the backend yet.
+Next.js (App Router), TypeScript, Tailwind CSS with the design tokens; no animation library. The catalogue, sign-in, cart, checkout, pay and
+confirmation pages call the Spring API through the `/api` proxy. Order history and the admin area still run on demo fixtures (the API has no
+endpoints for them), and `?state=` URLs show each review state on fixtures.
 
 Needs only Docker (Node runs in a pinned image through `scripts/web.sh`, from the repo root):
 

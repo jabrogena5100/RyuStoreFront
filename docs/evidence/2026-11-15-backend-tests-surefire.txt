@@ -1,0 +1,31 @@
+# Backend test counts, read from target/surefire-reports/TEST-*.xml by Claude Code on 2026-11-20.
+# The run itself was the owner's `./mvnw -B verify` on the dev VM; newest report file mtime (UTC): 2026-11-15 10:28
+# class tests failures errors skipped seconds
+link.ryustorefront.storefront.MinPriceTriggerTests 9 0 0 0 0.772
+link.ryustorefront.storefront.ModularityTests 1 0 0 0 0.244
+link.ryustorefront.storefront.SchemaConstraintTests 31 0 0 0 1.56
+link.ryustorefront.storefront.StorefrontApplicationTests 1 0 0 0 0.077
+link.ryustorefront.storefront.auth.AuthApiTests 21 0 0 0 10.913
+link.ryustorefront.storefront.auth.SecureCookieTests 1 0 0 0 13.356
+link.ryustorefront.storefront.cart.CartApiTests 19 0 0 0 30.87
+link.ryustorefront.storefront.cart.SecureCartCookieTests 1 0 0 0 49.334
+link.ryustorefront.storefront.catalog.CatalogApiTests 25 0 0 0 22.2
+link.ryustorefront.storefront.checkout.CheckoutApiTests 15 0 0 0 10.339
+link.ryustorefront.storefront.checkout.CheckoutConcurrencyTests 1 0 0 0 1.506
+link.ryustorefront.storefront.inventory.StockHoldExtensionTests 5 0 0 0 15.689
+link.ryustorefront.storefront.inventory.StockReservationConcurrencyTests 4 0 0 0 29.348
+link.ryustorefront.storefront.inventory.StockReservationTests 11 0 0 0 1.442
+link.ryustorefront.storefront.notifications.OrderConfirmationEmailTests 8 0 0 0 0.086
+link.ryustorefront.storefront.notifications.OrderEmailTests 4 0 0 0 25.108
+link.ryustorefront.storefront.orders.OrderStatusTests 8 0 0 0 0.023
+link.ryustorefront.storefront.orders.OrderTransitionTests 8 0 0 0 2.046
+link.ryustorefront.storefront.outbox.OutboxProcessorTests 10 0 0 0 1.744
+link.ryustorefront.storefront.outbox.OutboxTests 7 0 0 0 0.275
+link.ryustorefront.storefront.outbox.WorkerKillTests 1 0 0 0 51.773
+link.ryustorefront.storefront.payments.PaymentApiTests 15 0 0 0 13.484
+link.ryustorefront.storefront.payments.StripeCheckoutParamsTests 1 0 0 0 0.454
+link.ryustorefront.storefront.payments.StripeWebhookChainTests 2 0 0 0 19.306
+link.ryustorefront.storefront.payments.StripeWebhookTests 19 0 0 0 24.059
+link.ryustorefront.storefront.shared.MoneyTest 8 0 0 0 0.038
+link.ryustorefront.storefront.worker.ExpirySweepTests 5 0 0 0 0.949
+# total classes=27 tests=241 failures=0 errors=0 skipped=0
