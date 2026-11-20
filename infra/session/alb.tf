@@ -1,5 +1,5 @@
 data "aws_route53_zone" "main" {
-  name = "ryustorefront.net"
+  name = "api.ryustorefront.com"
 }
 
 data "aws_acm_certificate" "api" {

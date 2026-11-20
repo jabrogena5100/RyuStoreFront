@@ -21,7 +21,7 @@ check() { # check <label> <command output that must be empty>
   fi
 }
 
-ZONE_ID="$(aws route53 list-hosted-zones-by-name --dns-name ryustorefront.net --query 'HostedZones[0].Id' --output text | sed 's|/hostedzone/||')"
+ZONE_ID="$(aws route53 list-hosted-zones-by-name --dns-name api.ryustorefront.com --query 'HostedZones[0].Id' --output text | sed 's|/hostedzone/||')"
 
 check "RDS instances"          "$(aws rds describe-db-instances --query 'DBInstances[].DBInstanceIdentifier' --output text)"
 check "load balancers"         "$(aws elbv2 describe-load-balancers --query 'LoadBalancers[].LoadBalancerName' --output text)"
@@ -34,7 +34,7 @@ check "ACTIVE ECS task definitions" "$(aws ecs list-task-definitions --family-pr
 check "security groups storefront-*" "$(aws ec2 describe-security-groups --filters Name=group-name,Values='storefront-*' --query 'SecurityGroups[].GroupId' --output text)"
 check "log group /storefront"  "$(aws logs describe-log-groups --log-group-name-prefix /storefront --query 'logGroups[].logGroupName' --output text)"
 check "IAM roles storefront-*" "$(aws iam list-roles --query "Roles[?starts_with(RoleName, 'storefront')].RoleName" --output text)"
-check "DNS record api.ryustorefront.net" "$(aws route53 list-resource-record-sets --hosted-zone-id "$ZONE_ID" --query "ResourceRecordSets[?Name=='api.ryustorefront.net.' && Type=='A'].Name" --output text)"
+check "DNS record api.ryustorefront.com" "$(aws route53 list-resource-record-sets --hosted-zone-id "$ZONE_ID" --query "ResourceRecordSets[?Name=='api.ryustorefront.com.' && Type=='A'].Name" --output text)"
 check "RDS-managed secrets (rds!...)" "$(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'rds!')].Name" --output text)"
 
 echo

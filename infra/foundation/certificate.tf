@@ -2,7 +2,7 @@
 # for validation. The ALB in the session stage looks it up by domain name.
 variable "api_domain" {
   type    = string
-  default = "api.ryustorefront.net"
+  default = "api.ryustorefront.com"
 }
 
 resource "aws_acm_certificate" "api" {
