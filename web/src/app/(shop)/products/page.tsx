@@ -121,7 +121,7 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
               <ul aria-busy="true" className={grid}>
                 {Array.from({ length: 8 }, (_, i) => (
                   <li key={i} className="flex flex-col gap-3">
-                    <Skeleton className="aspect-[4/5] w-full rounded-lg" />
+                    <Skeleton className="aspect-[4/3] w-full rounded-lg" />
                     <Skeleton className="h-3 w-16" />
                     <Skeleton className="h-5 w-3/4" />
                   </li>

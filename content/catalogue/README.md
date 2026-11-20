@@ -23,11 +23,12 @@ this folder holds the metadata, and scripts download and rebuild everything else
 | 2. Review | Claude Code, owner spot-checks | read `evidence-raw/images/sheets/*.html` | `content/catalogue/selection.json` |
 | 3. Fetch | Owner | `python3 -I scripts/images/fetch.py` | originals (git-ignored); `manifest.json`, `src/main/resources/catalogue/catalogue.json`, `web/src/data/image-credits.json` |
 | 4. Variants | anyone (Docker) | `scripts/images/variants.sh` | AVIF + WebP at 480/960/1440 px (git-ignored); `docs/evidence/images-bytes.md` |
-| 5. Upload | anyone (local) / owner (AWS) | `docker compose up -d seaweedfs` then `scripts/images/upload.sh local` | objects in `storefront-images` |
-| 6. Seed | anyone | `docker compose down -v && docker compose up -d`, then the API with the `seed` profile | products, variants, `product_images` rows |
+| 5. Reset (optional) | anyone | `docker compose down -v && docker compose up -d` | empty database **and empty object store** (`-v` deletes the SeaweedFS volume too) |
+| 6. Upload | anyone (local) / owner (AWS) | `scripts/images/upload.sh local` (after any reset) | objects in `storefront-images` |
+| 7. Seed | anyone | the API with the `seed` profile on an empty database | products, variants, `product_images` rows |
 
 Rebuilding from zero on a new machine needs no API key: `python3 -I scripts/images/fetch.py --from-manifest` downloads exactly
-the files in `manifest.json` and refuses any whose SHA-256 changed, then steps 4 to 6.
+the files in `manifest.json` and refuses any whose SHA-256 changed, then steps 4 to 7.
 
 ## Files
 

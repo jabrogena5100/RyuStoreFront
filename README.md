@@ -6,7 +6,7 @@ Java 25 and Spring Boot 4 with PostgreSQL, a Next.js frontend, and Terraform for
 
 **This is a demo store.** Products, brands and descriptions are invented, and payments run in Stripe **test mode** only (card `4242 4242 4242 4242`).
 
-![Home page at 1440 px: the redesign on the mock API; grey frames are placeholders until licensed photos arrive](design/build/home-1440.png)
+![Home page at 1440 px with the real API and licensed photos](design/screens-live/home-desktop.png)
 
 ## What it demonstrates
 
@@ -91,7 +91,9 @@ Statuses: **Run** (output seen by the author's tooling), **User-reported** (run 
 | 119 pages, 0 axe violations | Run | F1 |
 | Count 518 → 22 ms, price sort 227 → 20 ms (local, single runs) | User-reported | D1, D2 |
 | One real checkout on AWS; 31-resource session destroyed; 13-check audit clean | User-reported | C1–C3 |
-| Lighthouse, page weight, k6 latency, cloud cost, cloud webhook replay | Not run | F3–F5, P2, C7–C9 |
+| 142 products with 188 licensed photos; served 960 px AVIF a median 12.7 % of the original's bytes | Run / User-reported | D6b, F5 |
+| Lighthouse before and after the redesign (same session); fonts 138 → 52 KB | Run | F3b, F3c, F8 |
+| k6 latency, cloud cost, cloud webhook replay | Not run | P2, C7–C9 |
 
 The dated log behind these is [`docs/verification.md`](docs/verification.md).
 
@@ -99,7 +101,7 @@ The dated log behind these is [`docs/verification.md`](docs/verification.md).
 
 - **Out of scope:** real payments, tax and shipping-rate engines (flat $8 shipping), multiple currencies, multi-vendor, recommendations, a mobile app, microservices.
 - **Not built yet:** order history and the admin area show **demo fixtures**, because the API has no order-list or admin endpoints.
-  Product photos are placeholders until the licensed-image pipeline lands. The frontend and the worker have not run in AWS yet.
+  The cart and order pages still show placeholder images (their APIs return none). The frontend and the worker have not run in AWS yet.
 - **Not measured yet:** Lighthouse, page weight, API latency under load, real cloud cost (see `docs/metrics.md`).
 - **Security limits:** no login rate limiting or lockout, no password reset or e-mail verification, and the database TLS check is
   `sslmode=require`, not `verify-full`.

@@ -12,14 +12,19 @@ const PLACEMENT: Record<View, { pos: string; size: string; light: string }> = {
 };
 
 /** `${base}-480.avif 480w, ...`: the variants scripts/images/variants.mjs writes for every photo. */
-const srcset = (base: string, fmt: "avif" | "webp") => IMAGE_WIDTHS.map((w) => `${base}-${w}.${fmt} ${w}w`).join(", ");
+// A variant is never wider than its original (sharp does not enlarge), so the descriptor is the real width: a 1,280 px original
+// serves its "1440" file as 1280w.
+const srcset = (img: ImageView, fmt: "avif" | "webp") =>
+  [...new Set(IMAGE_WIDTHS.map((w) => Math.min(w, img.width)))]
+    .map((real) => `${img.base}-${IMAGE_WIDTHS.find((w) => Math.min(w, img.width) === real)}.${fmt} ${real}w`)
+    .join(", ");
 
 /**
  * A product photo when there is one: AVIF with a WebP fallback at three widths, the original's width and height so the
  * browser reserves the space (no layout shift), lazy unless `priority`. Cropped to the frame with object-fit: cover.
  * Without a photo, the typographic placeholder below.
  *
- * Placeholder for a product photo: a 4:5 tone-on-tone panel with a soft light and an oversized initial of the model name.
+ * Placeholder for a product photo: a 4:3 tone-on-tone panel with a soft light and an oversized initial of the model name.
  * It does not try to draw a shoe. Real photos replace it at the same ratio. (design/BRIEF.md, section 4)
  */
 export function ProductImage({
@@ -47,9 +52,9 @@ export function ProductImage({
 }) {
   if (image) {
     return (
-      <picture className={clsx("relative block aspect-[4/5] w-full overflow-hidden bg-surface-1", className)}>
-        <source type="image/avif" srcSet={srcset(image.base, "avif")} sizes={sizes} />
-        <source type="image/webp" srcSet={srcset(image.base, "webp")} sizes={sizes} />
+      <picture className={clsx("relative block aspect-[4/3] w-full overflow-hidden bg-surface-1", className)}>
+        <source type="image/avif" srcSet={srcset(image, "avif")} sizes={sizes} />
+        <source type="image/webp" srcSet={srcset(image, "webp")} sizes={sizes} />
         {/* eslint-disable-next-line @next/next/no-img-element -- pre-built variants from object storage, no optimiser needed */}
         <img
           src={`${image.base}-960.webp`}
@@ -69,7 +74,7 @@ export function ProductImage({
   return (
     <div
       {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": `${product.brand} ${product.name} (placeholder image)` })}
-      className={clsx("@container relative aspect-[4/5] w-full overflow-hidden", className)}
+      className={clsx("@container relative aspect-[4/3] w-full overflow-hidden", className)}
       style={{ background: `radial-gradient(120% 90% at ${p.light}, var(--color-surface-3), var(--color-surface-1) 72%)` }}
     >
       {/* Generated content, not text: pure decoration that no assistive tech or contrast checker should read. */}
