@@ -4,7 +4,14 @@ import clsx from "clsx";
 import { ProductImage } from "@/components/ProductImage";
 import { OCCASIONS, formatPrice, type ProductSummary } from "@/lib/catalog";
 
-export type CategoryTileData = { slug: (typeof OCCASIONS)[number]["slug"]; total: number; cheapest: ProductSummary | undefined };
+export type CategoryTileData = {
+  slug: (typeof OCCASIONS)[number]["slug"];
+  total: number;
+  /** Gives the "from" price. */
+  cheapest: ProductSummary | undefined;
+  /** Gives the picture (the newest product); falls back to the cheapest. */
+  picture?: ProductSummary;
+};
 
 /*
  * Shop-by-occasion grid. Adapted from "Shop by Category Grid" by ziegfiroyt on 21st.dev
@@ -27,10 +34,10 @@ export function CategoryGrid({ tiles }: { tiles: CategoryTileData[] }) {
               className={clsx("group relative block h-full overflow-hidden rounded-md bg-surface-1", lead ? "aspect-[4/3] lg:aspect-auto" : "aspect-[4/5] md:aspect-[4/3]")}
             >
               <div className="absolute inset-0 transition-transform duration-(--duration-slow) ease-standard group-hover:scale-[1.03] group-focus-visible:scale-[1.03]">
-                {t.cheapest ? (
+                {(t.picture ?? t.cheapest) ? (
                   <ProductImage
-                    product={t.cheapest}
-                    image={t.cheapest.image}
+                    product={(t.picture ?? t.cheapest)!}
+                    image={(t.picture ?? t.cheapest)!.image}
                     label={false}
                     decorative
                     className="aspect-auto! h-full"

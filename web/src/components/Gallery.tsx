@@ -4,7 +4,7 @@
  * Product gallery. Adapted from "Thumbnail image viewer" by ibrandify on 21st.dev
  * (https://21st.dev/@ibrandify/components/thumbnail-image-viewer), licence shown there: MIT. Kept from the original: the
  * "01 / 04" counter, previous and next buttons on the stage, thumbnails as a tablist with roving tabindex, and
- * Left/Right/Home/End keys. Changed: the stage is the product's 4:5 frame, the swap is a 180 ms opacity fade (removed under
+ * Left/Right/Home/End keys. Changed: the stage is the product's 4:3 frame, the swap is a 180 ms opacity fade (removed under
  * reduced motion), no captions or location tags, no backdrop blur, design tokens. See design/COMPONENT-NOTES.md.
  */
 import clsx from "clsx";
@@ -38,7 +38,7 @@ export function Gallery({ product }: { product: Pick<ProductSummary, "brand" | "
   const nav = "grid size-11 place-items-center rounded-pill border border-line-control bg-canvas/90 text-fg transition-colors duration-(--duration-base) hover:bg-surface-2";
   return (
     <div className="flex flex-col gap-3">
-      <div id={`${id}-panel`} {...(many ? { role: "tabpanel", "aria-labelledby": `${id}-tab-${active}` } : {})} className="relative aspect-[4/5] overflow-hidden rounded-md bg-surface-1">
+      <div id={`${id}-panel`} {...(many ? { role: "tabpanel", "aria-labelledby": `${id}-tab-${active}` } : {})} className="relative aspect-[4/3] overflow-hidden rounded-md bg-surface-1">
         {VIEWS.map((v) => (
           <div key={v} aria-hidden={active !== v} className={clsx("absolute inset-0 transition-opacity duration-(--duration-base) ease-standard", active === v ? "opacity-100" : "opacity-0")}>
             <ProductImage

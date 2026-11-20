@@ -1,0 +1,2754 @@
+{
+ "version": 1,
+ "about": "Review result 2026-11-20 (Claude Code, two passes over contact sheets; rules in content/catalogue/README.md). Owner spot-checks before fetch.py.",
+ "products": [
+  {
+   "slug": "ostrava-atelier-umber-chelsea-boot",
+   "name": "Umber Chelsea Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 380,
+   "description": "Chelsea Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0220",
+     "alt": "Brown leather Chelsea boots with brogue detail"
+    },
+    {
+     "ref": "C0219",
+     "alt": "Brown leather Chelsea boots with brogue detail (view 2)"
+    },
+    {
+     "ref": "C0222",
+     "alt": "Brown leather Chelsea boots with brogue detail (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-kestrel-brogue",
+   "name": "Kestrel Brogue",
+   "brand": "Ostrava Atelier",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 440,
+   "description": "Brogue in tan. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0876",
+     "alt": "Tan leather wingtip brogues with shoe trees"
+    },
+    {
+     "ref": "C0875",
+     "alt": "Tan leather wingtip brogues with shoe trees (view 2)"
+    },
+    {
+     "ref": "C0877",
+     "alt": "Tan leather wingtip brogues with shoe trees (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-dov-platform-pump",
+   "name": "Dov Platform Pump",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 780,
+   "description": "Platform Pump in red. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0562",
+     "alt": "Red leather platform pump on black"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-yves-heeled-sandal",
+   "name": "Yves Heeled Sandal",
+   "brand": "Maison Verre",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "multi"
+   ],
+   "priceDollars": 210,
+   "description": "Heeled Sandal in multi. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1213",
+     "alt": "Patchwork leather heeled sandal in pink, green and purple"
+    },
+    {
+     "ref": "C1212",
+     "alt": "Patchwork leather heeled sandal in pink, green and purple (view 2)"
+    },
+    {
+     "ref": "C1214",
+     "alt": "Patchwork leather heeled sandal in pink, green and purple (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-faro-western-boot",
+   "name": "Faro Western Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "burgundy"
+   ],
+   "priceDollars": 340,
+   "description": "Western Boot in burgundy. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0069",
+     "alt": "Burgundy leather western boots with tooled shafts"
+    },
+    {
+     "ref": "C0068",
+     "alt": "Burgundy leather western boots with tooled shafts (view 2)"
+    },
+    {
+     "ref": "C0074",
+     "alt": "Burgundy leather western boots with tooled shafts (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-zeno-chunky-trainer",
+   "name": "Zeno Chunky Trainer",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "unisex",
+   "colours": [
+    "blue",
+    "green",
+    "purple",
+    "red"
+   ],
+   "priceDollars": 180,
+   "description": "Chunky Trainer in blue, green, purple and red. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C0409",
+     "alt": "Suede chunky trainer with a layered sole, in blue"
+    },
+    {
+     "ref": "C0410",
+     "alt": "Suede chunky trainer with a layered sole, in green"
+    },
+    {
+     "ref": "C0411",
+     "alt": "Suede chunky trainer with a layered sole, in purple"
+    },
+    {
+     "ref": "C0412",
+     "alt": "Suede chunky trainer with a layered sole, in red"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-perrin-minimal-sneaker",
+   "name": "Perrin Minimal Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 145,
+   "description": "Minimal Sneaker in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1565",
+     "alt": "White leather minimal sneaker on a white background"
+    }
+   ]
+  },
+  {
+   "slug": "halden-aurel-knit-sneaker",
+   "name": "Aurel Knit Sneaker",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 95,
+   "description": "Knit Sneaker in grey. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1499",
+     "alt": "Grey knit lace-up sneakers seen from above on a wooden floor"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-brisa-canvas-sneaker",
+   "name": "Brisa Canvas Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "women",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 95,
+   "description": "Canvas Sneaker in grey. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1468",
+     "alt": "Grey canvas sneakers with small white stars and white toe caps"
+    },
+    {
+     "ref": "C1469",
+     "alt": "Grey canvas sneakers with small white stars and white toe caps (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "halden-calder-mesh-sneaker",
+   "name": "Calder Mesh Sneaker",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 110,
+   "description": "Mesh Sneaker in black. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1472",
+     "alt": "Black mesh sneaker with a white sole, side view"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-dorian-chunky-trainer",
+   "name": "Dorian Chunky Trainer",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "unisex",
+   "colours": [
+    "red/black"
+   ],
+   "priceDollars": 165,
+   "description": "Chunky Trainer in red/black. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C1539",
+     "alt": "Red and black chunky trainer with a sculpted black sole"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-elan-platform-sneaker",
+   "name": "Elan Platform Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 150,
+   "description": "Platform Sneaker in black. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C1540",
+     "alt": "Black leather platform sneaker with an iridescent side panel"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-fenwick-platform-sneaker",
+   "name": "Fenwick Platform Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "pink"
+   ],
+   "priceDollars": 150,
+   "description": "Platform Sneaker in pink. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C1541",
+     "alt": "Pale pink glitter sneaker with a pink platform sole"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-gavra-platform-sneaker",
+   "name": "Gavra Platform Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "silver"
+   ],
+   "priceDollars": 155,
+   "description": "Platform Sneaker in silver. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C1542",
+     "alt": "Silver metallic sneaker with a black textured sole"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-hollis-slip-on",
+   "name": "Hollis Slip-On",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "women",
+   "colours": [
+    "denim"
+   ],
+   "priceDollars": 85,
+   "description": "Slip-On in denim. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1408",
+     "alt": "Blue denim slip-on sneakers with perforated hearts"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-ione-canvas-sneaker",
+   "name": "Ione Canvas Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 75,
+   "description": "Canvas Sneaker in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1506",
+     "alt": "Worn white canvas sneakers on sand"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-jasper-canvas-sneaker",
+   "name": "Jasper Canvas Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 80,
+   "description": "Canvas Sneaker in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1425",
+     "alt": "White canvas sneakers on a white bedspread"
+    },
+    {
+     "ref": "C1422",
+     "alt": "White canvas sneakers on a white bedspread (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-kiran-canvas-sneaker",
+   "name": "Kiran Canvas Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 80,
+   "description": "Canvas Sneaker in navy. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1430",
+     "alt": "Navy canvas sneaker with a white toe cap"
+    },
+    {
+     "ref": "C1431",
+     "alt": "Navy canvas sneaker with a white toe cap (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-lucan-canvas-sneaker",
+   "name": "Lucan Canvas Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 75,
+   "description": "Canvas Sneaker in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1351",
+     "alt": "Two pairs of white canvas sneakers on a wooden floor"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-marais-slip-on",
+   "name": "Marais Slip-On",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 85,
+   "description": "Slip-On in navy. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1388",
+     "alt": "Navy slip-on with white polka dots on a ledge"
+    }
+   ]
+  },
+  {
+   "slug": "halden-nerea-high-top-sneaker",
+   "name": "Nerea High-Top Sneaker",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "red/navy"
+   ],
+   "priceDollars": 140,
+   "description": "High-Top Sneaker in red/navy. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1398",
+     "alt": "Leather high-top sneaker with a stars-and-stripes pattern"
+    }
+   ]
+  },
+  {
+   "slug": "halden-orsen-leather-trainer",
+   "name": "Orsen Leather Trainer",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "men",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 165,
+   "description": "Leather Trainer in tan. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1563",
+     "alt": "Tan leather low-top sneaker with a cream sole"
+    }
+   ]
+  },
+  {
+   "slug": "halden-quill-leather-trainer",
+   "name": "Quill Leather Trainer",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 150,
+   "description": "Leather Trainer in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1379",
+     "alt": "White leather sneaker with a moulded rubber sole"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-rhea-canvas-sneaker",
+   "name": "Rhea Canvas Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 75,
+   "description": "Canvas Sneaker in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1317",
+     "alt": "White canvas sneakers on grass at dusk"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-soren-minimal-sneaker",
+   "name": "Soren Minimal Sneaker",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 140,
+   "description": "Minimal Sneaker in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1369",
+     "alt": "Pair of white sneakers from above on grey"
+    }
+   ]
+  },
+  {
+   "slug": "halden-talia-leather-trainer",
+   "name": "Talia Leather Trainer",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "men",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 130,
+   "description": "Leather Trainer in grey. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1333",
+     "alt": "Light grey leather lace-up sneaker, side view"
+    }
+   ]
+  },
+  {
+   "slug": "halden-ulric-low-sneaker",
+   "name": "Ulric Low Sneaker",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "olive"
+   ],
+   "priceDollars": 110,
+   "description": "Low Sneaker in olive. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1494",
+     "alt": "Olive sneakers with embroidered patches on grass"
+    }
+   ]
+  },
+  {
+   "slug": "halden-vesper-low-sneaker",
+   "name": "Vesper Low Sneaker",
+   "brand": "Halden",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "red/yellow"
+   ],
+   "priceDollars": 105,
+   "description": "Low Sneaker in red/yellow. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1585",
+     "alt": "Red and yellow sneakers on a split red and yellow background"
+    }
+   ]
+  },
+  {
+   "slug": "plain-white-co-wren-leather-trainer",
+   "name": "Wren Leather Trainer",
+   "brand": "Plain White Co.",
+   "category": "sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 120,
+   "description": "Leather Trainer in white. Cushioned insole. Rubber cupsole for grip.",
+   "photos": [
+    {
+     "ref": "C1375",
+     "alt": "White leather sneakers resting on denim"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-xavi-platform-sneaker",
+   "name": "Xavi Platform Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 170,
+   "description": "Platform Sneaker in black. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C1543",
+     "alt": "Black leather sneaker with a tall platform sole"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-yara-wedge-sneaker",
+   "name": "Yara Wedge Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "beige"
+   ],
+   "priceDollars": 185,
+   "description": "Wedge Sneaker in beige. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C1304",
+     "alt": "Suede wedge high-top with pink and yellow straps"
+    },
+    {
+     "ref": "C1305",
+     "alt": "Suede wedge high-top with pink and yellow straps (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-alder-platform-sneaker",
+   "name": "Alder Platform Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 145,
+   "description": "Platform Sneaker in black. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C0425",
+     "alt": "Black and white platform sneaker with a white flatform sole"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-bexley-chunky-trainer",
+   "name": "Bexley Chunky Trainer",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "unisex",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 160,
+   "description": "Chunky Trainer in black. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C0426",
+     "alt": "Black chunky trainer with blue reflective overlays"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-corin-platform-sneaker",
+   "name": "Corin Platform Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "pink"
+   ],
+   "priceDollars": 140,
+   "description": "Platform Sneaker in pink. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C0427",
+     "alt": "Pink suede platform sneaker"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-dale-platform-sneaker",
+   "name": "Dale Platform Sneaker",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "unisex",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 145,
+   "description": "Platform Sneaker in white. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C0428",
+     "alt": "White sneaker with a translucent green platform sole"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-eero-chunky-trainer",
+   "name": "Eero Chunky Trainer",
+   "brand": "Slab & Sole",
+   "category": "chunky-sneakers",
+   "gender": "women",
+   "colours": [
+    "yellow"
+   ],
+   "priceDollars": 150,
+   "description": "Chunky Trainer in yellow. Lightweight stacked sole. Padded tongue and collar.",
+   "photos": [
+    {
+     "ref": "C0429",
+     "alt": "Yellow mesh chunky trainer"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-garnet-shearling-boot",
+   "name": "Garnet Shearling Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 240,
+   "description": "Shearling Boot in navy. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0228",
+     "alt": "Navy leather boot with a fold-down shearling cuff"
+    },
+    {
+     "ref": "C0230",
+     "alt": "Navy leather boot with a fold-down shearling cuff (view 2)"
+    },
+    {
+     "ref": "C0249",
+     "alt": "Navy leather boot with a fold-down shearling cuff (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-harlan-western-boot",
+   "name": "Harlan Western Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 320,
+   "description": "Western Boot in tan. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0261",
+     "alt": "Tan leather western boots on grass"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-isla-buckle-boot",
+   "name": "Isla Buckle Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 210,
+   "description": "Buckle Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0181",
+     "alt": "Brown leather ankle boot with buckled straps"
+    }
+   ]
+  },
+  {
+   "slug": "halden-juno-lace-up-boot",
+   "name": "Juno Lace-Up Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 195,
+   "description": "Lace-Up Boot in tan. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0146",
+     "alt": "Tan nubuck lace-up boots with a side zip"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-kestrel-combat-boot",
+   "name": "Kestrel Combat Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 260,
+   "description": "Combat Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0303",
+     "alt": "Black leather combat boots on a wooden bench"
+    },
+    {
+     "ref": "C0301",
+     "alt": "Black leather combat boots on a wooden bench (view 2)"
+    },
+    {
+     "ref": "C0311",
+     "alt": "Black leather combat boots on a wooden bench (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-lorne-western-ankle-boot",
+   "name": "Lorne Western Ankle Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "mustard"
+   ],
+   "priceDollars": 220,
+   "description": "Western Ankle Boot in mustard. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0273",
+     "alt": "Mustard perforated suede western ankle boots"
+    },
+    {
+     "ref": "C0270",
+     "alt": "Mustard perforated suede western ankle boots (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-mika-fringe-ankle-boot",
+   "name": "Mika Fringe Ankle Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 230,
+   "description": "Fringe Ankle Boot in tan. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0275",
+     "alt": "Tan suede ankle boots with fringe"
+    },
+    {
+     "ref": "C0276",
+     "alt": "Tan suede ankle boots with fringe (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-nico-heeled-ankle-boot",
+   "name": "Nico Heeled Ankle Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 240,
+   "description": "Heeled Ankle Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0243",
+     "alt": "Brown leather heeled ankle boot worn with grey trousers"
+    },
+    {
+     "ref": "C0244",
+     "alt": "Brown leather heeled ankle boot worn with grey trousers (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "halden-olwen-lace-up-boot",
+   "name": "Olwen Lace-Up Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 280,
+   "description": "Lace-Up Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0008",
+     "alt": "Brown leather lace-up boots on a sunny step"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-piper-hiking-boot",
+   "name": "Piper Hiking Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 230,
+   "description": "Hiking Boot in tan. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0098",
+     "alt": "Tan leather hiking boot with a chunky rubber sole"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-quincy-western-boot",
+   "name": "Quincy Western Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 360,
+   "description": "Western Boot in tan. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0271",
+     "alt": "Tan leather western boots with a lasso on black"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-rowan-lace-up-boot",
+   "name": "Rowan Lace-Up Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 250,
+   "description": "Lace-Up Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0254",
+     "alt": "Black patent lace-up boots worn with leggings"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-sable-shearling-boot",
+   "name": "Sable Shearling Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 260,
+   "description": "Shearling Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0165",
+     "alt": "Black leather lace-up boot lined with shearling"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-tobin-hiking-boot",
+   "name": "Tobin Hiking Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 270,
+   "description": "Hiking Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0064",
+     "alt": "Brown suede hiking boot with bright pink laces"
+    },
+    {
+     "ref": "C0062",
+     "alt": "Brown suede hiking boot with bright pink laces (view 2)"
+    },
+    {
+     "ref": "C0063",
+     "alt": "Brown suede hiking boot with bright pink laces (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-vale-slouch-boot",
+   "name": "Vale Slouch Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "blue"
+   ],
+   "priceDollars": 190,
+   "description": "Slouch Boot in blue. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0061",
+     "alt": "Cobalt blue suede slouch ankle boot with a bow"
+    }
+   ]
+  },
+  {
+   "slug": "halden-wilder-lace-up-boot",
+   "name": "Wilder Lace-Up Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "dark brown"
+   ],
+   "priceDollars": 320,
+   "description": "Lace-Up Boot in dark brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0362",
+     "alt": "Dark brown leather lace-up boots on black"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-yves-platform-bootie",
+   "name": "Yves Platform Bootie",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "pink"
+   ],
+   "priceDollars": 690,
+   "description": "Platform Bootie in pink. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0077",
+     "alt": "Blush pink studded platform heel boots"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-arden-heeled-ankle-boot",
+   "name": "Arden Heeled Ankle Boot",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 650,
+   "description": "Heeled Ankle Boot in red. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0045",
+     "alt": "Red studded stiletto ankle boots"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-bram-chelsea-boot",
+   "name": "Bram Chelsea Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 240,
+   "description": "Chelsea Boot in grey. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0332",
+     "alt": "Grey suede Chelsea boots on autumn leaves"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-cleo-buckle-boot",
+   "name": "Cleo Buckle Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 290,
+   "description": "Buckle Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0240",
+     "alt": "Black leather boot with buckled straps and studs"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-dara-combat-boot",
+   "name": "Dara Combat Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 250,
+   "description": "Combat Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0056",
+     "alt": "Worn black leather combat boots on decking"
+    }
+   ]
+  },
+  {
+   "slug": "halden-emory-work-boot",
+   "name": "Emory Work Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "burgundy"
+   ],
+   "priceDollars": 260,
+   "description": "Work Boot in burgundy. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0339",
+     "alt": "Burgundy leather work boots in a garden"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-finn-heeled-ankle-boot",
+   "name": "Finn Heeled Ankle Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 230,
+   "description": "Heeled Ankle Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0147",
+     "alt": "Black leather heeled ankle boots on a path"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-greer-combat-boot",
+   "name": "Greer Combat Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 270,
+   "description": "Combat Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0333",
+     "alt": "Black leather combat boot on white"
+    }
+   ]
+  },
+  {
+   "slug": "halden-hale-work-boot",
+   "name": "Hale Work Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 240,
+   "description": "Work Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0319",
+     "alt": "Well-worn leather work boots on a pink background"
+    }
+   ]
+  },
+  {
+   "slug": "halden-idris-lace-up-boot",
+   "name": "Idris Lace-Up Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "brown",
+    "cognac"
+   ],
+   "priceDollars": 330,
+   "description": "Lace-Up Boot in brown and cognac. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0234",
+     "alt": "Leather lace-up boot with a side zip, in brown"
+    },
+    {
+     "ref": "C0235",
+     "alt": "Leather lace-up boot with a side zip, in cognac"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-jory-chelsea-boot",
+   "name": "Jory Chelsea Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 300,
+   "description": "Chelsea Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0134",
+     "alt": "Brown leather Chelsea boots on white"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-kai-heeled-ankle-boot",
+   "name": "Kai Heeled Ankle Boot",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 620,
+   "description": "Heeled Ankle Boot in black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0020",
+     "alt": "Black leather stiletto ankle boots on white"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-leith-shearling-boot",
+   "name": "Leith Shearling Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 210,
+   "description": "Shearling Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0284",
+     "alt": "Brown suede boot with a shearling trim and buckle"
+    }
+   ]
+  },
+  {
+   "slug": "halden-marlo-lace-up-boot",
+   "name": "Marlo Lace-Up Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 310,
+   "description": "Lace-Up Boot in brown. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0260",
+     "alt": "Brown leather lace-up boots with a side zip"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-nell-combat-boot",
+   "name": "Nell Combat Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 230,
+   "description": "Combat Boot in navy. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0171",
+     "alt": "Navy leather combat boots on a garden wall"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-odin-combat-boot",
+   "name": "Odin Combat Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 280,
+   "description": "Combat Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0269",
+     "alt": "Black leather combat boot in studio light"
+    },
+    {
+     "ref": "C0268",
+     "alt": "Black leather combat boot in studio light (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-pia-desert-boot",
+   "name": "Pia Desert Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "beige"
+   ],
+   "priceDollars": 250,
+   "description": "Desert Boot in beige. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0246",
+     "alt": "Beige suede desert boots on a boardwalk"
+    },
+    {
+     "ref": "C0245",
+     "alt": "Beige suede desert boots on a boardwalk (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-quest-chelsea-boot",
+   "name": "Quest Chelsea Boot",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "cognac"
+   ],
+   "priceDollars": 360,
+   "description": "Chelsea Boot in cognac. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0316",
+     "alt": "Cognac leather Chelsea boots on a patterned tile floor"
+    }
+   ]
+  },
+  {
+   "slug": "halden-reed-lace-up-boot",
+   "name": "Reed Lace-Up Boot",
+   "brand": "Halden",
+   "category": "boots",
+   "gender": "men",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 290,
+   "description": "Lace-Up Boot in black. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0195",
+     "alt": "Black leather lace-up boot on white"
+    }
+   ]
+  },
+  {
+   "slug": "tarn-sela-chelsea-boot",
+   "name": "Sela Chelsea Boot",
+   "brand": "Tarn",
+   "category": "boots",
+   "gender": "women",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 220,
+   "description": "Chelsea Boot in navy. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0081",
+     "alt": "Navy suede Chelsea boot on red velvet"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-tarn-floral-bootie",
+   "name": "Tarn Floral Bootie",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "red/black"
+   ],
+   "priceDollars": 720,
+   "description": "Floral Bootie in red/black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0257",
+     "alt": "Red and black floral stiletto bootie on shoe boxes"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-uri-peep-toe-bootie",
+   "name": "Uri Peep-Toe Bootie",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 640,
+   "description": "Peep-Toe Bootie in navy. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0046",
+     "alt": "Navy suede peep-toe bootie with cut-out flames"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-vida-block-heel-pump",
+   "name": "Vida Block Heel Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 560,
+   "description": "Block Heel Pump in red. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0614",
+     "alt": "Red suede block-heel pump with crossed straps"
+    },
+    {
+     "ref": "C0621",
+     "alt": "Red suede block-heel pump with crossed straps (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-wynn-block-heel-sandal",
+   "name": "Wynn Block Heel Sandal",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black/orange"
+   ],
+   "priceDollars": 580,
+   "description": "Block Heel Sandal in black/orange. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0615",
+     "alt": "Black block-heel sandal with orange and yellow panels"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-xan-strappy-sandal",
+   "name": "Xan Strappy Sandal",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 620,
+   "description": "Strappy Sandal in black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0616",
+     "alt": "Black patent strappy stiletto sandal"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-yael-strappy-sandal",
+   "name": "Yael Strappy Sandal",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "silver"
+   ],
+   "priceDollars": 640,
+   "description": "Strappy Sandal in silver. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0617",
+     "alt": "Silver metallic strappy stiletto sandal"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-zora-block-heel-pump",
+   "name": "Zora Block Heel Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 540,
+   "description": "Block Heel Pump in grey. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0618",
+     "alt": "Pale grey block-heel pump with a crossed strap"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-ansel-block-heel-pump",
+   "name": "Ansel Block Heel Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 560,
+   "description": "Block Heel Pump in black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0619",
+     "alt": "Black suede pump with a patterned block heel"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-briar-stiletto-pump",
+   "name": "Briar Stiletto Pump",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 650,
+   "description": "Stiletto Pump in red. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0534",
+     "alt": "Red suede stiletto pumps on black"
+    },
+    {
+     "ref": "C0533",
+     "alt": "Red suede stiletto pumps on black (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-cass-suede-bootie",
+   "name": "Cass Suede Bootie",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 690,
+   "description": "Suede Bootie in black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0604",
+     "alt": "Black suede heeled booties on a bed"
+    },
+    {
+     "ref": "C0605",
+     "alt": "Black suede heeled booties on a bed (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-aurel-stiletto-pump",
+   "name": "Aurel Stiletto Pump",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 720,
+   "description": "Stiletto Pump in black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0664",
+     "alt": "Black patent stiletto pump in dramatic light"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-brisa-platform-sandal",
+   "name": "Brisa Platform Sandal",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 610,
+   "description": "Platform Sandal in navy. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0491",
+     "alt": "Navy strappy platform sandal with a woven heel"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-calder-strappy-sandal",
+   "name": "Calder Strappy Sandal",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "gold"
+   ],
+   "priceDollars": 690,
+   "description": "Strappy Sandal in gold. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0498",
+     "alt": "Gold metallic strappy stiletto sandals"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-dorian-embellished-mule",
+   "name": "Dorian Embellished Mule",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "gold"
+   ],
+   "priceDollars": 620,
+   "description": "Embellished Mule in gold. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0576",
+     "alt": "Gold embellished heeled mules"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-elan-embroidered-pump",
+   "name": "Elan Embroidered Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 890,
+   "description": "Embroidered Pump in red. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0563",
+     "alt": "Red pointed pump with floral embroidery"
+    },
+    {
+     "ref": "C0564",
+     "alt": "Red pointed pump with floral embroidery (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-fenwick-platform-pump",
+   "name": "Fenwick Platform Pump",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 760,
+   "description": "Platform Pump in black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0478",
+     "alt": "Black patent platform pump with a gold heel"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-gavra-glitter-pump",
+   "name": "Gavra Glitter Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "silver"
+   ],
+   "priceDollars": 650,
+   "description": "Glitter Pump in silver. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0566",
+     "alt": "Silver glitter pump on a tree stump"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-hollis-platform-pump",
+   "name": "Hollis Platform Pump",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 690,
+   "description": "Platform Pump in grey. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0565",
+     "alt": "Grey suede platform pump with a neon-yellow sole edge"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-ione-suede-pump",
+   "name": "Ione Suede Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 580,
+   "description": "Suede Pump in red. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0475",
+     "alt": "Red suede pump with a rounded toe"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-jasper-bow-pump",
+   "name": "Jasper Bow Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 640,
+   "description": "Bow Pump in navy. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0503",
+     "alt": "Navy peep-toe pump with a satin bow"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-kiran-platform-pump",
+   "name": "Kiran Platform Pump",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "blue"
+   ],
+   "priceDollars": 720,
+   "description": "Platform Pump in blue. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0493",
+     "alt": "Cobalt patent peep-toe platform pump"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-lucan-glitter-pump",
+   "name": "Lucan Glitter Pump",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "gold"
+   ],
+   "priceDollars": 690,
+   "description": "Glitter Pump in gold. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0520",
+     "alt": "Gold glitter platform pumps"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-marais-ankle-strap-sandal",
+   "name": "Marais Ankle-Strap Sandal",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "ivory"
+   ],
+   "priceDollars": 590,
+   "description": "Ankle-Strap Sandal in ivory. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0556",
+     "alt": "Ivory glitter ankle-strap sandals, rear view"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-nerea-bow-sandal",
+   "name": "Nerea Bow Sandal",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "pink"
+   ],
+   "priceDollars": 620,
+   "description": "Bow Sandal in pink. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0537",
+     "alt": "Fuchsia satin peep-toe heels with bows"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-orsen-classic-pump",
+   "name": "Orsen Classic Pump",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 560,
+   "description": "Classic Pump in black. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C0545",
+     "alt": "Black patent pumps on grass"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-perrin-strappy-sandal",
+   "name": "Perrin Strappy Sandal",
+   "brand": "Noir Meridian",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "gold"
+   ],
+   "priceDollars": 650,
+   "description": "Strappy Sandal in gold. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C1246",
+     "alt": "Champagne metallic strappy stiletto sandal"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-quill-fringe-sandal",
+   "name": "Quill Fringe Sandal",
+   "brand": "Maison Verre",
+   "category": "heels",
+   "gender": "women",
+   "colours": [
+    "ivory"
+   ],
+   "priceDollars": 700,
+   "description": "Fringe Sandal in ivory. Padded insole. Non-slip heel cap.",
+   "photos": [
+    {
+     "ref": "C1242",
+     "alt": "Ivory suede fringed stiletto sandals on black"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-rhea-boat-shoe",
+   "name": "Rhea Boat Shoe",
+   "brand": "Ostrava Atelier",
+   "category": "loafers",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 210,
+   "description": "Boat Shoe in brown. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0701",
+     "alt": "Brown leather boat shoes with rawhide laces"
+    },
+    {
+     "ref": "C0700",
+     "alt": "Brown leather boat shoes with rawhide laces (view 2)"
+    },
+    {
+     "ref": "C0703",
+     "alt": "Brown leather boat shoes with rawhide laces (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-soren-slip-on-loafer",
+   "name": "Soren Slip-On Loafer",
+   "brand": "Ostrava Atelier",
+   "category": "loafers",
+   "gender": "men",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 240,
+   "description": "Slip-On Loafer in black. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0750",
+     "alt": "Black leather slip-on loafers"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-talia-strap-loafer",
+   "name": "Talia Strap Loafer",
+   "brand": "Maison Verre",
+   "category": "loafers",
+   "gender": "men",
+   "colours": [
+    "grey/black"
+   ],
+   "priceDollars": 320,
+   "description": "Strap Loafer in grey/black. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0712",
+     "alt": "Grey and black leather loafer with a wide strap"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-ulric-driving-moccasin",
+   "name": "Ulric Driving Moccasin",
+   "brand": "Maison Verre",
+   "category": "loafers",
+   "gender": "men",
+   "colours": [
+    "blue",
+    "grey",
+    "red"
+   ],
+   "priceDollars": 260,
+   "description": "Driving Moccasin in blue, grey and red. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0718",
+     "alt": "Suede driving moccasins with a metal bit, in blue, grey and red"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-vesper-penny-loafer",
+   "name": "Vesper Penny Loafer",
+   "brand": "Ostrava Atelier",
+   "category": "loafers",
+   "gender": "men",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 280,
+   "description": "Penny Loafer in tan. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0801",
+     "alt": "Tan leather loafer with a strap across the vamp"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-wren-moccasin",
+   "name": "Wren Moccasin",
+   "brand": "Ostrava Atelier",
+   "category": "loafers",
+   "gender": "men",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 290,
+   "description": "Moccasin in black. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0717",
+     "alt": "Black leather moccasin with contrast stitching"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-xavi-ballet-flat",
+   "name": "Xavi Ballet Flat",
+   "brand": "Maison Verre",
+   "category": "loafers",
+   "gender": "women",
+   "colours": [
+    "blue"
+   ],
+   "priceDollars": 190,
+   "description": "Ballet Flat in blue. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0697",
+     "alt": "Cobalt pebbled leather flats with yellow soles"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-yara-mary-jane-flat",
+   "name": "Yara Mary Jane Flat",
+   "brand": "Maison Verre",
+   "category": "loafers",
+   "gender": "women",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 180,
+   "description": "Mary Jane Flat in white. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0739",
+     "alt": "White perforated leather Mary Jane flat"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-zeno-monk-strap",
+   "name": "Zeno Monk Strap",
+   "brand": "Ostrava Atelier",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 420,
+   "description": "Monk Strap in brown. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0805",
+     "alt": "Brown leather double monk straps with a cap toe"
+    },
+    {
+     "ref": "C0794",
+     "alt": "Brown leather double monk straps with a cap toe (view 2)"
+    },
+    {
+     "ref": "C0950",
+     "alt": "Brown leather double monk straps with a cap toe (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-alder-wholecut-oxford",
+   "name": "Alder Wholecut Oxford",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "burgundy"
+   ],
+   "priceDollars": 480,
+   "description": "Wholecut Oxford in burgundy. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0796",
+     "alt": "Burgundy patina leather wholecut shoes"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-bexley-derby",
+   "name": "Bexley Derby",
+   "brand": "Ostrava Atelier",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "tan",
+    "brown"
+   ],
+   "priceDollars": 260,
+   "description": "Derby in tan and brown. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0753",
+     "alt": "Lace-up derby, in tan"
+    },
+    {
+     "ref": "C0754",
+     "alt": "Lace-up derby, in brown"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-corin-monk-strap",
+   "name": "Corin Monk Strap",
+   "brand": "Ostrava Atelier",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 420,
+   "description": "Monk Strap in navy. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0814",
+     "alt": "Navy leather double monk straps with a cap toe"
+    },
+    {
+     "ref": "C0815",
+     "alt": "Navy leather double monk straps with a cap toe (view 2)"
+    },
+    {
+     "ref": "C0816",
+     "alt": "Navy leather double monk straps with a cap toe (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-dale-monk-strap",
+   "name": "Dale Monk Strap",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 440,
+   "description": "Monk Strap in brown. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0793",
+     "alt": "Brown leather double monk strap on white"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-eero-monk-strap",
+   "name": "Eero Monk Strap",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 460,
+   "description": "Monk Strap in black. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0762",
+     "alt": "Black patent double monk straps on a colour-block backdrop"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-faro-monk-strap",
+   "name": "Faro Monk Strap",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "cognac"
+   ],
+   "priceDollars": 460,
+   "description": "Monk Strap in cognac. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0763",
+     "alt": "Close-up of a cognac leather double monk strap"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-garnet-penny-loafer",
+   "name": "Garnet Penny Loafer",
+   "brand": "Ostrava Atelier",
+   "category": "loafers",
+   "gender": "men",
+   "colours": [
+    "dark brown"
+   ],
+   "priceDollars": 380,
+   "description": "Penny Loafer in dark brown. Soft unlined upper. Flexible sole.",
+   "photos": [
+    {
+     "ref": "C0840",
+     "alt": "Dark brown loafers in warm amber light"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-harlan-suede-derby",
+   "name": "Harlan Suede Derby",
+   "brand": "Ostrava Atelier",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 280,
+   "description": "Suede Derby in grey. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0751",
+     "alt": "Grey suede derby shoes on a wooden floor"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-isla-cap-toe-oxford",
+   "name": "Isla Cap-Toe Oxford",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "cognac"
+   ],
+   "priceDollars": 460,
+   "description": "Cap-Toe Oxford in cognac. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C1132",
+     "alt": "Cognac leather oxfords with contrast welt"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-juno-cap-toe-oxford",
+   "name": "Juno Cap-Toe Oxford",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "olive",
+    "brown"
+   ],
+   "priceDollars": 480,
+   "description": "Cap-Toe Oxford in olive and brown. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C1017",
+     "alt": "Cap-toe oxford, in olive"
+    },
+    {
+     "ref": "C1018",
+     "alt": "Cap-toe oxford, in brown"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-lorne-suede-derby",
+   "name": "Lorne Suede Derby",
+   "brand": "Ostrava Atelier",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "blue"
+   ],
+   "priceDollars": 260,
+   "description": "Suede Derby in blue. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0139",
+     "alt": "Blue suede derby shoes"
+    },
+    {
+     "ref": "C0896",
+     "alt": "Blue suede derby shoes (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-mika-cap-toe-oxford",
+   "name": "Mika Cap-Toe Oxford",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 520,
+   "description": "Cap-Toe Oxford in black. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C1028",
+     "alt": "Polished black cap-toe oxford on white"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-nico-patterned-derby",
+   "name": "Nico Patterned Derby",
+   "brand": "Maison Verre",
+   "category": "oxfords",
+   "gender": "women",
+   "colours": [
+    "turquoise"
+   ],
+   "priceDollars": 240,
+   "description": "Patterned Derby in turquoise. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0989",
+     "alt": "Turquoise paisley derby with a white sole"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-olwen-wingtip-derby",
+   "name": "Olwen Wingtip Derby",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "black"
+   ],
+   "priceDollars": 390,
+   "description": "Wingtip Derby in black. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0912",
+     "alt": "Black leather wingtip derby with a belt and cologne"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-piper-suede-derby",
+   "name": "Piper Suede Derby",
+   "brand": "Ostrava Atelier",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 260,
+   "description": "Suede Derby in tan. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C0863",
+     "alt": "Close-up of a tan suede derby with brown laces"
+    }
+   ]
+  },
+  {
+   "slug": "noir-meridian-quincy-cap-toe-oxford",
+   "name": "Quincy Cap-Toe Oxford",
+   "brand": "Noir Meridian",
+   "category": "oxfords",
+   "gender": "men",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 460,
+   "description": "Cap-Toe Oxford in tan. Leather sole, resoleable. Cushioned leather insole.",
+   "photos": [
+    {
+     "ref": "C1021",
+     "alt": "Burnished tan cap-toe oxfords worn with black trousers"
+    },
+    {
+     "ref": "C1023",
+     "alt": "Burnished tan cap-toe oxfords worn with black trousers (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "ostrava-atelier-rowan-suede-chukka",
+   "name": "Rowan Suede Chukka",
+   "brand": "Ostrava Atelier",
+   "category": "boots",
+   "gender": "unisex",
+   "colours": [
+    "rust"
+   ],
+   "priceDollars": 240,
+   "description": "Suede Chukka in rust. Cushioned footbed. Rubber outsole with a deep tread.",
+   "photos": [
+    {
+     "ref": "C0076",
+     "alt": "Rust suede chukka boots on autumn leaves"
+    }
+   ]
+  },
+  {
+   "slug": "kestrel-run-sable-road-trainer",
+   "name": "Sable Road Trainer",
+   "brand": "Kestrel Run",
+   "category": "running",
+   "gender": "unisex",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 150,
+   "description": "Road Trainer in red. Breathable mesh upper. Durable rubber outsole.",
+   "photos": [
+    {
+     "ref": "C1104",
+     "alt": "Red mesh running shoe with a sculpted sole"
+    }
+   ]
+  },
+  {
+   "slug": "kestrel-run-tobin-road-trainer",
+   "name": "Tobin Road Trainer",
+   "brand": "Kestrel Run",
+   "category": "running",
+   "gender": "women",
+   "colours": [
+    "yellow"
+   ],
+   "priceDollars": 150,
+   "description": "Road Trainer in yellow. Breathable mesh upper. Durable rubber outsole.",
+   "photos": [
+    {
+     "ref": "C1105",
+     "alt": "Yellow mesh running shoe on white"
+    }
+   ]
+  },
+  {
+   "slug": "kestrel-run-umber-tempo-shoe",
+   "name": "Umber Tempo Shoe",
+   "brand": "Kestrel Run",
+   "category": "running",
+   "gender": "unisex",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 160,
+   "description": "Tempo Shoe in red. Breathable mesh upper. Durable rubber outsole.",
+   "photos": [
+    {
+     "ref": "C1106",
+     "alt": "Red running shoe with a gold accent, side view"
+    }
+   ]
+  },
+  {
+   "slug": "kestrel-run-vale-road-trainer",
+   "name": "Vale Road Trainer",
+   "brand": "Kestrel Run",
+   "category": "running",
+   "gender": "women",
+   "colours": [
+    "purple"
+   ],
+   "priceDollars": 130,
+   "description": "Road Trainer in purple. Breathable mesh upper. Durable rubber outsole.",
+   "photos": [
+    {
+     "ref": "C1098",
+     "alt": "Purple and black running shoe with lilac laces"
+    },
+    {
+     "ref": "C1099",
+     "alt": "Purple and black running shoe with lilac laces (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "kestrel-run-wilder-tempo-shoe",
+   "name": "Wilder Tempo Shoe",
+   "brand": "Kestrel Run",
+   "category": "running",
+   "gender": "unisex",
+   "colours": [
+    "grey"
+   ],
+   "priceDollars": 140,
+   "description": "Tempo Shoe in grey. Breathable mesh upper. Durable rubber outsole.",
+   "photos": [
+    {
+     "ref": "C1115",
+     "alt": "Pair of grey knit running shoes, front view"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-arden-cut-out-heel",
+   "name": "Arden Cut-Out Heel",
+   "brand": "Maison Verre",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "white"
+   ],
+   "priceDollars": 190,
+   "description": "Cut-Out Heel in white. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1158",
+     "alt": "White cut-out leather heeled sandals"
+    },
+    {
+     "ref": "C1157",
+     "alt": "White cut-out leather heeled sandals (view 2)"
+    },
+    {
+     "ref": "C1159",
+     "alt": "White cut-out leather heeled sandals (view 3)"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-bram-strappy-sandal",
+   "name": "Bram Strappy Sandal",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "unisex",
+   "colours": [
+    "brown"
+   ],
+   "priceDollars": 95,
+   "description": "Strappy Sandal in brown. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1166",
+     "alt": "Brown leather strappy sandals on stone"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-cleo-strappy-sandal",
+   "name": "Cleo Strappy Sandal",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "pink"
+   ],
+   "priceDollars": 85,
+   "description": "Strappy Sandal in pink. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1190",
+     "alt": "Metallic fuchsia strappy flat sandal"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-dara-flip-flop",
+   "name": "Dara Flip-Flop",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "pink"
+   ],
+   "priceDollars": 45,
+   "description": "Flip-Flop in pink. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1163",
+     "alt": "Pink and white flip-flops on decking"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-emory-flip-flop",
+   "name": "Emory Flip-Flop",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "unisex",
+   "colours": [
+    "floral"
+   ],
+   "priceDollars": 40,
+   "description": "Flip-Flop in floral. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1232",
+     "alt": "Floral print flip-flop on grass"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-finn-menorquina-sandal",
+   "name": "Finn Menorquina Sandal",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "lilac"
+   ],
+   "priceDollars": 90,
+   "description": "Menorquina Sandal in lilac. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1234",
+     "alt": "Lilac leather Menorquina sandal"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-greer-strappy-sandal",
+   "name": "Greer Strappy Sandal",
+   "brand": "Maison Verre",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "red"
+   ],
+   "priceDollars": 140,
+   "description": "Strappy Sandal in red. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1256",
+     "alt": "Red leather flat sandals with buckled ankle straps"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-hale-woven-flip-flop",
+   "name": "Hale Woven Flip-Flop",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "unisex",
+   "colours": [
+    "sand"
+   ],
+   "priceDollars": 60,
+   "description": "Woven Flip-Flop in sand. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1193",
+     "alt": "Woven sand-coloured flip-flops with seashells"
+    },
+    {
+     "ref": "C1194",
+     "alt": "Woven sand-coloured flip-flops with seashells (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-idris-flip-flop",
+   "name": "Idris Flip-Flop",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "unisex",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 40,
+   "description": "Flip-Flop in navy. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1210",
+     "alt": "Navy flip-flops on a sandy beach"
+    },
+    {
+     "ref": "C1211",
+     "alt": "Navy flip-flops on a sandy beach (view 2)"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-jory-espadrille-wedge",
+   "name": "Jory Espadrille Wedge",
+   "brand": "Maison Verre",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "navy"
+   ],
+   "priceDollars": 150,
+   "description": "Espadrille Wedge in navy. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1177",
+     "alt": "Navy and white espadrille wedge sandal"
+    }
+   ]
+  },
+  {
+   "slug": "maison-verre-kai-tassel-sandal",
+   "name": "Kai Tassel Sandal",
+   "brand": "Maison Verre",
+   "category": "sandals",
+   "gender": "women",
+   "colours": [
+    "tan"
+   ],
+   "priceDollars": 120,
+   "description": "Tassel Sandal in tan. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1233",
+     "alt": "Tan leather sandals with woven straps and tassels"
+    }
+   ]
+  },
+  {
+   "slug": "slab-sole-leith-flip-flop",
+   "name": "Leith Flip-Flop",
+   "brand": "Slab & Sole",
+   "category": "sandals",
+   "gender": "unisex",
+   "colours": [
+    "silver"
+   ],
+   "priceDollars": 45,
+   "description": "Flip-Flop in silver. Contoured footbed. Light and packable.",
+   "photos": [
+    {
+     "ref": "C1165",
+     "alt": "Silver flip-flops on red desert sand"
+    }
+   ]
+  }
+ ]
+}

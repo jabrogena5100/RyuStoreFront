@@ -143,7 +143,7 @@ export default function DesignPage() {
       <Section id="states" title="Loading, empty, error">
         <div className="grid gap-6 md:grid-cols-3">
           <div className="flex flex-col gap-3">
-            <Skeleton className="aspect-[4/5] w-full rounded-lg" />
+            <Skeleton className="aspect-[4/3] w-full rounded-lg" />
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-5 w-3/4" />
           </div>

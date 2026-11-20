@@ -14,10 +14,13 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   // The API's cheapest-first page of one gives each tile its count, its "from" price and a picture; the rows are plain searches.
-  const [tiles, newest, under150, finder] = await Promise.all([
+  // Each tile: the cheapest product gives the count and the "from" price; the newest gives the picture (the cheapest is
+  // often an odd fit for the occasion, a flat under "After dark").
+  const [tiles, tileImages, newest, under150, finder] = await Promise.all([
     Promise.all(OCCASIONS.map((o) => searchProducts({ category: o.categories.join(","), categoryExact: true, sort: "price_asc", pageSize: 1 }))),
+    Promise.all(OCCASIONS.map((o) => searchProducts({ category: o.categories.join(","), categoryExact: true, sort: "newest", pageSize: 1 }))),
     searchProducts({ sort: "newest", pageSize: 8 }),
-    searchProducts(toSearch({ price: "u150", sort: "price-asc" }, { page: "1" })).then((r) => r.items),
+    searchProducts(toSearch({ price: "u150", sort: "newest" }, { page: "1" })).then((r) => r.items),
     searchProducts({ inStock: true, pageSize: 1 }),
   ]);
   return (
@@ -25,7 +28,7 @@ export default async function Home() {
       <HeroFilmstrip products={newest.items} total={finder.total} />
 
       <Section id="categories" index="01" title="Shop by occasion" href="/products" hrefLabel="All shoes">
-        <CategoryGrid tiles={OCCASIONS.map((o, i) => ({ slug: o.slug, total: tiles[i].total, cheapest: tiles[i].items[0] }))} />
+        <CategoryGrid tiles={OCCASIONS.map((o, i) => ({ slug: o.slug, total: tiles[i].total, cheapest: tiles[i].items[0], picture: tileImages[i].items[0] }))} />
       </Section>
 
       <div className="mt-12 sm:mt-16">
