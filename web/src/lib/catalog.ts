@@ -7,6 +7,17 @@
 
 export type Gender = "men" | "women" | "unisex";
 
+/** A product photo (the API's ImageView): files are `${base}-${w}.avif|webp` for w in IMAGE_WIDTHS. */
+export interface ImageView {
+  base: string;
+  width: number;
+  height: number;
+  alt: string;
+}
+
+/** Keep in step with ImageView.WIDTHS (Java) and scripts/images/variants.mjs. */
+export const IMAGE_WIDTHS = [480, 960, 1440] as const;
+
 /** GET /api/products items: exactly the backend's ProductSummary record. */
 export interface ProductSummary {
   id: number;
@@ -19,6 +30,8 @@ export interface ProductSummary {
   minPriceMinor: number;
   currency: "USD";
   inStock: boolean;
+  /** The first photo; null (or absent in fixtures) when the product has none. */
+  image?: ImageView | null;
 }
 
 export interface Variant {
@@ -40,6 +53,8 @@ export interface ProductDetail {
   gender: Gender;
   categorySlug: string;
   categoryName: string;
+  /** Photos in display order; empty (or absent in fixtures) when the product has none. */
+  images?: ImageView[];
   variants: Variant[];
 }
 

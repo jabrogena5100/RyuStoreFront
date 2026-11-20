@@ -15,10 +15,13 @@ export function ProductCard({ product }: { product: ProductSummary }) {
   return (
     <Link href={`/products/${product.slug}`} className="group block rounded-md focus-visible:outline-offset-4">
       <div className="relative overflow-hidden rounded-md bg-surface-1">
-        <ProductImage product={product} label={false} decorative />
-        <div className="absolute inset-0 opacity-0 transition-opacity duration-(--duration-base) ease-standard group-hover:opacity-100 group-focus-visible:opacity-100">
-          <ProductImage product={product} view={1} label={false} decorative className="h-full" />
-        </div>
+        <ProductImage product={product} image={product.image} label={false} decorative sizes="(min-width: 1024px) 22vw, (min-width: 640px) 33vw, 50vw" />
+        {/* The listing returns one photo per product, so the hover view is only drawn for placeholders. */}
+        {product.image ? null : (
+          <div className="absolute inset-0 opacity-0 transition-opacity duration-(--duration-base) ease-standard group-hover:opacity-100 group-focus-visible:opacity-100">
+            <ProductImage product={product} view={1} label={false} decorative className="h-full" />
+          </div>
+        )}
         {!product.inStock ? (
           <div className="absolute left-2.5 top-2.5">
             <Badge>Sold out</Badge>

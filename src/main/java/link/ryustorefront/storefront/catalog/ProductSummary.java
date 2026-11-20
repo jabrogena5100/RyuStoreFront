@@ -10,5 +10,7 @@ public record ProductSummary(
         String categoryName,
         long minPriceMinor,
         String currency,
-        boolean inStock) {
+        boolean inStock,
+        /** The first photo, or null when the product has none (the client shows a placeholder). */
+        ImageView image) {
 }

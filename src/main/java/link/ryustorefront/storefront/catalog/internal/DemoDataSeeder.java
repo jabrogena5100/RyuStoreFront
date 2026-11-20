@@ -208,9 +208,66 @@ public class DemoDataSeeder {
         return productCount;
     }
 
+    /**
+     * Inserts the curated catalogue: one product per entry, in file order (the first entry is the newest), with every
+     * size in the gender's window for each listed colour, deterministic stock per product, and its photos in order.
+     * Returns how many products were inserted.
+     */
+    public int seedCatalogue(CatalogueFile file) {
+        Map<String, Long> categoryIds = transactions.execute(status -> insertCategories());
+        long serial = productCount() + 1;
+        Instant now = Instant.now();
+        List<Pending> pending = new ArrayList<>();
+        List<CatalogueFile.Product> products = file.products();
+        for (int i = 0; i < products.size(); i++, serial++) {
+            CatalogueFile.Product p = products.get(i);
+            Long categoryId = categoryIds.get(p.category());
+            if (categoryId == null) {
+                throw new IllegalArgumentException("Unknown category '" + p.category() + "' for " + p.slug());
+            }
+            if (p.colours() == null || p.colours().isEmpty()) {
+                throw new IllegalArgumentException("No colours for " + p.slug());
+            }
+            Object[] productRow = {p.slug(), p.name(), p.brand(), p.description(), categoryId, p.gender(), true,
+                    Timestamp.from(now.minus(i, ChronoUnit.HOURS))};
+            Random random = new Random(p.slug().hashCode());
+            List<String> sizes = sizeWindow(random, p.gender());
+            List<Object[]> variants = new ArrayList<>();
+            for (String colour : p.colours()) {
+                for (String size : sizes) {
+                    int roll = random.nextInt(100);
+                    int stock = roll < 12 ? 0 : roll < 30 ? 1 + random.nextInt(3) : 4 + random.nextInt(22);
+                    String sku = initials(p.brand()) + "-" + String.format("%05d", serial) + "-" + colourCode(colour)
+                            + "-" + size.replace('.', '-');
+                    variants.add(new Object[] {sku, size, colour, p.priceDollars() * 100L, stock});
+                }
+            }
+            pending.add(new Pending(p.slug(), productRow, variants));
+        }
+        transactions.executeWithoutResult(status -> {
+            writeChunk(pending);
+            List<Object[]> imageRows = new ArrayList<>();
+            for (CatalogueFile.Product p : products) {
+                long productId = jdbc.sql("SELECT id FROM products WHERE slug = :slug").param("slug", p.slug())
+                        .query(Long.class).single();
+                List<CatalogueFile.Image> images = p.images() == null ? List.of() : p.images();
+                for (int pos = 0; pos < images.size(); pos++) {
+                    CatalogueFile.Image img = images.get(pos);
+                    imageRows.add(new Object[] {productId, pos, img.key(), img.width(), img.height(), img.alt()});
+                }
+            }
+            template.batchUpdate("""
+                    INSERT INTO product_images (product_id, position, image_key, width, height, alt)
+                    VALUES (?, ?, ?, ?, ?, ?)""", imageRows);
+        });
+        log.info("Seeded {} catalogue products", products.size());
+        return products.size();
+    }
+
     /** Removes all catalogue rows. Test use only: fails if orders or carts reference variants. */
     @Transactional
     public void clear() {
+        jdbc.sql("DELETE FROM product_images").update();
         jdbc.sql("DELETE FROM variants").update();
         jdbc.sql("DELETE FROM products").update();
         jdbc.sql("DELETE FROM categories WHERE parent_id IS NOT NULL").update();

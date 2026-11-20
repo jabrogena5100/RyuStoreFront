@@ -1,0 +1,9 @@
+{
+  "name": "storefront-image-tools",
+  "private": true,
+  "type": "module",
+  "description": "Builds responsive image variants from the downloaded originals (scripts/images/variants.sh).",
+  "dependencies": {
+    "sharp": "0.35.5"
+  }
+}

@@ -27,7 +27,16 @@ export function CategoryGrid({ tiles }: { tiles: CategoryTileData[] }) {
               className={clsx("group relative block h-full overflow-hidden rounded-md bg-surface-1", lead ? "aspect-[4/3] lg:aspect-auto" : "aspect-[4/5] md:aspect-[4/3]")}
             >
               <div className="absolute inset-0 transition-transform duration-(--duration-slow) ease-standard group-hover:scale-[1.03] group-focus-visible:scale-[1.03]">
-                {t.cheapest ? <ProductImage product={t.cheapest} label={false} decorative className="aspect-auto! h-full" /> : null}
+                {t.cheapest ? (
+                  <ProductImage
+                    product={t.cheapest}
+                    image={t.cheapest.image}
+                    label={false}
+                    decorative
+                    className="aspect-auto! h-full"
+                    sizes={lead ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 25vw, 50vw"}
+                  />
+                ) : null}
               </div>
               <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-canvas via-canvas/70 to-transparent" />
               <ArrowUpRight aria-hidden="true" className="absolute right-3 top-3 size-5 text-fg-muted transition-[color,transform] duration-(--duration-base) group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent-text" />

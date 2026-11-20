@@ -12,6 +12,8 @@ public record ProductDetail(
         String gender,
         String categorySlug,
         String categoryName,
+        /** Photos in display order; empty when the product has none. */
+        List<ImageView> images,
         List<VariantView> variants) {
 
     public record VariantView(

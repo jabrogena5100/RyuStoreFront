@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import link.ryustorefront.storefront.catalog.CategoryView;
+import link.ryustorefront.storefront.catalog.ImageView;
 import link.ryustorefront.storefront.catalog.PageResult;
 import link.ryustorefront.storefront.catalog.ProductDetail;
 import link.ryustorefront.storefront.catalog.ProductSort;
 import link.ryustorefront.storefront.catalog.ProductSummary;
 import link.ryustorefront.storefront.catalog.SearchCriteria;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -31,9 +33,12 @@ public class ProductSearchRepository {
     private static final String LISTED = "p.active AND p.min_price_minor IS NOT NULL";
 
     private final JdbcClient jdbc;
+    /** Where image objects are served from, without a trailing slash (local SeaweedFS, or CloudFront in AWS). */
+    private final String imageBaseUrl;
 
-    public ProductSearchRepository(JdbcClient jdbc) {
+    public ProductSearchRepository(JdbcClient jdbc, @Value("${storefront.images.base-url}") String imageBaseUrl) {
         this.jdbc = jdbc;
+        this.imageBaseUrl = imageBaseUrl.replaceAll("/+$", "");
     }
 
     public PageResult<ProductSummary> search(SearchCriteria c) {
@@ -55,7 +60,8 @@ public class ProductSearchRepository {
         String sql = """
                 SELECT t.id, t.slug, t.name, t.brand, t.gender,
                        cat.slug AS category_slug, cat.name AS category_name,
-                       t.min_price_minor AS min_price, v.currency, v.in_stock
+                       t.min_price_minor AS min_price, v.currency, v.in_stock,
+                       img.image_key, img.width AS image_width, img.height AS image_height, img.alt AS image_alt
                 FROM (SELECT p.id, p.slug, p.name, p.brand, p.gender, p.category_id, p.min_price_minor, p.created_at%s
                       FROM products p
                       WHERE %s%s
@@ -67,10 +73,11 @@ public class ProductSearchRepository {
                     FROM variants
                     WHERE product_id = t.id AND active
                 ) v
+                LEFT JOIN product_images img ON img.product_id = t.id AND img.position = 0
                 ORDER BY %s""".formatted(relevance, LISTED, filters, orderBy(c, "p"), orderBy(c, "t"));
 
         List<ProductSummary> items = jdbc.sql(sql)
-                .params(params).query(ProductSearchRepository::mapSummary).list();
+                .params(params).query(this::mapSummary).list();
         return new PageResult<>(items, c.page(), c.pageSize(), total);
     }
 
@@ -84,7 +91,7 @@ public class ProductSearchRepository {
                 .query((rs, i) -> new ProductDetail(
                         rs.getLong("id"), rs.getString("slug"), rs.getString("name"), rs.getString("brand"),
                         rs.getString("description"), rs.getString("gender"),
-                        rs.getString("category_slug"), rs.getString("category_name"), List.of()))
+                        rs.getString("category_slug"), rs.getString("category_name"), List.of(), List.of()))
                 .optional();
         if (product.isEmpty()) {
             return Optional.empty();
@@ -101,8 +108,16 @@ public class ProductSearchRepository {
                         rs.getString("sku"), rs.getString("size_label"), rs.getString("colour"),
                         rs.getLong("price_minor"), rs.getString("currency"), rs.getBoolean("available")))
                 .list();
+        List<ImageView> images = jdbc.sql("""
+                SELECT image_key, width, height, alt
+                FROM product_images
+                WHERE product_id = :id
+                ORDER BY position""")
+                .param("id", base.id())
+                .query((rs, i) -> image(rs.getString("image_key"), rs.getInt("width"), rs.getInt("height"), rs.getString("alt")))
+                .list();
         return Optional.of(new ProductDetail(base.id(), base.slug(), base.name(), base.brand(),
-                base.description(), base.gender(), base.categorySlug(), base.categoryName(), variants));
+                base.description(), base.gender(), base.categorySlug(), base.categoryName(), images, variants));
     }
 
     public List<CategoryView> categories() {
@@ -181,10 +196,17 @@ public class ProductSearchRepository {
         };
     }
 
-    private static ProductSummary mapSummary(ResultSet rs, int rowNum) throws SQLException {
+    private ProductSummary mapSummary(ResultSet rs, int rowNum) throws SQLException {
+        String key = rs.getString("image_key");
+        ImageView image = key == null ? null
+                : image(key, rs.getInt("image_width"), rs.getInt("image_height"), rs.getString("image_alt"));
         return new ProductSummary(
                 rs.getLong("id"), rs.getString("slug"), rs.getString("name"), rs.getString("brand"),
                 rs.getString("gender"), rs.getString("category_slug"), rs.getString("category_name"),
-                rs.getLong("min_price"), rs.getString("currency"), rs.getBoolean("in_stock"));
+                rs.getLong("min_price"), rs.getString("currency"), rs.getBoolean("in_stock"), image);
+    }
+
+    private ImageView image(String key, int width, int height, String alt) {
+        return new ImageView(imageBaseUrl + "/" + key, width, height, alt);
     }
 }

@@ -9,7 +9,7 @@ that is correct, so run at 1,000 and at 50,000 and record both.
 ```
 set -a; source .env; set +a
 docker compose up -d
-STOREFRONT_SEED_PRODUCTS=1000 ./mvnw spring-boot:run -Dspring-boot.run.profiles=seed
+STOREFRONT_SEED_SOURCE=generated STOREFRONT_SEED_PRODUCTS=1000 ./mvnw spring-boot:run -Dspring-boot.run.profiles=seed
 # wait for "Seeded 1000 products in ... ms", then Ctrl+C
 scripts/explain-catalog.sh | tee docs/explain/plans-1000.txt
 ```
@@ -19,7 +19,7 @@ database only), then seed again:
 
 ```
 docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "TRUNCATE products, categories, variants RESTART IDENTITY CASCADE"'
-STOREFRONT_SEED_PRODUCTS=50000 ./mvnw spring-boot:run -Dspring-boot.run.profiles=seed
+STOREFRONT_SEED_SOURCE=generated STOREFRONT_SEED_PRODUCTS=50000 ./mvnw spring-boot:run -Dspring-boot.run.profiles=seed
 scripts/explain-catalog.sh | tee docs/explain/plans-50000.txt
 ```
 

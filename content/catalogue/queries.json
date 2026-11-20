@@ -1,0 +1,14 @@
+{
+  "_about": "Search phrases per shop category for scripts/images/search.py. Generic product words only; no brand names. Category slugs match the seeder (DemoDataSeeder.CATEGORIES).",
+  "categories": {
+    "sneakers": ["white sneakers", "white leather sneakers", "minimal sneakers", "canvas sneakers"],
+    "chunky-sneakers": ["chunky sneakers", "platform sneakers"],
+    "boots": ["leather boots", "chelsea boots", "ankle boots", "combat boots", "suede boots"],
+    "heels": ["high heels", "stiletto heels", "heeled shoes"],
+    "loafers": ["leather loafers", "penny loafers"],
+    "running": ["running shoes", "running shoe product"],
+    "sandals": ["leather sandals", "sandals product"],
+    "oxfords": ["oxford shoes", "derby shoes", "brogues", "leather dress shoes"]
+  },
+  "wikimedia": ["shoe", "boots", "sneakers", "high heels", "sandal", "loafers", "oxford shoe"]
+}
