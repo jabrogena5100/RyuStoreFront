@@ -11,12 +11,12 @@ export function FilterDrawer({ activeCount, resultLabel, children }: { activeCou
       <button
         type="button"
         onClick={() => ref.current?.showModal()}
-        className="inline-flex min-h-11 items-center gap-2 rounded-md border border-line-strong bg-surface-2 px-4 text-small font-medium text-fg transition-colors duration-(--duration-base) hover:bg-surface-3 lg:hidden"
+        className="inline-flex min-h-11 items-center gap-2 rounded-md border border-line-control bg-surface-2 px-4 text-small font-medium text-fg transition-colors duration-(--duration-base) hover:bg-surface-3 lg:hidden"
       >
         <SlidersHorizontal aria-hidden="true" className="size-4" />
         Filters
         {activeCount > 0 ? (
-          <span className="tabular grid min-w-5 place-items-center rounded-pill bg-accent px-1.5 text-caption font-semibold text-fg-strong">
+          <span className="tabular grid min-w-5 place-items-center rounded-pill bg-accent px-1.5 text-caption font-semibold text-on-accent">
             <span className="sr-only">{activeCount} active</span>
             <span aria-hidden="true">{activeCount}</span>
           </span>
@@ -41,7 +41,7 @@ export function FilterDrawer({ activeCount, resultLabel, children }: { activeCou
           <button
             type="button"
             onClick={() => ref.current?.close()}
-            className="min-h-12 w-full rounded-md bg-accent px-6 text-body font-medium text-fg-strong transition-colors duration-(--duration-base) hover:bg-accent-hover"
+            className="min-h-12 w-full rounded-md bg-accent px-6 text-body font-medium text-on-accent transition-colors duration-(--duration-base) hover:bg-accent-hover"
           >
             {resultLabel}
           </button>

@@ -62,7 +62,7 @@ export default async function AdminProduct({ params, searchParams }: { params: P
             ))}
           </ul>
           <Button variant="secondary" className="mt-5"><ImagePlus aria-hidden="true" className="size-4" /> Upload photos</Button>
-          <p className="mt-2 text-caption text-fg-subtle">JPEG or PNG, up to 5 MB each. Files go straight to storage; they never pass through the shop server.</p>
+          <p className="mt-2 text-caption text-fg-muted">JPEG or PNG, up to 5 MB each. Files go straight to storage; they never pass through the shop server.</p>
         </section>
 
         <section aria-labelledby="variants" className="rounded-lg border border-line bg-surface-1 p-5 sm:p-6">
@@ -71,7 +71,7 @@ export default async function AdminProduct({ params, searchParams }: { params: P
           <div className="overflow-x-auto">
             <table className="w-full min-w-[34rem] text-left text-small">
               <caption className="sr-only">Variants</caption>
-              <thead className="text-caption uppercase text-fg-subtle">
+              <thead className="text-caption uppercase text-fg-muted">
                 <tr>
                   <th scope="col" className="py-2 pr-3 font-medium">Size (US)</th>
                   <th scope="col" className="py-2 pr-3 font-medium">SKU</th>

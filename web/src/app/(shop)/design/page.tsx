@@ -63,9 +63,9 @@ export default function DesignPage() {
               <div className={`h-16 ${s.bg}`} />
               <div className="p-3">
                 <p className="text-small font-medium text-fg-strong">{s.token}</p>
-                <p className="tabular text-caption text-fg-subtle">{s.hex}</p>
+                <p className="tabular text-caption text-fg-muted">{s.hex}</p>
                 <p className="mt-1 text-caption text-fg-muted">{s.role}</p>
-                {s.note ? <p className="text-caption text-fg-subtle">{s.note}</p> : null}
+                {s.note ? <p className="text-caption text-fg-muted">{s.note}</p> : null}
               </div>
             </li>
           ))}
@@ -79,7 +79,7 @@ export default function DesignPage() {
           <p className="text-h2 font-semibold text-fg-strong">Heading 2: Shop by occasion</p>
           <p className="max-w-xl text-body text-fg">Body: Goodyear-welted so it can be resoled, with a leather lining and a cushioned footbed.</p>
           <p className="text-small text-fg-muted">Small: Flat-rate shipping per order. Sizes are US.</p>
-          <p className="text-caption font-medium uppercase text-fg-subtle">Caption: Ostrava Atelier</p>
+          <p className="text-caption font-medium uppercase text-fg-muted">Caption: Ostrava Atelier</p>
           <p className="tabular text-h2 font-medium text-fg-strong">Prices use tabular numbers: $145 $265 $1,295.50</p>
         </div>
       </Section>

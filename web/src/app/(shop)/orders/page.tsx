@@ -47,7 +47,7 @@ export default async function Orders({ searchParams }: { searchParams: Promise<{
         <ul className="flex flex-col gap-4">
           {mine.map((o) => (
             <li key={o.id}>
-              <Link href={`/orders/${o.id}`} className="group flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-4 transition-colors duration-(--duration-base) hover:border-line-strong sm:flex-row sm:items-center sm:p-5">
+              <Link href={`/orders/${o.id}`} className="group flex flex-col gap-4 rounded-lg border border-line bg-surface-1 p-4 transition-colors duration-(--duration-base) hover:border-line-control sm:flex-row sm:items-center sm:p-5">
                 <div className="relative w-14 shrink-0 overflow-hidden rounded-md border border-line sm:w-16">
                   <ProductImage product={{ brand: o.items[0].brand, name: o.items[0].productName }} label={false} decorative />
                   {o.items.length > 1 ? (

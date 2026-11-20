@@ -30,12 +30,12 @@ function SearchForm({ className }: { className?: string }) {
           type="search"
           placeholder="Search boots, runners, loafers"
           autoComplete="off"
-          className="min-h-12 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-strong bg-surface-2 px-4 text-body text-fg placeholder:text-fg-subtle"
+          className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-control bg-surface-1 px-4 text-small text-fg placeholder:text-fg-muted"
         />
         <button
           type="submit"
           aria-label="Search"
-          className="grid min-h-12 w-14 place-items-center rounded-r-md bg-accent text-fg-strong transition-colors duration-(--duration-base) hover:bg-accent-hover"
+          className="grid min-h-11 w-12 place-items-center rounded-r-md bg-accent text-on-accent transition-colors duration-(--duration-base) hover:bg-accent-hover"
         >
           <Search aria-hidden="true" className="size-5" />
         </button>
@@ -49,13 +49,14 @@ export function Header() {
     <header className="border-b border-line bg-canvas">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface-3 focus:px-4 focus:py-3"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface-2 focus:px-4 focus:py-3"
       >
         Skip to content
       </a>
       <Container className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 py-3 md:grid-cols-[auto_minmax(0,40rem)_auto] md:gap-x-8 md:justify-between">
-        <Link href="/" className="text-h2 font-semibold tracking-tight text-fg-strong">
-          Storefront<span className="text-accent-text">.</span>
+        <Link href="/" className="flex min-h-11 items-baseline gap-2 text-fg-strong">
+          <span className="text-h2 font-bold tracking-tighter">RYU</span>{" "}
+          <span className="font-mono text-caption uppercase text-fg-muted">Storefront</span>
         </Link>
         <SearchForm className="order-last col-span-2 md:order-none md:col-span-1" />
         <div className="flex items-center">
@@ -69,7 +70,7 @@ export function Header() {
             <ul className="flex items-center">
               {CATEGORY_LINKS.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-md px-3 text-small font-medium text-fg-muted transition-colors duration-(--duration-base) hover:text-fg-strong">
+                  <Link href={l.href} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-sm px-3 font-mono text-caption uppercase text-fg-muted transition-colors duration-(--duration-base) hover:text-fg-strong">
                     {l.label}
                   </Link>
                 </li>
@@ -79,7 +80,7 @@ export function Header() {
             <ul className="flex items-center">
               {QUICK_LINKS.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-md px-3 text-small font-medium text-fg-muted transition-colors duration-(--duration-base) hover:text-fg-strong">
+                  <Link href={l.href} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-sm px-3 font-mono text-caption uppercase text-fg-muted transition-colors duration-(--duration-base) hover:text-fg-strong">
                     {l.label}
                   </Link>
                 </li>

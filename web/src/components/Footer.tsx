@@ -6,7 +6,7 @@ import { SHIPPING_FLAT_MINOR, formatPrice } from "@/lib/catalog";
 function Column({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="text-small font-semibold text-fg-strong">{title}</h2>
+      <h2 className="font-mono text-caption uppercase text-fg-muted">{title}</h2>
       <ul className="mt-3 flex flex-col">{children}</ul>
     </div>
   );
@@ -17,11 +17,12 @@ const link = "inline-flex min-h-11 items-center text-small text-fg-muted transit
 /* Layout pattern (link columns under a brand block, a rule, a bottom line) follows a 21st.dev footer; see docs/decisions.md. */
 export function Footer() {
   return (
-    <footer className="mt-16 border-t border-line bg-surface-1 sm:mt-24">
+    <footer className="mt-16 border-t border-line bg-canvas sm:mt-24">
       <Container className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="max-w-sm sm:col-span-2 lg:col-span-1">
-          <p className="text-h2 font-semibold tracking-tight text-fg-strong">
-            Storefront<span className="text-accent-text">.</span>
+          <p className="flex items-baseline gap-2 text-fg-strong">
+            <span className="text-h2 font-bold tracking-tighter">RYU</span>{" "}
+            <span className="font-mono text-caption uppercase text-fg-muted">Storefront</span>
           </p>
           <p className="mt-3 text-small text-fg-muted">
             Sneakers, runners, boots and evening shoes, by occasion. A portfolio project: nothing here ships.
@@ -57,8 +58,8 @@ export function Footer() {
         </Column>
       </Container>
       <div className="border-t border-line">
-        <Container className="flex flex-wrap items-center justify-between gap-x-6 py-3 text-caption text-fg-subtle">
-          <span className="py-2">Brands are invented. Product pictures are placeholders until real photography is licensed.</span>
+        <Container className="flex flex-wrap items-center justify-between gap-x-6 py-3 text-caption text-fg-muted">
+          <span className="py-2 font-mono uppercase">Demo store · Stripe test mode, no card is charged · Brands and products are invented</span>
           <Link href="/admin" className="inline-flex min-h-11 items-center hover:text-fg">Admin (demo)</Link>
         </Container>
       </div>

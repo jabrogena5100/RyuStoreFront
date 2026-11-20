@@ -7,6 +7,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
+import { PasswordField } from "@/components/ui/PasswordField";
 import { ApiClientError } from "@/lib/api-client";
 
 type Mode = "sign-in" | "register";
@@ -78,13 +79,14 @@ export function AuthForm({ mode, reviewState, next }: { mode: Mode; reviewState?
   const sample = reviewState === "taken" || reviewState === "submitting" || reviewState === "invalid";
 
   return (
-    <div className="mx-auto w-full max-w-md">
-      <h1 className="text-h1 font-semibold text-fg-strong">{register ? "Create your account" : "Sign in"}</h1>
-      <p className="mt-2 text-small text-fg-muted">
+    <div className="mx-auto w-full max-w-sm">
+      <p className="font-mono text-caption uppercase text-fg-muted">{register ? "New account" : "Account"}</p>
+      <h1 className="mt-3 text-display font-bold text-fg-strong">{register ? "Create your account" : "Sign in"}</h1>
+      <p className="mt-3 text-body text-fg-muted">
         {next === "checkout" || next === "/checkout" ? "You need an account to pay. Your bag comes with you." : register ? "Save your orders and check out in a few taps." : "Welcome back."}
       </p>
 
-      <form onSubmit={submit} className="mt-6 flex flex-col gap-5 rounded-lg border border-line bg-surface-1 p-5 sm:p-6" noValidate aria-busy={busy || undefined}>
+      <form onSubmit={submit} className="mt-8 flex flex-col gap-5" noValidate aria-busy={busy || undefined}>
         {status === "invalid" ? (
           <Alert tone="danger" title="That e-mail and password do not match">
             Check both and try again.
@@ -102,10 +104,9 @@ export function AuthForm({ mode, reviewState, next }: { mode: Mode; reviewState?
             <Link href="/sign-in" className="text-accent-text underline underline-offset-4">Sign in instead</Link>
           </p>
         ) : null}
-        <Field
+        <PasswordField
           id="password"
           name="password"
-          type="password"
           label="Password"
           autoComplete={register ? "new-password" : "current-password"}
           hint={register ? "10 to 72 characters." : undefined}
@@ -118,7 +119,7 @@ export function AuthForm({ mode, reviewState, next }: { mode: Mode; reviewState?
         </Button>
       </form>
 
-      <p className="mt-5 text-small text-fg-muted">
+      <p className="mt-6 border-t border-line pt-6 text-small text-fg-muted">
         {register ? "Already have an account? " : "New here? "}
         <Link href={`${register ? "/sign-in" : "/register"}${next ? `?next=${encodeURIComponent(next)}` : ""}`} className="font-medium text-accent-text underline underline-offset-4">
           {register ? "Sign in" : "Create an account"}

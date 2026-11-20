@@ -69,13 +69,13 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
 
   return (
     <Container className="py-8">
-      <nav aria-label="Breadcrumb" className="text-small text-fg-subtle">
+      <nav aria-label="Breadcrumb" className="font-mono text-caption uppercase text-fg-muted">
         <Link href="/" className="hover:text-fg">Home</Link> <span aria-hidden="true">/</span>{" "}
         <span className="text-fg-muted">{occasion?.label ?? "All shoes"}</span>
       </nav>
-      <div className="mt-3">
-        <h1 className="text-h1 font-semibold text-fg-strong">{q.q ? `Results for "${q.q}"` : (occasion?.label ?? "All shoes")}</h1>
-        {occasion ? <p className="mt-1 text-small text-fg-muted">{occasion.blurb}</p> : null}
+      <div className="mt-4 border-b border-line pb-6">
+        <h1 className="text-display font-bold text-fg-strong">{q.q ? `Results for "${q.q}"` : (occasion?.label ?? "All shoes")}</h1>
+        {occasion ? <p className="mt-2 text-body text-fg-muted">{occasion.blurb}</p> : null}
       </div>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
@@ -88,7 +88,7 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
             <FilterDrawer activeCount={active.length} resultLabel={shown === null ? "Show results" : `Show ${shown} ${shown === 1 ? "pair" : "pairs"}`}>
               {filters}
             </FilterDrawer>
-            <p className="tabular order-last w-full text-small text-fg-muted lg:order-none lg:w-auto" role="status" aria-live="polite">{countText}</p>
+            <p className="tabular order-last w-full font-mono text-caption uppercase text-fg-muted lg:order-none lg:w-auto" role="status" aria-live="polite">{countText}</p>
             <SortSelect base={baseNoSort} value={effectiveSort(q)} searching={Boolean(q.q)} />
           </div>
 
@@ -137,7 +137,7 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
               <ul className={grid}>
                 {items.map((p, i) => (
                   <li key={p.id}>
-                    <ProductCard product={p} priority={i < 4} />
+                    <ProductCard product={p} />
                   </li>
                 ))}
               </ul>

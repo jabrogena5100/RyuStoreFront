@@ -17,7 +17,7 @@ export function ProductRow({ products, label }: { products: ProductSummary[]; la
   }
   const arrows = products.length > 4;
   const btn =
-    "absolute top-[calc(50%-3.5rem)] z-10 hidden size-11 place-items-center rounded-pill border border-line-strong bg-surface-2 text-fg transition-colors duration-(--duration-base) hover:bg-surface-3 lg:grid";
+    "absolute top-[calc(50%-3.5rem)] z-10 hidden size-11 place-items-center rounded-pill border border-line-control bg-surface-2 text-fg transition-colors duration-(--duration-base) hover:bg-surface-3 lg:grid";
   return (
     <div className="relative">
       <ul

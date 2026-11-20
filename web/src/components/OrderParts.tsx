@@ -25,7 +25,7 @@ export function ItemRow({ item, linkTo = true }: { item: Pick<OrderItem, "produc
       )}
       <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-caption font-medium uppercase text-fg-subtle">{item.brand}</p>
+          <p className="text-caption font-medium uppercase text-fg-muted">{item.brand}</p>
           <p className="text-body font-medium text-fg-strong">{item.productName}</p>
           <p className="text-small text-fg-muted">
             <span className="capitalize">{item.colour}</span> · Size {item.sizeLabel} · Qty {item.quantity}
@@ -91,7 +91,7 @@ export function StatusTimeline({ history }: { history: StatusEvent[] }) {
         return (
           <li key={e.status + e.at} className="flex gap-3">
             <div className="flex flex-col items-center">
-              <span aria-hidden="true" className={last ? "mt-1.5 size-3 rounded-pill bg-accent" : "mt-1.5 size-3 rounded-pill border border-line-strong"} />
+              <span aria-hidden="true" className={last ? "mt-1.5 size-3 rounded-pill bg-accent" : "mt-1.5 size-3 rounded-pill border border-line-control"} />
               {last ? null : <span aria-hidden="true" className="w-px flex-1 bg-line" />}
             </div>
             <div className="pb-5">

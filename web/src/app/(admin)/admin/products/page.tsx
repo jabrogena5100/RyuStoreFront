@@ -38,8 +38,8 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
       <form action="/admin/products" role="search" className="mt-5 flex max-w-xl">
         {stock ? <input type="hidden" name="stock" value={stock} /> : null}
         <label htmlFor="q" className="sr-only">Search products by name, brand or category</label>
-        <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by name, brand or category" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-strong bg-surface-2 px-4 text-small text-fg placeholder:text-fg-subtle" />
-        <button type="submit" aria-label="Search" className="grid min-h-11 w-12 place-items-center rounded-r-md bg-accent text-fg-strong transition-colors duration-(--duration-base) hover:bg-accent-hover">
+        <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by name, brand or category" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-control bg-surface-2 px-4 text-small text-fg placeholder:text-fg-subtle" />
+        <button type="submit" aria-label="Search" className="grid min-h-11 w-12 place-items-center rounded-r-md bg-accent text-on-accent transition-colors duration-(--duration-base) hover:bg-accent-hover">
           <Search aria-hidden="true" className="size-4" />
         </button>
       </form>
@@ -67,7 +67,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
             <div className="hidden overflow-hidden rounded-lg border border-line md:block">
               <table className="w-full text-left text-small">
                 <caption className="sr-only">Products</caption>
-                <thead className="bg-surface-1 text-caption uppercase text-fg-subtle">
+                <thead className="bg-surface-1 text-caption uppercase text-fg-muted">
                   <tr>
                     <th scope="col" className="px-4 py-3 font-medium">Product</th>
                     <th scope="col" className="px-4 py-3 font-medium">Category</th>
@@ -83,7 +83,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
                       <th scope="row" className="px-4 py-2 font-medium">
                         <Link href={`/admin/products/${p.slug}`} className="flex min-h-11 flex-col justify-center text-accent-text underline-offset-4 hover:underline">
                           {p.name}
-                          <span className="text-caption font-normal uppercase text-fg-subtle no-underline">{p.brand}</span>
+                          <span className="text-caption font-normal uppercase text-fg-muted no-underline">{p.brand}</span>
                         </Link>
                       </th>
                       <td className="px-4 py-3 text-fg-muted">{p.categoryName}</td>
@@ -101,7 +101,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
                 <li key={p.id}>
                   <Link href={`/admin/products/${p.slug}`} className="flex items-center gap-3 rounded-lg border border-line bg-surface-1 p-4">
                     <div className="min-w-0 flex-1">
-                      <p className="text-caption font-medium uppercase text-fg-subtle">{p.brand}</p>
+                      <p className="text-caption font-medium uppercase text-fg-muted">{p.brand}</p>
                       <p className="truncate text-body font-medium text-fg-strong">{p.name}</p>
                       <p className="tabular text-small text-fg-muted">{formatPrice(p.minPriceMinor)} · {s.units} pairs</p>
                     </div>

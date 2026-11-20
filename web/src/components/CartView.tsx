@@ -72,7 +72,7 @@ export function CartView({ state }: { state?: string }) {
               <div className="flex min-w-0 flex-1 flex-col">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-caption font-medium uppercase text-fg-subtle">{l.brand}</p>
+                    <p className="text-caption font-medium uppercase text-fg-muted">{l.brand}</p>
                     <p className="truncate text-body font-medium text-fg-strong">{l.name}</p>
                     <p className="text-small text-fg-muted">
                       <span className="capitalize">{l.colour}</span> · Size {l.sizeLabel}
@@ -89,7 +89,7 @@ export function CartView({ state }: { state?: string }) {
                   </button>
                 </div>
                 <div className="mt-auto flex items-end justify-between pt-3">
-                  <div role="group" aria-label={`Quantity for ${l.name}`} className="inline-flex items-center rounded-md border border-line-strong">
+                  <div role="group" aria-label={`Quantity for ${l.name}`} className="inline-flex items-center rounded-md border border-line-control">
                     <button type="button" aria-label="Decrease quantity" disabled={l.qty <= 1 || busy.has(l.sku)} onClick={() => act(setQty(l.sku, l.qty - 1))} className="grid size-11 place-items-center rounded-l-md hover:bg-surface-3 disabled:opacity-40">
                       <Minus aria-hidden="true" className="size-4" />
                     </button>
@@ -127,7 +127,7 @@ export function CartView({ state }: { state?: string }) {
         <ButtonLink href="/checkout" size="lg" className="mt-5 w-full">
           Checkout
         </ButtonLink>
-        <p className="mt-3 text-caption text-fg-subtle">Stripe test mode: no real payment is taken.</p>
+        <p className="mt-3 text-caption text-fg-muted">Stripe test mode: no real payment is taken.</p>
       </aside>
     </div>
   );

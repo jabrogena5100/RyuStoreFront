@@ -40,7 +40,7 @@ export function OrderDetail({ order, admin = false, children }: { order: ApiOrde
         <Panel title="Shipping to">
           <AddressBlock address={order.shippingAddress} email={order.contactEmail} />
         </Panel>
-        <p className="px-1 text-caption text-fg-subtle">
+        <p className="px-1 text-caption text-fg-muted">
           Order <span className="text-fg-muted">{orderRef(order.id)}</span>
         </p>
       </div>

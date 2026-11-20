@@ -44,8 +44,9 @@ export function QuickFinder({ initialCount }: { initialCount: number }) {
   params.set("stock", "1");
 
   return (
-    <section aria-labelledby="finder" className="rounded-lg border border-line bg-surface-1 p-5 sm:p-6">
-      <h2 id="finder" className="text-h2 font-semibold text-fg-strong">
+    <section aria-labelledby="finder" className="scroll-mt-6 rounded-lg border border-line bg-surface-1 p-5 sm:p-8">
+      <p className="font-mono text-caption uppercase text-fg-muted">Quick finder</p>
+      <h2 id="finder" className="mt-2 text-h1 font-bold text-fg-strong">
         Find your pair
       </h2>
       <div className="mt-5 flex flex-col gap-5">
@@ -80,7 +81,7 @@ export function QuickFinder({ initialCount }: { initialCount: number }) {
             id="finder-size"
             value={size}
             onChange={(e) => setSize(e.target.value)}
-            className="min-h-11 rounded-md border border-line-strong bg-surface-2 px-3 text-small text-fg"
+            className="min-h-11 rounded-md border border-line-control bg-surface-2 px-3 text-small text-fg"
           >
             <option value="">Any size</option>
             {ALL_SIZES.map((s) => (

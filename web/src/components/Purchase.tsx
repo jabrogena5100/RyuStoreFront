@@ -68,7 +68,7 @@ export function Purchase({ product }: { product: ProductDetail }) {
                   className={clsx(
                     "inline-flex min-h-11 cursor-pointer items-center rounded-pill border px-4 text-small font-medium capitalize has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent-text",
                     "transition-colors duration-(--duration-base)",
-                    selected ? "border-accent-line bg-accent-soft text-accent-text" : "border-line-strong text-fg hover:bg-surface-2",
+                    selected ? "border-accent-line bg-accent-soft text-accent-text" : "border-line-control text-fg hover:bg-surface-2",
                     !any && "text-fg-subtle line-through",
                   )}
                 >
@@ -109,7 +109,7 @@ export function Purchase({ product }: { product: ProductDetail }) {
                   v.available
                     ? selected
                       ? "border-accent-line bg-accent-soft text-accent-text"
-                      : "border-line-strong text-fg hover:bg-surface-2"
+                      : "border-line-control text-fg hover:bg-surface-2"
                     : "cursor-not-allowed border-line text-fg-subtle line-through",
                 )}
               >

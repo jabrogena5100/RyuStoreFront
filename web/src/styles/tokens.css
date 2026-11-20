@@ -1,75 +1,85 @@
 /*
- * DESIGN TOKENS: the single source of truth (design/BRIEF.md sections 4 to 7).
- * Components use only these. Tailwind's default palette is switched off below, so a colour that is
- * not in this file cannot be used by accident. Contrast figures were computed with a script (WCAG);
- * see design/BRIEF.md. Dark only for v1.
+ * DESIGN TOKENS: the single source of truth. Components use only these.
+ * Tailwind's default palette is switched off below, so a colour that is not in this file cannot be used by accident.
+ * Palette: the owner's portfolio tones (2026-11-20). Contrast ratios (WCAG 2.x) computed with a script and recorded in
+ * design/PROPOSAL.md; the figures in comments are against canvas / surface-1 / surface-2. Dark only.
  */
 @theme {
   --color-*: initial;
 
-  /* Surfaces: depth comes from lightness steps, not shadows */
-  --color-canvas: #0b0a08;
-  --color-surface-1: #141211;
-  --color-surface-2: #1d1c1a;
-  --color-surface-3: #272624;
+  /* Surfaces: depth from lightness steps, not shadows */
+  --color-canvas: #141414;
+  --color-surface-1: #20201f;
+  --color-surface-2: #2c2c2a;
+  --color-surface-3: #353532; /* hover step for surface-2 controls; never a text background for fg-subtle */
 
-  /* Veil: a faint white overlay for oversized decorative type on surfaces (placeholders, tiles) */
-  --color-veil: rgb(255 255 255 / 0.055);
+  /* Veil: faint overlay for oversized decorative type inside image placeholders */
+  --color-veil: rgb(236 234 228 / 0.06);
 
-  /* Lines. line is decorative; line-strong is for control borders (at least 3:1 on every surface) */
-  --color-line: #343331;
-  --color-line-strong: #71706d;
+  /* Lines. line and line-strong are decorative (1.6 and 2.6:1 on canvas). Control boundaries (inputs, chips, outline
+     buttons) use line-control, which is at least 3:1 on every surface (4.17 / 3.69 / 3.17), as WCAG 1.4.11 needs. */
+  --color-line: #3a3a37;
+  --color-line-strong: #5a5955;
+  --color-line-control: #7a7872;
 
-  /* Text (fg). fg-subtle is at least 4.5:1 on every surface; fg-strong is the heading and button-label colour */
-  --color-fg-subtle: #8f8d8b;
-  --color-fg-muted: #a6a4a2;
-  --color-fg: #e9e8e6;
-  --color-fg-strong: #fbfaf9;
+  /* Text. fg-subtle is 5.48 / 4.86 / 4.17: use it only on canvas and surface-1, at 14 px or larger. */
+  --color-fg-subtle: #8f8c84;
+  --color-fg-muted: #b2aea6; /* 8.33 / 7.38 / 6.33 */
+  --color-fg: #eceae4; /* 15.31 / 13.55 / 11.63 */
+  --color-fg-strong: #f6f4ef;
+  --color-on-accent: #141414; /* label on accent 8.08, on accent-hover 10.02, on sale 8.25 */
 
-  /* The one accent: cobalt blue. accent with an fg-strong label is at least 4.6:1 */
-  --color-accent: #1a6fe1;
-  --color-accent-hover: #0462d3;
-  --color-accent-press: #0054bd;
-  --color-accent-soft: #132643;
-  --color-accent-line: #1e4b8d;
-  --color-accent-text: #5b90dd;
+  /* The one accent: sage. Primary buttons, links and the focus ring. 8.08 / 7.15 / 6.14 as text. */
+  --color-accent: #a3b18a;
+  --color-accent-hover: #b7c4a0;
+  --color-accent-press: #8f9d77;
+  --color-accent-soft: #2a2f24; /* selected-row tint; fg on it 11.4, accent on it 6.0 */
+  --color-accent-line: #56604a; /* decorative only */
+  --color-accent-text: #a3b18a;
 
-  /* Status: muted, and clearly apart from the accent. All at least 4.7:1 on every surface */
-  --color-success: #64c897;
-  --color-warning: #e8be62;
-  --color-danger: #ef7e7c;
+  /* Amber: only sale badges and small highlights (low stock). 8.25 / 7.30 / 6.26 */
+  --color-sale: #d4a65a;
 
-  /* Radii */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 1rem;
+  /* Status. All at least 5.4:1 on every surface */
+  --color-success: #8fc79a;
+  --color-warning: #d4a65a;
+  --color-danger: #e08a7e;
+
+  /* Radii: tight and squarish; pills only for chips */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
   --radius-pill: 999px;
 
-  /* Elevation: only overlays get a shadow; everything else is a surface step plus a line */
-  --shadow-overlay: 0 12px 40px rgb(0 0 0 / 0.55);
+  /* Elevation: only overlays get a shadow; no glows */
+  --shadow-overlay: 0 16px 48px rgb(0 0 0 / 0.6);
 
-  /* Motion: minimal. Colour and opacity changes only, three durations, one easing. No movement, no scroll effects. */
-  --duration-fast: 100ms;
-  --duration-base: 150ms;
-  --duration-slow: 200ms;
+  /* Motion: 120 to 240 ms, opacity and transform only; removed under prefers-reduced-motion (globals.css) */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 
-  /* Type: one family (Instrument Sans, loaded in layout.tsx). Fluid sizes, capped so nothing is oversized */
-  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --text-display: clamp(2.25rem, 1.55rem + 2.8vw, 3.75rem);
-  --text-display--line-height: 1.04;
-  --text-display--letter-spacing: -0.03em;
-  --text-h1: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
-  --text-h1--line-height: 1.1;
-  --text-h1--letter-spacing: -0.02em;
+  /* Type: Geist for the UI, Geist Mono for labels, prices and SKUs. Self-hosted (the `geist` package, SIL OFL). */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --text-hero: clamp(2.75rem, 1.2rem + 6.4vw, 6.5rem);
+  --text-hero--line-height: 0.94;
+  --text-hero--letter-spacing: -0.045em;
+  --text-display: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.035em;
+  --text-h1: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.03em;
   --text-h2: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
-  --text-h2--line-height: 1.2;
-  --text-h2--letter-spacing: -0.01em;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.02em;
   --text-body: 1rem;
   --text-body--line-height: 1.55;
   --text-small: 0.875rem;
   --text-small--line-height: 1.45;
   --text-caption: 0.75rem;
   --text-caption--line-height: 1.4;
-  --text-caption--letter-spacing: 0.04em;
+  --text-caption--letter-spacing: 0.06em;
 }

@@ -11,7 +11,7 @@ const base =
   "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-fg-strong hover:bg-accent-hover active:bg-accent-press",
+  primary: "bg-accent text-on-accent hover:bg-accent-hover active:bg-accent-press",
   secondary: "bg-surface-2 text-fg border border-line hover:bg-surface-3",
   ghost: "text-fg-muted hover:text-fg hover:bg-surface-2",
   danger: "bg-danger text-canvas hover:opacity-90",
