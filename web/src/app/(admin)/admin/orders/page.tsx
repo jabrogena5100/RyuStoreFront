@@ -38,8 +38,8 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
           <form action="/admin/orders" role="search" className="mt-5 flex max-w-xl">
             {status ? <input type="hidden" name="status" value={status} /> : null}
             <label htmlFor="q" className="sr-only">Search orders by reference, name or e-mail</label>
-            <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by reference, name or e-mail" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-strong bg-surface-2 px-4 text-small text-fg placeholder:text-fg-subtle" />
-            <button type="submit" aria-label="Search" className="grid min-h-11 w-12 place-items-center rounded-r-md bg-accent text-fg-strong transition-colors duration-(--duration-base) hover:bg-accent-hover">
+            <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by reference, name or e-mail" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-control bg-surface-2 px-4 text-small text-fg placeholder:text-fg-subtle" />
+            <button type="submit" aria-label="Search" className="grid min-h-11 w-12 place-items-center rounded-r-md bg-accent text-on-accent transition-colors duration-(--duration-base) hover:bg-accent-hover">
               <Search aria-hidden="true" className="size-4" />
             </button>
           </form>
@@ -79,7 +79,7 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
                 <div className="hidden overflow-hidden rounded-lg border border-line md:block">
                   <table className="w-full text-left text-small">
                     <caption className="sr-only">Orders, newest first</caption>
-                    <thead className="bg-surface-1 text-caption uppercase text-fg-subtle">
+                    <thead className="bg-surface-1 text-caption uppercase text-fg-muted">
                       <tr>
                         <th scope="col" className="px-4 py-3 font-medium">Order</th>
                         <th scope="col" className="px-4 py-3 font-medium">Placed</th>

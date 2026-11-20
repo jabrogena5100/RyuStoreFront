@@ -21,7 +21,10 @@ cleanup() { docker rm -f storefront-web storefront-mock-api >/dev/null 2>&1 || t
 trap cleanup EXIT
 cleanup
 
-rm -rf design/screens web/test-results
+# SPEC=e2e/<file>.spec.ts runs one spec only and leaves design/screens and AXE.txt alone (used for design proposals).
+SPEC="${SPEC:-}"
+if [ -z "$SPEC" ]; then rm -rf design/screens; fi
+rm -rf web/test-results
 mkdir -p design/screens
 
 # The catalogue screens read /api/products; the screenshots run against a mock of those endpoints (web/e2e/mock-api.mjs),
@@ -45,10 +48,11 @@ docker run -d --name storefront-web --network host --user "$UIDGID" -e HOME=/tmp
 for _ in $(seq 1 30); do curl -sf -o /dev/null http://localhost:3000/ && break; sleep 1; done
 
 set +e
-docker run --rm --network host --ipc=host --user "$UIDGID" -e HOME=/tmp/home \
-  -v "$REPO":/workspace -w /workspace/web "$PW_IMAGE" npx playwright test
+docker run --rm --network host --ipc=host --user "$UIDGID" -e HOME=/tmp/home -e SPEC \
+  -v "$REPO":/workspace -w /workspace/web "$PW_IMAGE" npx playwright test $SPEC
 status=$?
 set -e
+if [ -n "$SPEC" ]; then exit "$status"; fi
 
 python3 -I - <<'PY' > design/screens/AXE.txt
 import glob, json, os

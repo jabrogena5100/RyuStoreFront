@@ -33,3 +33,6 @@ web/test-results/
 web/playwright-report/
 web/next-env.d.ts
 *.tsbuildinfo
+
+# Large raw evidence (Lighthouse JSON, etc.); summaries live in docs/evidence/
+evidence-raw/

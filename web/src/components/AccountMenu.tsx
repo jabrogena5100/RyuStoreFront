@@ -52,7 +52,7 @@ export function AccountMenu() {
         <ChevronDown aria-hidden="true" className="hidden size-4 text-fg-subtle sm:block" />
       </summary>
       <div className="absolute right-0 top-full z-40 mt-1 w-60 rounded-lg border border-line bg-surface-2 p-2 shadow-overlay">
-        <p className="truncate px-3 py-2 text-caption text-fg-subtle">Signed in as {customer.email}</p>
+        <p className="truncate px-3 py-2 text-caption text-fg-muted">Signed in as {customer.email}</p>
         <Link href="/orders" className={item} onClick={() => menu.current && (menu.current.open = false)}>
           Your orders
         </Link>

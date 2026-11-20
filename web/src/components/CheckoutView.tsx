@@ -173,7 +173,7 @@ export function CheckoutView({ state }: { state?: string }) {
         <Lock aria-hidden="true" className="size-5" />
         {busy ? "Placing order" : "Place order"}
       </Button>
-      <p className="mt-3 text-caption text-fg-subtle">
+      <p className="mt-3 text-caption text-fg-muted">
         {open ? "Fix the items above to continue. " : ""}You pay on Stripe&rsquo;s page in test mode, so no real card is charged.
       </p>
     </aside>

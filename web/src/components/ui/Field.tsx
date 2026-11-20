@@ -5,7 +5,7 @@ export const controlClass = (error?: string) =>
   clsx(
     "min-h-11 w-full rounded-md border bg-surface-2 px-3.5 text-body text-fg placeholder:text-fg-subtle",
     "transition-colors duration-(--duration-base) disabled:opacity-50",
-    error ? "border-danger" : "border-line-strong hover:border-fg-subtle",
+    error ? "border-danger" : "border-line-control hover:border-fg-subtle",
   );
 
 function Wrap({ id, label, hint, error, className, children }: { id: string; label: string; hint?: string; error?: string; className?: string; children: ReactNode }) {

@@ -20,7 +20,7 @@ export function SortSelect({ base, value, searching }: { base: string; value: st
         id="sort"
         value={value}
         onChange={(e) => router.push(`${base}${base.includes("?") ? "&" : "?"}sort=${e.target.value}`)}
-        className="min-h-11 rounded-md border border-line-strong bg-surface-2 px-3 text-small text-fg"
+        className="min-h-11 rounded-md border border-line-control bg-surface-2 px-3 text-small text-fg"
       >
         {OPTIONS.filter((o) => o.value !== "relevance" || searching).map((o) => (
           <option key={o.value} value={o.value}>

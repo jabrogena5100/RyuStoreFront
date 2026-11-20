@@ -11,7 +11,7 @@ export function Pagination({ page, pages, hrefFor }: { page: number; pages: numb
   return (
     <nav aria-label="Pages" className="mt-10 flex items-center justify-center gap-2">
       {page > 1 ? (
-        <Link href={hrefFor(page - 1)} rel="prev" aria-label="Previous page" className={clsx(cell, "border-line-strong text-fg hover:bg-surface-2")}>
+        <Link href={hrefFor(page - 1)} rel="prev" aria-label="Previous page" className={clsx(cell, "border-line-control text-fg hover:bg-surface-2")}>
           <ChevronLeft aria-hidden="true" className="size-4" />
         </Link>
       ) : null}
@@ -22,14 +22,14 @@ export function Pagination({ page, pages, hrefFor }: { page: number; pages: numb
             href={hrefFor(n)}
             aria-label={`Page ${n}`}
             aria-current={n === page ? "page" : undefined}
-            className={clsx(cell, n === page ? "border-accent-line bg-accent-soft text-accent-text" : "border-line-strong text-fg hover:bg-surface-2")}
+            className={clsx(cell, n === page ? "border-accent-line bg-accent-soft text-accent-text" : "border-line-control text-fg hover:bg-surface-2")}
           >
             {n}
           </Link>
         </span>
       ))}
       {page < pages ? (
-        <Link href={hrefFor(page + 1)} rel="next" aria-label="Next page" className={clsx(cell, "border-line-strong text-fg hover:bg-surface-2")}>
+        <Link href={hrefFor(page + 1)} rel="next" aria-label="Next page" className={clsx(cell, "border-line-control text-fg hover:bg-surface-2")}>
           <ChevronRight aria-hidden="true" className="size-4" />
         </Link>
       ) : null}

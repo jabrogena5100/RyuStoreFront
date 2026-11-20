@@ -28,7 +28,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <Container className="py-8">
-      <nav aria-label="Breadcrumb" className="text-small text-fg-subtle">
+      <nav aria-label="Breadcrumb" className="font-mono text-caption uppercase text-fg-muted">
         <Link href="/" className="hover:text-fg">Home</Link> <span aria-hidden="true">/</span>{" "}
         {occasion ? (
           <>
@@ -42,16 +42,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <Gallery product={product} />
 
         <div className="lg:sticky lg:top-6 lg:self-start">
-          <p className="text-caption font-medium uppercase text-fg-subtle">{product.brand}</p>
-          <h1 className="mt-1 text-h1 font-semibold text-fg-strong">{product.name}</h1>
-          <div className="mt-3 flex items-center gap-3">
+          <p className="font-mono text-caption uppercase text-fg-muted">{product.brand}</p>
+          <h1 className="mt-2 text-display font-bold text-fg-strong">{product.name}</h1>
+          <div className="mt-4 flex items-center gap-3">
             <Price minor={minPriceMinor} className="text-h2" />
             {!inStock ? <Badge>Sold out</Badge> : null}
           </div>
           <p className="mt-4 text-body text-fg-muted">{product.description}</p>
           {colours.length === 1 ? (
             <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-small">
-              <dt className="text-fg-subtle">{colours.length === 1 ? "Colour" : "Colours"}</dt>
+              <dt className="font-mono text-caption uppercase text-fg-muted">{colours.length === 1 ? "Colour" : "Colours"}</dt>
               <dd className="text-fg capitalize">{colours.join(", ")}</dd>
             </dl>
           ) : null}
@@ -75,7 +75,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
 
       {related.length ? (
-        <Section id="related" title={`More in ${occasion?.label}`} href={`/products?occasion=${occasion?.slug}`}>
+        <Section id="related" index="More like this" title={`More in ${occasion?.label}`} href={`/products?occasion=${occasion?.slug}`}>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4">
             {related.map((p) => (
               <li key={p.id}>

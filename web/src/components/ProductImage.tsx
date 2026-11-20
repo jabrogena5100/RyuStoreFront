@@ -42,7 +42,7 @@ export function ProductImage({
         data-glyph={initial}
         className={clsx("pointer-events-none absolute select-none font-semibold leading-none tracking-tighter text-veil after:content-[attr(data-glyph)]", p.size, p.pos)}
       />
-      {label ? <p className="absolute left-4 top-4 text-caption font-medium uppercase text-fg-subtle">{product.brand}</p> : null}
+      {label ? <p className="absolute left-4 top-4 text-caption font-medium uppercase text-fg-muted">{product.brand}</p> : null}
     </div>
   );
 }

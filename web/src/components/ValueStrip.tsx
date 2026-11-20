@@ -12,7 +12,7 @@ export function ValueStrip() {
     <ul className="grid divide-y divide-line rounded-lg border border-line bg-surface-1 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       {items.map(({ icon: Icon, title, text }) => (
         <li key={title} className="flex items-start gap-4 p-5">
-          <span className="grid size-11 shrink-0 place-items-center rounded-pill bg-surface-3 text-fg">
+          <span className="grid size-11 shrink-0 place-items-center rounded-md border border-line text-accent-text">
             <Icon aria-hidden="true" className="size-5" />
           </span>
           <div>

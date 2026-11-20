@@ -10,7 +10,7 @@ export function Steps({ current }: { current: 1 | 2 | 3 }) {
         return (
           <li key={s} aria-current={n === current ? "step" : undefined} className="flex items-center gap-3">
             <span className={clsx("flex items-center gap-2", n === current ? "font-medium text-fg-strong" : "text-fg-subtle")}>
-              <span aria-hidden="true" className={clsx("tabular grid size-6 place-items-center rounded-pill text-caption font-semibold", n === current ? "bg-accent text-fg-strong" : n < current ? "bg-surface-3 text-fg" : "border border-line-strong text-fg-subtle")}>
+              <span aria-hidden="true" className={clsx("tabular grid size-6 place-items-center rounded-pill text-caption font-semibold", n === current ? "bg-accent text-on-accent" : n < current ? "bg-surface-3 text-fg" : "border border-line-control text-fg-muted")}>
                 {n}
               </span>
               {s}

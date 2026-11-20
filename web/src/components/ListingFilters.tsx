@@ -17,7 +17,7 @@ function Option({ href, selected, label, count, kind }: { href: string; selected
   const box = clsx(
     "grid size-5 shrink-0 place-items-center border",
     kind === "radio" ? "rounded-pill" : "rounded-sm",
-    selected ? "border-accent bg-accent text-fg-strong" : "border-line-strong",
+    selected ? "border-accent bg-accent text-on-accent" : "border-line-control",
   );
   const inner = (
     <>
@@ -46,7 +46,7 @@ function Option({ href, selected, label, count, kind }: { href: string; selected
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="border-b border-line py-5 first:pt-0 last:border-b-0">
-      <h3 className="mb-2 px-2 text-caption font-medium uppercase text-fg-subtle">{title}</h3>
+      <h3 className="mb-2 px-2 text-caption font-medium uppercase text-fg-muted">{title}</h3>
       {children}
     </section>
   );
@@ -90,7 +90,7 @@ export function ListingFilters({ q, counts }: { q: ListingQuery; counts: FacetCo
             const n = counts.size[s];
             const cls = clsx(
               "tabular grid min-h-11 place-items-center rounded-md border text-small font-medium",
-              selected ? "border-accent-line bg-accent-soft text-accent-text" : n === 0 ? "border-line text-fg-subtle line-through" : "border-line-strong text-fg",
+              selected ? "border-accent-line bg-accent-soft text-accent-text" : n === 0 ? "border-line text-fg-subtle line-through" : "border-line-control text-fg",
             );
             return (
               <li key={s}>

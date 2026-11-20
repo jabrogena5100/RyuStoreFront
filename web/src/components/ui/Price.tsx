@@ -13,7 +13,7 @@ export function Price({
   className?: string;
 }) {
   return (
-    <span className={clsx("tabular font-medium text-fg-strong", className)}>
+    <span className={clsx("tabular font-mono font-medium tracking-tight text-fg-strong", className)}>
       {prefix ? <span className="mr-1 font-normal text-fg-subtle">{prefix}</span> : null}
       {formatPrice(minor, currency)}
     </span>
