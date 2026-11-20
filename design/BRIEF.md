@@ -107,7 +107,7 @@ Next.js (App Router) and TypeScript, as in CLAUDE.md, with:
 - Versions pinned 2026-11-15 after checking the npm registry and Docker Hub: Node 26.13.1 (LTS) in Docker, Next.js 16.4.6, React 19.3.1, Tailwind CSS 4.3.5, Motion 14.14.0, TypeScript 7.0.2 (Motion 14.14.0 was pinned and has been removed), lucide-react 1.73.0, Playwright 1.65.1, axe-core for Playwright 4.14.0. See `web/package.json`.
 
 Considered and not recommended for v1: SvelteKit (excellent built-in animation, but CLAUDE.md commits to Next.js and a switch costs the ecosystem), Astro (great for content, awkward for a cart-heavy app), a WebGL/3D shoe viewer (a lovely optional later feature; expensive in performance and effort, so lazy-loaded if ever).
-The API is on its own subdomain (`api.ryustorefront.net`, see `docs/decisions.md`): the frontend should proxy `/api` through Next.js server-side, or CORS with credentials is needed. Settle before phase 5.
+The API is on its own subdomain (`api.ryustorefront.com`, see `docs/decisions.md`): the frontend should proxy `/api` through Next.js server-side, or CORS with credentials is needed. Settle before phase 5.
 
 ## 8a. Layout system (2026-11-15)
 
