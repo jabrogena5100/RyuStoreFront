@@ -78,7 +78,7 @@ export function PayBody({ order, state, onPay, now }: { order: ApiOrder; state: 
   return (
     <Container className="py-8">
       <Steps current={2} />
-      <h1 className="mb-8 mt-4 text-h1 font-semibold text-fg-strong">Pay for your order</h1>
+      <h1 className="mb-8 mt-8 text-display font-bold text-fg-strong">Pay for your order</h1>
       {state === "expired" ? (
         <EmptyState title="Your hold ran out" action={<ButtonLink href="/cart">Back to your bag</ButtonLink>}>
           We held your pair for a limited time and it has been released. Your bag is still here; start again to check out.

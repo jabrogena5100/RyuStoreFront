@@ -63,6 +63,22 @@ createServer((req, res) => {
   if (url.pathname === "/api/auth/me") return send(401, { code: "unauthenticated", message: "Sign in required." });
   if (url.pathname === "/api/auth/csrf") return send(200, { headerName: "X-CSRF-TOKEN", token: "mock" });
   if (url.pathname === "/api/cart" && req.method === "GET") return send(200, { itemCount: 0, subtotalMinor: 0, currency: "USD", lines: [] });
+  // Adding to the cart (the cart drawer test): a stateless answer with one line of the requested SKU at the requested quantity.
+  const put = url.pathname.match(/^\/api\/cart\/items\/([^/]+)$/);
+  if (put && req.method === "PUT") {
+    let raw = "";
+    req.on("data", (c) => (raw += c));
+    req.on("end", () => {
+      const sku = decodeURIComponent(put[1]);
+      const p = ALL.find((x) => x.variants.some((v) => v.sku === sku));
+      const v = p?.variants.find((x) => x.sku === sku);
+      if (!p || !v) return send(404, { code: "unknown_item", message: "No such item" });
+      const quantity = Number(JSON.parse(raw || "{}").quantity ?? 1);
+      const line = { sku, productSlug: p.slug, productName: p.name, brand: p.brand, sizeLabel: v.sizeLabel, colour: v.colour, unitPriceMinor: v.priceMinor, quantity, available: true, maxQuantity: 10 };
+      send(200, { itemCount: quantity, subtotalMinor: v.priceMinor * quantity, currency: "USD", lines: [line] });
+    });
+    return;
+  }
   if (url.pathname === "/api/products") return send(200, search(url.searchParams));
   if (url.pathname === "/api/categories")
     return send(200, Object.entries(CATEGORY_NAMES).map(([slug, name]) => ({ slug, name, parentSlug: PARENT[slug] ?? null })));

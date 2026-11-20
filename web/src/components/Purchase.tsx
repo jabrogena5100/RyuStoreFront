@@ -3,9 +3,9 @@
 import clsx from "clsx";
 import { Check, ShoppingBag } from "lucide-react";
 import { useId, useMemo, useState } from "react";
+import { useCartDrawer } from "@/components/CartDrawer";
 import { useCart } from "@/components/CartProvider";
 import { Button } from "@/components/ui/Button";
-import { useToast } from "@/components/ui/Toast";
 import type { ProductDetail } from "@/lib/catalog";
 
 /**
@@ -24,7 +24,7 @@ export function Purchase({ product }: { product: ProductDetail }) {
   const [adding, setAdding] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
   const { add } = useCart();
-  const { show } = useToast();
+  const { openDrawer } = useCartDrawer();
 
   const soldOut = !product.variants.some((v) => v.available);
   const sizes = useMemo(
@@ -33,11 +33,11 @@ export function Purchase({ product }: { product: ProductDetail }) {
   );
 
   async function submit() {
+    if (adding) return;
     if (!sku) {
       setMissing(true);
       return;
     }
-    const v = product.variants.find((x) => x.sku === sku);
     setProblem(null);
     setAdding(true);
     const result = await add(sku);
@@ -46,8 +46,8 @@ export function Purchase({ product }: { product: ProductDetail }) {
       setProblem(result.message);
       return;
     }
-    show(`Added ${product.name}, size ${v?.sizeLabel}${colours.length > 1 ? `, ${v?.colour}` : ""}`);
     setAdded(true);
+    openDrawer();
     window.setTimeout(() => setAdded(false), 1800);
   }
 
@@ -142,7 +142,7 @@ export function Purchase({ product }: { product: ProductDetail }) {
           {problem}
         </p>
       ) : null}
-      <Button size="lg" onClick={submit} disabled={soldOut || adding} aria-busy={adding || undefined} className="w-full">
+      <Button size="lg" onClick={submit} disabled={soldOut} aria-disabled={adding || undefined} aria-busy={adding || undefined} className="w-full">
         {soldOut ? (
           "Sold out"
         ) : adding ? (

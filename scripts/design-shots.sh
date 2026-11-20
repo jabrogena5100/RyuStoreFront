@@ -48,7 +48,7 @@ docker run -d --name storefront-web --network host --user "$UIDGID" -e HOME=/tmp
 for _ in $(seq 1 30); do curl -sf -o /dev/null http://localhost:3000/ && break; sleep 1; done
 
 set +e
-docker run --rm --network host --ipc=host --user "$UIDGID" -e HOME=/tmp/home -e SPEC \
+docker run --rm --network host --ipc=host --user "$UIDGID" -e HOME=/tmp/home -e SPEC -e SHOTS_OUT \
   -v "$REPO":/workspace -w /workspace/web "$PW_IMAGE" npx playwright test $SPEC
 status=$?
 set -e

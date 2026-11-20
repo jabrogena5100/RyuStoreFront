@@ -60,7 +60,7 @@ test("registering signs in, merges the guest cart, and signing out returns to a 
   await addToCart(page, p); // as a guest
   await page.goto("/register");
   await page.getByLabel("E-mail").fill(email());
-  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole("button", { name: "Sign out" })).toHaveCount(0); // the menu is closed
@@ -77,7 +77,7 @@ test("registering signs in, merges the guest cart, and signing out returns to a 
 test("signing in with a wrong password says so and stays on the page", async ({ page }) => {
   await page.goto("/sign-in");
   await page.getByLabel("E-mail").fill(email());
-  await page.getByLabel("Password").fill("not the password");
+  await page.getByLabel("Password", { exact: true }).fill("not the password");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "do not match" })).toBeVisible();
   await expect(page).toHaveURL(/sign-in/);
@@ -86,7 +86,7 @@ test("signing in with a wrong password says so and stays on the page", async ({ 
 test("registering with a short password shows the field error from the API", async ({ page }) => {
   await page.goto("/register");
   await page.getByLabel("E-mail").fill(email());
-  await page.getByLabel("Password").fill("short");
+  await page.getByLabel("Password", { exact: true }).fill("short");
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Use 10 to 72 characters.").first()).toBeVisible();
 });
@@ -95,19 +95,19 @@ test("an existing e-mail offers to sign in instead, and a returning customer can
   const e = email();
   await page.goto("/register");
   await page.getByLabel("E-mail").fill(e);
-  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.locator("details summary")).toBeVisible();
 
   const other = await (await browser.newContext()).newPage(); // a fresh visitor
   await other.goto("/register");
   await other.getByLabel("E-mail").fill(e);
-  await other.getByLabel("Password").fill(PASSWORD);
+  await other.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await other.getByRole("button", { name: "Create account" }).click();
   await expect(other.getByText("already exists")).toBeVisible();
   await other.getByRole("link", { name: "Sign in instead" }).click();
   await other.getByLabel("E-mail").fill(e);
-  await other.getByLabel("Password").fill(PASSWORD);
+  await other.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await other.getByRole("button", { name: "Sign in" }).click();
   await expect(other.locator("details summary")).toContainText(/live-/);
 });

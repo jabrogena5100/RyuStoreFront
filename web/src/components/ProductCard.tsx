@@ -4,9 +4,12 @@ import { Price } from "@/components/ui/Price";
 import { ProductImage } from "@/components/ProductImage";
 import type { ProductSummary } from "@/lib/catalog";
 
-/**
- * Product card. Pattern from the 21st.dev shortlist ("ProductCard" by youcefbnm: a second image on hover), adapted:
- * the second view cross-fades with opacity only (180 ms, removed under reduced motion), no scale, no shadow, no glow.
+/*
+ * Product card. Adapted from "ProductCard" by youcefbnm on 21st.dev (https://21st.dev/@youcefbnm/components/product-card),
+ * library "Systaliko UI", licence shown there: MIT. Kept from the original: the second image fading in over the first on
+ * hover. Changed: no motion library (a 180 ms CSS opacity fade, removed under reduced motion), also on keyboard focus, no colour
+ * dots (the API has no colours per product yet), and the card carries brand, name, category and price in the design tokens.
+ * See design/COMPONENT-NOTES.md.
  */
 export function ProductCard({ product }: { product: ProductSummary }) {
   return (

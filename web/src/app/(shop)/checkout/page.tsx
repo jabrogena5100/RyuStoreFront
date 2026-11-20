@@ -13,7 +13,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
   return (
     <Container className="py-8">
       <Steps current={1} />
-      <h1 className="mb-8 mt-4 text-h1 font-semibold text-fg-strong">Checkout</h1>
+      <h1 className="mb-8 mt-8 text-display font-bold text-fg-strong">Checkout</h1>
       {state && state !== "empty" ? <SeedCart lines={demoCartLines()} /> : null}
       <CheckoutView state={state} />
     </Container>

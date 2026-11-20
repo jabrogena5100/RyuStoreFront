@@ -38,7 +38,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
       <form action="/admin/products" role="search" className="mt-5 flex max-w-xl">
         {stock ? <input type="hidden" name="stock" value={stock} /> : null}
         <label htmlFor="q" className="sr-only">Search products by name, brand or category</label>
-        <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by name, brand or category" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-control bg-surface-2 px-4 text-small text-fg placeholder:text-fg-subtle" />
+        <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by name, brand or category" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-control bg-surface-1 px-4 text-small text-fg placeholder:text-fg-muted" />
         <button type="submit" aria-label="Search" className="grid min-h-11 w-12 place-items-center rounded-r-md bg-accent text-on-accent transition-colors duration-(--duration-base) hover:bg-accent-hover">
           <Search aria-hidden="true" className="size-4" />
         </button>
@@ -51,7 +51,7 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
         ].map((f) => (
           <li key={f.label}>
             <Link href={href(f.v)} aria-current={stock === f.v || (!stock && !f.v) ? "true" : undefined} className={clsx(chip, stock === f.v || (!stock && !f.v) ? on : off)}>
-              {f.label} <span className="tabular text-fg-subtle">{f.n}</span>
+              {f.label} <span className="tabular text-fg-muted">{f.n}</span>
             </Link>
           </li>
         ))}

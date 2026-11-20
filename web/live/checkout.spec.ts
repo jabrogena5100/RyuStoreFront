@@ -27,7 +27,7 @@ async function addToCart(page: Page, p: Awaited<ReturnType<typeof buyable>>) {
 async function register(page: Page) {
   await page.goto("/register");
   await page.getByLabel("E-mail").fill(email());
-  await page.getByLabel("Password").fill(PASSWORD);
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.locator("details summary")).toContainText(/live-/);
 }
