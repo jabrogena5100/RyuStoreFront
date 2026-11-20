@@ -237,3 +237,15 @@ The product row (scroll-snap with arrow buttons) was written from scratch; the c
 | Frontend hostname | The apex `ryustorefront.com`, whose DNS stays at Cloudflare; the API stays on `api.ryustorefront.com` (Route 53) | The apex record and any certificate validation for it are made by hand in Cloudflare, outside Terraform. |
 | Order history and admin | Stay on fixtures, labelled as demo data in the UI; the order-list and admin endpoints are not built for "done" | The README lists them under "not built"; no claim that they work against the API. |
 | Numbers | Every quoted number has a row in `docs/metrics.md` with setup, status and raw-output location | Older single-run timings stay quotable only with "single run" and are marked for re-measurement. |
+
+## Phase 3 (redesign built), settled 2026-11-20
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Visual direction | The owner's portfolio palette (canvas `#141414`, sage accent `#A3B18A`, amber only for sale), Geist and Geist Mono (SIL OFL) self-hosted through `next/font/google`, which downloads them at build time, subsets them to Latin and serves them from this origin; approved in `design/PROPOSAL.md`. The `geist` npm package was tried first and dropped: it shipped the full fonts, 138 KB per page | Replaces the cobalt accent and Instrument Sans of phase D. Two tokens added for accessibility: `line-control` (3:1 control borders) and `on-accent` (dark labels on sage). |
+| 21st.dev components | 7 MIT components adapted, 1 retrieved for later, 2 dropped for "no-license" (`design/COMPONENT-NOTES.md`) | Licence comes from each component's page (the API result has none). Every adapted file names the author, URL and MIT. |
+| Dependencies | No new runtime dependency: the originals' framer-motion/motion, Radix, base-ui and cva are replaced by native React, `<dialog>` and CSS | More porting work and less polish in the springs; in return the JS budget measured in phase 2 (about 150 KB per page) is not spent on animation, and the 120 to 240 ms opacity/transform rule can be tested. |
+| Search | A Ctrl/Cmd+K palette (also "/") replaces the header search field; it searches `GET /api/products` and lists occasions and quick links | Without JavaScript there is no header search (the listing and its filters still work). |
+| Cart drawer | Opens after "Add to cart" (replacing the toast); the header "Cart" stays a link to `/cart` | One more overlay; the cart page remains the place to change quantities. |
+| Add-to-cart busy state | `aria-disabled` instead of `disabled` while the request runs | Found by the drawer focus test: a disabled button drops keyboard focus to the page, so focus could not return to it. A guard stops double submits instead. |
+| Quality gates | `web/e2e/quality.spec.ts`: axe and 0 px overflow at 320 px on 11 routes, motion at most 240 ms and none under reduced motion on 4 pages, a 2 px focus ring on the first 25 Tab stops of the home page, drawer and palette by keyboard | Chromium only; runs in `scripts/design-shots.sh` against the mock API, not in CI yet. |

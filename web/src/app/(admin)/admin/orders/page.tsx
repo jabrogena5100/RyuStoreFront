@@ -38,7 +38,7 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
           <form action="/admin/orders" role="search" className="mt-5 flex max-w-xl">
             {status ? <input type="hidden" name="status" value={status} /> : null}
             <label htmlFor="q" className="sr-only">Search orders by reference, name or e-mail</label>
-            <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by reference, name or e-mail" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-control bg-surface-2 px-4 text-small text-fg placeholder:text-fg-subtle" />
+            <input id="q" name="q" type="search" defaultValue={q} placeholder="Search by reference, name or e-mail" className="min-h-11 min-w-0 flex-1 rounded-l-md border border-r-0 border-line-control bg-surface-1 px-4 text-small text-fg placeholder:text-fg-muted" />
             <button type="submit" aria-label="Search" className="grid min-h-11 w-12 place-items-center rounded-r-md bg-accent text-on-accent transition-colors duration-(--duration-base) hover:bg-accent-hover">
               <Search aria-hidden="true" className="size-4" />
             </button>
@@ -46,7 +46,7 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
           <ul aria-label="Filter by status" className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
             <li>
               <Link href={href({ q })} aria-current={!status ? "true" : undefined} className={clsx(chip, !status ? "border-accent-line bg-accent-soft text-accent-text" : "border-line bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg")}>
-                All <span className="tabular text-fg-subtle">{base.length}</span>
+                All <span className="tabular text-fg-muted">{base.length}</span>
               </Link>
             </li>
             {STATUSES.map((s) => {
@@ -54,7 +54,7 @@ export default async function AdminOrders({ searchParams }: { searchParams: Prom
               return (
                 <li key={s}>
                   <Link href={href({ status: status === s ? undefined : s, q })} aria-current={status === s ? "true" : undefined} className={clsx(chip, status === s ? "border-accent-line bg-accent-soft text-accent-text" : "border-line bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg")}>
-                    {STATUS_LABEL[s]} <span className="tabular text-fg-subtle">{n}</span>
+                    {STATUS_LABEL[s]} <span className="tabular text-fg-muted">{n}</span>
                   </Link>
                 </li>
               );

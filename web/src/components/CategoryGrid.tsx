@@ -6,10 +6,13 @@ import { OCCASIONS, formatPrice, type ProductSummary } from "@/lib/catalog";
 
 export type CategoryTileData = { slug: (typeof OCCASIONS)[number]["slug"]; total: number; cheapest: ProductSummary | undefined };
 
-/**
- * Shop-by-occasion grid. Pattern from the 21st.dev shortlist ("Shop by Category Grid" by ziegfiroyt: image cards with a
- * count and a hover zoom). Adapted: the lead tile spans two columns and two rows on wide screens; the zoom is a 3 % scale
- * (transform only, 240 ms, removed under reduced motion); text sits on a dark scrim so it keeps contrast on any photo.
+/*
+ * Shop-by-occasion grid. Adapted from "Shop by Category Grid" by ziegfiroyt on 21st.dev
+ * (https://21st.dev/@ziegfiroyt/components/ecommerce4), library "Beste", licence shown there: MIT. Kept from the original:
+ * image cards with a bottom scrim, name, description and count over the image, a zoom and an arrow nudge on hover. Changed:
+ * the lead tile spans two columns and two rows on wide screens, the zoom is 3 % over 240 ms (not 5 % over 500 ms), counts
+ * and "from" prices in Geist Mono, no "Featured" badge, no class-variance-authority, design tokens. See
+ * design/COMPONENT-NOTES.md.
  */
 export function CategoryGrid({ tiles }: { tiles: CategoryTileData[] }) {
   return (
@@ -27,7 +30,7 @@ export function CategoryGrid({ tiles }: { tiles: CategoryTileData[] }) {
                 {t.cheapest ? <ProductImage product={t.cheapest} label={false} decorative className="aspect-auto! h-full" /> : null}
               </div>
               <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-canvas via-canvas/70 to-transparent" />
-              <ArrowUpRight aria-hidden="true" className="absolute right-3 top-3 size-5 text-fg-muted transition-colors duration-(--duration-base) group-hover:text-accent-text" />
+              <ArrowUpRight aria-hidden="true" className="absolute right-3 top-3 size-5 text-fg-muted transition-[color,transform] duration-(--duration-base) group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent-text" />
               <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
                 <h3 className={clsx("font-bold tracking-tight text-fg-strong", lead ? "text-h1" : "text-h2")}>{o.label}</h3>
                 {lead ? <p className="mt-1 max-w-xs text-small text-fg-muted">{o.blurb}</p> : null}

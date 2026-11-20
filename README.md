@@ -6,7 +6,7 @@ Java 25 and Spring Boot 4 with PostgreSQL, a Next.js frontend, and Terraform for
 
 **This is a demo store.** Products, brands and descriptions are invented, and payments run in Stripe **test mode** only (card `4242 4242 4242 4242`).
 
-![Home page, desktop, current design (before the redesign)](design/screens/home-desktop.png)
+![Home page at 1440 px: the redesign on the mock API; grey frames are placeholders until licensed photos arrive](design/build/home-1440.png)
 
 ## What it demonstrates
 

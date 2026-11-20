@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 
 export const controlClass = (error?: string) =>
   clsx(
-    "min-h-11 w-full rounded-md border bg-surface-2 px-3.5 text-body text-fg placeholder:text-fg-subtle",
+    "min-h-11 w-full rounded-md border bg-surface-1 px-3.5 text-body text-fg placeholder:text-fg-muted",
     "transition-colors duration-(--duration-base) disabled:opacity-50",
     error ? "border-danger" : "border-line-control hover:border-fg-subtle",
   );

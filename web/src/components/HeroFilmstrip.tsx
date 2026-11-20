@@ -5,11 +5,13 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Price } from "@/components/ui/Price";
 import type { ProductSummary } from "@/lib/catalog";
 
-/**
- * Home hero: an oversized headline over a filmstrip of real catalogue items (the newest pairs).
- * Pattern from the 21st.dev shortlist ("Hero Carousel" by crafterui: a filmstrip whose frames share one top edge, the lead
- * frame larger). Adapted: no background re-grade, no wheel or drag hijacking; frames are plain links in a native
- * scroll-snap row on small screens. Hover moves a frame up 4 px (transform only, 180 ms, removed under reduced motion).
+/*
+ * Home hero. Adapted from "Hero Carousel" by crafterui on 21st.dev (https://21st.dev/@crafterui/components/hero-carousel),
+ * licence shown there: MIT. Kept from the original: an oversized headline sitting on a filmstrip whose frames share one top
+ * edge, one lead frame larger than its neighbours, numbered frames in a mono label. Changed: the frames are the newest
+ * catalogue items and plain links (no carousel state); no background re-grade, film grain, wheel capture, drag or autoplay;
+ * a native scroll-snap row on phones; hover lifts a frame 4 px (transform only, 180 ms, removed under reduced motion);
+ * design tokens. See design/COMPONENT-NOTES.md.
  */
 export function HeroFilmstrip({ products, total }: { products: ProductSummary[]; total: number }) {
   const frames = products.slice(0, 6);
@@ -42,7 +44,7 @@ export function HeroFilmstrip({ products, total }: { products: ProductSummary[];
       </div>
 
       <ol
-        aria-label="New this week"
+        aria-label="New in"
         className="no-scrollbar -mx-4 mt-10 flex snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-[minmax(0,2fr)_repeat(5,minmax(0,1fr))] lg:overflow-visible lg:px-0"
       >
         {frames.map((p, i) => (

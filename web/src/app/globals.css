@@ -64,6 +64,17 @@
   animation: toast-in var(--duration-base) var(--ease-standard);
 }
 
+/* Search palette: a 180 ms fade and 4 px rise when it opens (opacity and transform only). */
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.palette-in[open] {
+  animation: palette-in var(--duration-base) var(--ease-standard);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

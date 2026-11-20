@@ -13,27 +13,27 @@ import { PRODUCTS } from "@/lib/catalog";
 
 export const metadata: Metadata = { title: "Design system" };
 
-/** Contrast ratios are WCAG figures computed by script for the hex values in src/styles/tokens.css (see design/BRIEF.md). */
+/** Contrast ratios are WCAG figures computed by script for the hex values in src/styles/tokens.css (see design/PROPOSAL.md). */
 const SWATCHES: { token: string; bg: string; hex: string; role: string; note?: string }[] = [
-  { token: "canvas", bg: "bg-canvas", hex: "#0B0A08", role: "Page background" },
-  { token: "surface-1", bg: "bg-surface-1", hex: "#141211", role: "Cards, header" },
-  { token: "surface-2", bg: "bg-surface-2", hex: "#1D1C1A", role: "Inputs, raised panels" },
-  { token: "surface-3", bg: "bg-surface-3", hex: "#272624", role: "Hover, selected" },
-  { token: "line", bg: "bg-line", hex: "#343331", role: "Dividers (decorative)" },
-  { token: "line-strong", bg: "bg-line-strong", hex: "#71706D", role: "Control borders", note: "at least 3:1" },
-  { token: "fg-subtle", bg: "bg-fg-subtle", hex: "#8F8D8B", role: "Captions", note: "6.0:1 on canvas" },
-  { token: "fg-muted", bg: "bg-fg-muted", hex: "#A6A4A2", role: "Secondary text", note: "8.0:1" },
-  { token: "fg", bg: "bg-fg", hex: "#E9E8E6", role: "Body text", note: "16.2:1" },
-  { token: "fg-strong", bg: "bg-fg-strong", hex: "#FBFAF9", role: "Headings, button labels", note: "19.0:1" },
-  { token: "accent", bg: "bg-accent", hex: "#1A6FE1", role: "Primary action", note: "4.6:1 with a label" },
-  { token: "accent-hover", bg: "bg-accent-hover", hex: "#0462D3", role: "Hover", note: "5.5:1 with a label" },
-  { token: "accent-press", bg: "bg-accent-press", hex: "#0054BD", role: "Pressed", note: "6.7:1 with a label" },
-  { token: "accent-soft", bg: "bg-accent-soft", hex: "#132643", role: "Selected background" },
-  { token: "accent-text", bg: "bg-accent-text", hex: "#5B90DD", role: "Links, focus", note: "6.1:1 on canvas" },
-  { token: "success", bg: "bg-success", hex: "#64C897", role: "Success", note: "9.7:1" },
-  { token: "warning", bg: "bg-warning", hex: "#E8BE62", role: "Warning", note: "11.3:1" },
-  { token: "danger", bg: "bg-danger", hex: "#EF7E7C", role: "Error", note: "7.5:1" },
-];
+  { token: "canvas", bg: "bg-canvas", hex: "#141414", role: "Page background" },
+  { token: "surface-1", bg: "bg-surface-1", hex: "#20201F", role: "Cards, panels, inputs" },
+  { token: "surface-2", bg: "bg-surface-2", hex: "#2C2C2A", role: "Raised panels, hover" },
+  { token: "surface-3", bg: "bg-surface-3", hex: "#353532", role: "Hover on surface-2" },
+  { token: "line", bg: "bg-line", hex: "#3A3A37", role: "Dividers (decorative)" },
+  { token: "line-strong", bg: "bg-line-strong", hex: "#5A5955", role: "Strong dividers (decorative)", note: "2.6:1, not for controls" },
+  { token: "line-control", bg: "bg-line-control", hex: "#7A7872", role: "Input, chip and outline borders", note: "4.17 / 3.69 / 3.17:1" },
+  { token: "fg-subtle", bg: "bg-fg-subtle", hex: "#8F8C84", role: "Hints at 14 px or larger", note: "5.48:1 on canvas, 4.86 on surface-1" },
+  { token: "fg-muted", bg: "bg-fg-muted", hex: "#B2AEA6", role: "Secondary text, labels", note: "8.33:1" },
+  { token: "fg", bg: "bg-fg", hex: "#ECEAE4", role: "Body text", note: "15.31:1" },
+  { token: "fg-strong", bg: "bg-fg-strong", hex: "#F6F4EF", role: "Headings" },
+  { token: "accent", bg: "bg-accent", hex: "#A3B18A", role: "Primary action, links, focus ring", note: "8.08:1; #141414 label 8.08:1" },
+  { token: "accent-hover", bg: "bg-accent-hover", hex: "#B7C4A0", role: "Hover", note: "#141414 label 10.02:1" },
+  { token: "accent-press", bg: "bg-accent-press", hex: "#8F9D77", role: "Pressed" },
+  { token: "accent-soft", bg: "bg-accent-soft", hex: "#2A2F24", role: "Selected row background", note: "text 11.4:1 on it" },
+  { token: "sale", bg: "bg-sale", hex: "#D4A65A", role: "Sale badges, small highlights only", note: "8.25:1" },
+  { token: "success", bg: "bg-success", hex: "#8FC79A", role: "Success", note: "9.48:1" },
+  { token: "danger", bg: "bg-danger", hex: "#E08A7E", role: "Error", note: "7.11:1" },
+]
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (

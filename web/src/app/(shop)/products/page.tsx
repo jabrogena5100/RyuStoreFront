@@ -80,6 +80,7 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
         <aside aria-label="Filter shoes" className="hidden lg:block">
+          <h2 className="sr-only">Filters</h2>
           {filters}
         </aside>
 
@@ -115,6 +116,7 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
           ) : null}
 
           <div className="mt-6">
+            <h2 className="sr-only">Shoes</h2>
             {showLoading ? (
               <ul aria-busy="true" className={grid}>
                 {Array.from({ length: 8 }, (_, i) => (
