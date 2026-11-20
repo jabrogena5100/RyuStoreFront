@@ -265,7 +265,7 @@ export function CommandPalette() {
                 {cur?.it.product ? (
                   <div>
                     <div className="overflow-hidden rounded-md">
-                      <ProductImage product={cur.it.product} label={false} decorative className="aspect-[4/3]!" />
+                      <ProductImage product={cur.it.product} image={cur.it.product.image} label={false} decorative className="aspect-[4/3]!" sizes="320px" />
                     </div>
                     <p className="mt-3 font-mono text-caption uppercase text-fg-muted">{cur.it.product.brand}</p>
                     <p className="mt-0.5 text-body font-semibold text-fg-strong">{cur.it.product.name}</p>

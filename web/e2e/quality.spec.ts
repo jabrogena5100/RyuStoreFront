@@ -17,6 +17,7 @@ const ROUTES = [
   "/orders",
   "/admin/orders",
   "/design",
+  "/credits",
 ];
 
 const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];

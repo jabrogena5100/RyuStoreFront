@@ -122,6 +122,7 @@ The dated log behind these is [`docs/verification.md`](docs/verification.md).
 
 ## Image credits
 
-There are no photographs in the store yet; product images are typographic placeholders. When photos are added, each will come from
-CC0, public-domain, Pexels-licence or Pixabay-licence sources, with its author, source and licence listed on the store's
-Image credits page and in the image manifest.
+Product photos come from Pexels, Pixabay and Wikimedia Commons (CC0 or public domain only), each under the licence recorded
+in [`content/catalogue/manifest.json`](content/catalogue/manifest.json) with its author, source page, date retrieved and
+SHA-256. The store's **Image credits** page (`/credits`) lists them. Image files are not in Git; see
+[`content/catalogue/README.md`](content/catalogue/README.md) to download and rebuild them.

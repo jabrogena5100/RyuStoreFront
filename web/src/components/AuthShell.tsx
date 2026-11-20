@@ -23,7 +23,7 @@ export function AuthShell({ mode, product, children }: { mode: "sign-in" | "regi
         <aside aria-label="About your account" className="relative hidden bg-surface-1 lg:block">
           {product ? (
             <div className="absolute inset-0">
-              <ProductImage product={product} view={2} label={false} decorative className="aspect-auto! h-full" />
+              <ProductImage product={product} image={product.image} view={2} label={false} decorative className="aspect-auto! h-full" sizes="50vw" />
             </div>
           ) : null}
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-canvas via-canvas/60 to-transparent" />

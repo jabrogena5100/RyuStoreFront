@@ -60,7 +60,10 @@ export function Footer() {
       <div className="border-t border-line">
         <Container className="flex flex-wrap items-center justify-between gap-x-6 py-3 text-caption text-fg-muted">
           <span className="py-2 font-mono uppercase">Demo store · Stripe test mode, no card is charged · Brands and products are invented</span>
-          <Link href="/admin" className="inline-flex min-h-11 items-center hover:text-fg">Admin (demo)</Link>
+          <span className="flex gap-6">
+            <Link href="/credits" className="inline-flex min-h-11 items-center hover:text-fg">Image credits</Link>
+            <Link href="/admin" className="inline-flex min-h-11 items-center hover:text-fg">Admin (demo)</Link>
+          </span>
         </Container>
       </div>
     </footer>

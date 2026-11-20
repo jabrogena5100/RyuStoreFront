@@ -51,7 +51,14 @@ export function HeroFilmstrip({ products, total }: { products: ProductSummary[];
           <li key={p.id} className={i === 0 ? "w-[78%] min-w-0 shrink-0 snap-start sm:w-[46%] lg:w-auto" : "w-[44%] min-w-0 shrink-0 snap-start sm:w-[26%] lg:w-auto"}>
             <Link href={`/products/${p.slug}`} className="group block rounded-md focus-visible:outline-offset-4">
               <div className="overflow-hidden rounded-md transition-transform duration-(--duration-base) ease-standard group-hover:-translate-y-1 group-focus-visible:-translate-y-1">
-                <ProductImage product={p} label={false} decorative className={i === 0 ? "lg:aspect-[4/5]" : undefined} />
+                <ProductImage
+                  product={p}
+                  image={p.image}
+                  label={false}
+                  decorative
+                  priority={i === 0}
+                  sizes={i === 0 ? "(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 78vw" : "(min-width: 1024px) 14vw, (min-width: 640px) 26vw, 44vw"}
+                />
               </div>
               <div className="mt-2.5 flex items-baseline justify-between gap-2">
                 <p className="min-w-0 truncate text-small text-fg">

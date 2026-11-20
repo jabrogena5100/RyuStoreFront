@@ -249,3 +249,16 @@ The product row (scroll-snap with arrow buttons) was written from scratch; the c
 | Cart drawer | Opens after "Add to cart" (replacing the toast); the header "Cart" stays a link to `/cart` | One more overlay; the cart page remains the place to change quantities. |
 | Add-to-cart busy state | `aria-disabled` instead of `disabled` while the request runs | Found by the drawer focus test: a disabled button drops keyboard focus to the page, so focus could not return to it. A guard stops double submits instead. |
 | Quality gates | `web/e2e/quality.spec.ts`: axe and 0 px overflow at 320 px on 11 routes, motion at most 240 ms and none under reduced motion on 4 pages, a 2 px focus ring on the first 25 Tab stops of the home page, drawer and palette by keyboard | Chromium only; runs in `scripts/design-shots.sh` against the mock API, not in CI yet. |
+
+## Phase 4 (catalogue and photos), settled 2026-11-20
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Catalogue size | About 150 products built from real photos, 1 to 3 photos each (owner's choice) | Free stock sites rarely have 2 to 4 photos of the same unbranded shoe; a product is built from one photographer's series rather than re-using photos across products. Fewer products than "several hundred", all of them real. |
+| Sources | Pexels and Wikimedia Commons (CC0/public domain) carry most of it; Pixabay only for photos selected after review, responses cached 24 h | Pixabay's API terms forbid "systematic mass downloads" (owner's choice: small curated use). |
+| Local object storage | SeaweedFS 4.52 in Compose (S3 gateway on 8333, anonymous, localhost only) | MinIO's community edition was archived in April 2026 and its images are no longer published. Anonymous access is acceptable only because the port is bound to 127.0.0.1. |
+| Image format and sizes | Pre-built AVIF and WebP at 480/960/1440 px with `sharp`, served from object storage; `<picture>` with `srcset`/`sizes`, original width and height, lazy below the fold | No image optimiser in the Next.js server (no CPU spent per request on Fargate); three widths may slightly overshoot some slots. |
+| Object keys | `products/<slug>-<n>-<sha8>`, cached `max-age=31536000, immutable` | A changed photo gets a new key, so long caching is safe; a re-seed is needed to pick up new keys. |
+| Database | V11 `product_images` (`ON DELETE CASCADE`), first photo on listing rows via the unique `(product_id, position)` index, all photos on the detail | One more join per listed row (24 per page); not measured yet at 50,000 products. |
+| Seeding | `storefront.seed.source=catalogue` (default) loads `classpath:catalogue/catalogue.json`; `generated` keeps the random seeder for the EXPLAIN runs | The cloud seed now loads the curated catalogue; the 50,000-product runs must say `STOREFRONT_SEED_SOURCE=generated` (docs/explain/README.md updated). |
+| Cart and orders | Still show placeholders: the cart and order APIs return no image | Listed as a gap; the product, listing, home, search and sign-in screens show photos. |
