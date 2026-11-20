@@ -228,3 +228,12 @@ The product row (scroll-snap with arrow buttons) was written from scratch; the c
 | Pay now | `POST /api/orders/{id}/pay`, then `window.location.assign(url)`. Errors: `payments_unavailable` and provider errors keep the order and offer a retry; `order_expired` or `payment_expired` show the expired panel; `order_not_payable` goes to the order page. A non-pending order never shows the pay step (paid goes to the confirmation) | The lapsed-hold check also uses the browser clock. |
 | Review states | `?state=` still shows fixture orders on the three order pages and the checkout; without it the pages are live | Removed at the end of phase 5. |
 | Pipelines | `design-shots.sh` and `web-live-check.sh` now refuse to start while the other runs or port 3000 is taken | Found when the two collided on port 3000, `web/.next` and `web/test-results` and corrupted a run. |
+
+## Finishing plan, settled 2026-11-20
+
+| Decision | Choice | Tradeoff accepted |
+| --- | --- | --- |
+| Domain | `ryustorefront.com` is the only domain (owner confirmed). `ryustorefront.net` is abandoned; its zone is to be deleted by hand | Portfolio links to `.net` must be updated. |
+| Frontend hostname | The apex `ryustorefront.com`, whose DNS stays at Cloudflare; the API stays on `api.ryustorefront.com` (Route 53) | The apex record and any certificate validation for it are made by hand in Cloudflare, outside Terraform. |
+| Order history and admin | Stay on fixtures, labelled as demo data in the UI; the order-list and admin endpoints are not built for "done" | The README lists them under "not built"; no claim that they work against the API. |
+| Numbers | Every quoted number has a row in `docs/metrics.md` with setup, status and raw-output location | Older single-run timings stay quotable only with "single run" and are marked for re-measurement. |
