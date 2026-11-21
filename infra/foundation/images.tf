@@ -114,5 +114,5 @@ output "images_bucket" {
 }
 
 output "images_base_url" {
-  value = aws_ssm_parameter.images_base_url.value
+  value = "https://${aws_cloudfront_distribution.images.domain_name}"
 }

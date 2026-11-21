@@ -64,7 +64,7 @@ aws login --profile "$AWS_PROFILE"
 scripts/aws-terraform.sh -chdir=infra/foundation init -backend-config="bucket=$BUCKET"
 scripts/aws-terraform.sh -chdir=infra/foundation plan -out=tfplan
 ```
-Expect **`Plan: 17 to add, 0 to change, 0 to destroy.`** (derived from the code: ECR repository and lifecycle policy 2, apex
+Expect **`Plan: 16 to add, 0 to change, 0 to destroy.`** (derived from the code: ECR repository and lifecycle policy 2, apex
 certificate 1, bucket and its public-access block, ownership, encryption and policy 5, origin access control 1, distribution 1,
 SSM parameter 1, SES identity 1, DKIM records 3, DMARC record 1). Read it: nothing may change or be destroyed. Then
 `aws login` again and `scripts/aws-terraform.sh -chdir=infra/foundation apply tfplan`. The CloudFront distribution takes several
@@ -73,10 +73,13 @@ minutes (not measured here).
 **3A.2 Apex certificate (Cloudflare, by hand).**
 
 ```
-scripts/aws-terraform.sh -chdir=infra/foundation output app_certificate_validation
+scripts/aws-terraform.sh -chdir=infra/foundation output -json app_certificate_validation \
+  | jq -r '.[] | "Name:  \(.name | rtrimstr(".") | rtrimstr(".ryustorefront.com"))\nType:  \(.type)\nValue: \(.value | rtrimstr("."))"'
 ```
-In Cloudflare, DNS for `ryustorefront.com`: add that record as **CNAME, Proxy status DNS only (grey cloud)**. Cloudflare wants the
-name without the trailing `.ryustorefront.com.`; paste the value without the trailing dot. Then wait for `ISSUED`:
+(Without `-json`, Terraform prints the list of objects in its own format, which is hard to copy. The wrapper's own status line goes
+to stderr, so the pipe sees clean JSON. If it says the output does not exist, 3A.1's apply has not finished.) In Cloudflare, DNS
+for `ryustorefront.com`: add that record as **CNAME, Proxy status DNS only (grey cloud)**. The script already removes the trailing
+dots and the `.ryustorefront.com` suffix from the name, as Cloudflare expects. Then wait for `ISSUED`:
 
 ```
 aws acm list-certificates --query "CertificateSummaryList[?DomainName=='ryustorefront.com'].Status" --output text
