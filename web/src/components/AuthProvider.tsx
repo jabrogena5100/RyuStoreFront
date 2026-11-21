@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { ApiClientError, api, setCsrf } from "@/lib/api-client";
+import { api, setCsrf } from "@/lib/api-client";
 
 export interface Customer {
   id: number;
@@ -16,7 +16,7 @@ interface SessionResponse {
 }
 
 interface AuthApi {
-  /** undefined while `/api/auth/me` is resolving (so the header never flashes the guest state), null for a guest. */
+  /** undefined while `/session` is resolving (so the header never flashes the guest state), null for a guest. */
   customer: Customer | null | undefined;
   signIn: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, displayName?: string) => Promise<void>;
@@ -36,12 +36,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let live = true;
-    api<Customer>("/auth/me")
-      .then((c) => live && setCustomer(c))
+    // /session (web/src/app/session/route.ts) answers 200 with `customer: null` for a guest, so a guest's page load has no
+    // failed request in the console. Any failure is treated as a guest; the next call will show the real problem.
+    fetch("/session", { headers: { Accept: "application/json" }, cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`session check failed: ${res.status}`);
+        const body = (await res.json()) as { customer: Customer | null };
+        if (live) setCustomer(body.customer);
+      })
       .catch((e) => {
-        // 401 is the normal answer for a guest; any other failure is treated as a guest too, and the next call will show the real problem.
-        if (live && !(e instanceof ApiClientError && e.status === 401)) console.warn("auth/me failed", e);
-        if (live) setCustomer(null);
+        if (live) {
+          console.warn("session check failed", e);
+          setCustomer(null);
+        }
       });
     return () => {
       live = false;

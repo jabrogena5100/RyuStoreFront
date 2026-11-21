@@ -66,12 +66,24 @@ test("registering signs in, merges the guest cart, and signing out returns to a 
   await expect(page.getByRole("button", { name: "Sign out" })).toHaveCount(0); // the menu is closed
   await expect(page.locator("details summary")).toContainText(/live-/);
   expect((await page.request.get("/api/auth/me")).status()).toBe(200);
+  expect((await (await page.request.get("/session")).json()).customer.email).toMatch(/^live-/);
   await expect(page.getByRole("link", { name: /^Cart/ })).toContainText("1"); // merged into the customer's cart
 
   await page.locator("details summary").click();
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page.getByRole("link", { name: "Sign in" })).toBeVisible();
   expect((await page.request.get("/api/auth/me")).status()).toBe(401);
+  expect(await (await page.request.get("/session")).json()).toEqual({ customer: null });
+});
+
+test("a guest's page load has no console errors (the session check answers 200, not 401)", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  const session = page.waitForResponse((r) => new URL(r.url()).pathname === "/session");
+  await page.goto("/");
+  expect((await session).status()).toBe(200);
+  await expect(page.getByRole("link", { name: "Sign in" }).first()).toBeVisible(); // the header shows the guest state
+  expect(errors).toEqual([]);
 });
 
 test("signing in with a wrong password says so and stays on the page", async ({ page }) => {

@@ -139,7 +139,8 @@ export default async function Listing({ searchParams }: { searchParams: Promise<
               <ul className={grid}>
                 {items.map((p, i) => (
                   <li key={p.id}>
-                    <ProductCard product={p} />
+                    {/* The first two cards are above the fold on every width: eager, high priority (the LCP image). */}
+                    <ProductCard product={p} priority={i < 2} />
                   </li>
                 ))}
               </ul>
