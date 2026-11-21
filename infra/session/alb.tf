@@ -75,3 +75,52 @@ resource "aws_route53_record" "api" {
     evaluate_target_health = true
   }
 }
+
+# ---- frontend on the apex ----
+# The apex's DNS is at Cloudflare: a CNAME (flattened, DNS only) from ryustorefront.com to api.ryustorefront.com, made
+# once by hand, follows this load balancer from session to session because the api record below changes with it.
+# The listener picks the certificate by SNI and the rule below routes by Host header.
+data "aws_acm_certificate" "app" {
+  domain      = var.app_domain
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
+
+resource "aws_lb_listener_certificate" "app" {
+  listener_arn    = aws_lb_listener.https.arn
+  certificate_arn = data.aws_acm_certificate.app.arn
+}
+
+resource "aws_lb_target_group" "web" {
+  name                 = "${var.name}-web"
+  port                 = 3000
+  protocol             = "HTTP"
+  target_type          = "ip"
+  vpc_id               = aws_vpc.main.id
+  deregistration_delay = 30
+
+  health_check {
+    path                = "/healthz"
+    matcher             = "200"
+    interval            = 15
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+  }
+}
+
+resource "aws_lb_listener_rule" "web" {
+  listener_arn = aws_lb_listener.https.arn
+  priority     = 10
+
+  condition {
+    host_header {
+      values = [var.app_domain]
+    }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web.arn
+  }
+}

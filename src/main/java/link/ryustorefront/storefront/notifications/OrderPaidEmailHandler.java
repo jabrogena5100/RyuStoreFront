@@ -1,7 +1,5 @@
 package link.ryustorefront.storefront.notifications;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import java.util.UUID;
 import link.ryustorefront.storefront.orders.OrderStatus;
 import link.ryustorefront.storefront.orders.OrderSummary;
@@ -12,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,7 +22,7 @@ import org.springframework.stereotype.Component;
  *
  * <p>The one remaining window is a crash after the mail server accepted the message but before the
  * transaction commits: the retry then sends a second copy. Sending twice was chosen over possibly never
- * sending, and the window is the length of one SMTP call.
+ * sending, and the window is the length of one call to the mail service (SMTP or SES).
  */
 @Component
 class OrderPaidEmailHandler implements OutboxHandler {
@@ -34,11 +30,11 @@ class OrderPaidEmailHandler implements OutboxHandler {
     private static final Logger log = LoggerFactory.getLogger(OrderPaidEmailHandler.class);
 
     private final Orders orders;
-    private final JavaMailSender mail;
+    private final EmailSender mail;
     private final JdbcClient jdbc;
     private final String from;
 
-    OrderPaidEmailHandler(Orders orders, JavaMailSender mail, JdbcClient jdbc,
+    OrderPaidEmailHandler(Orders orders, EmailSender mail, JdbcClient jdbc,
                           @Value("${storefront.mail.from:orders@storefront.local}") String from) {
         this.orders = orders;
         this.mail = mail;
@@ -73,21 +69,7 @@ class OrderPaidEmailHandler implements OutboxHandler {
             log.info("Confirmation for order {} was already sent; skipping", orderId);
             return;
         }
-        send(order.contactEmail(), content);
+        mail.send(from, order.contactEmail(), content);
         log.info("Sent confirmation for order {}", orderId);
-    }
-
-    private void send(String to, EmailContent content) {
-        try {
-            MimeMessage message = mail.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom(from);
-            helper.setTo(to);
-            helper.setSubject(content.subject());
-            helper.setText(content.text(), content.html());
-            mail.send(message);
-        } catch (MessagingException e) {
-            throw new IllegalStateException("Could not build the confirmation email", e);
-        }
     }
 }

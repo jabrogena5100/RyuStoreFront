@@ -43,8 +43,13 @@ echo "  zone:    $ZONE_ID"
 echo "  ECR:     $(aws ecr describe-repositories --query 'repositories[].repositoryName' --output text)"
 echo "  secrets: $(aws secretsmanager list-secrets --query "SecretList[?starts_with(Name, 'storefront/')].Name" --output text)"
 echo "  certs:   $(aws acm list-certificates --query 'CertificateSummaryList[].DomainName' --output text)"
+echo "  images:  $(aws s3api list-buckets --query "Buckets[?starts_with(Name, 'storefront-images-')].Name" --output text)"
+echo "  CDN:     $(aws cloudfront list-distributions --query "DistributionList.Items[?Comment=='storefront product images'].DomainName" --output text)"
+echo "  SES:     $(aws sesv2 list-email-identities --query 'EmailIdentities[].[IdentityType,VerificationStatus]' --output text | tr '\t\n' ' :')"
+echo "  SSM:     $(aws ssm get-parameters-by-path --path /storefront --query 'Parameters[].Name' --output text)"
 echo
-echo "Tag search (lags after deletions; trust the direct checks above):"
+echo "Tag search (lags after deletions; trust the direct checks above). Foundation resources (zone, ECR, certs, secrets,"
+echo "images bucket, CloudFront, SES identity, SSM parameter) are expected here with Stage=foundation:"
 aws resourcegroupstaggingapi get-resources --tag-filters Key=Project,Values=storefront --query 'ResourceTagMappingList[].ResourceARN' --output text | tr '\t' '\n' | sed 's/^/  /'
 
 exit "$FAIL"

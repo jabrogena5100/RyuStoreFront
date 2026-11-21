@@ -38,3 +38,11 @@ output "ecs_cluster" {
 output "log_group" {
   value = aws_cloudwatch_log_group.api.name
 }
+
+output "app_url" {
+  value = "https://${var.app_domain}"
+}
+
+output "log_groups" {
+  value = [aws_cloudwatch_log_group.api.name, aws_cloudwatch_log_group.worker.name, aws_cloudwatch_log_group.web.name]
+}

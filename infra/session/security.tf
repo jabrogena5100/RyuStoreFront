@@ -69,3 +69,22 @@ resource "aws_vpc_security_group_ingress_rule" "db_from_app" {
   from_port                    = 5432
   to_port                      = 5432
 }
+
+# Frontend tasks (same security group as the API) listen on 3000.
+resource "aws_vpc_security_group_egress_rule" "alb_to_web" {
+  security_group_id            = aws_security_group.alb.id
+  description                  = "To the frontend tasks"
+  referenced_security_group_id = aws_security_group.app.id
+  ip_protocol                  = "tcp"
+  from_port                    = 3000
+  to_port                      = 3000
+}
+
+resource "aws_vpc_security_group_ingress_rule" "web_from_alb" {
+  security_group_id            = aws_security_group.app.id
+  description                  = "Frontend from the load balancer"
+  referenced_security_group_id = aws_security_group.alb.id
+  ip_protocol                  = "tcp"
+  from_port                    = 3000
+  to_port                      = 3000
+}

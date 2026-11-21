@@ -9,3 +9,8 @@ docs
 node_modules
 *.md
 *.log
+web
+evidence-raw
+content
+design
+scripts
