@@ -47,7 +47,7 @@ output "web_ecr_repository_url" {
 }
 
 output "app_certificate_validation" {
-  description = "Add this CNAME in Cloudflare (DNS only), once"
+  description = "Add this CNAME in Cloudflare (DNS only), once; read it with: output -json app_certificate_validation (infra/README.md 3A.2)"
   value = [for o in aws_acm_certificate.app.domain_validation_options : {
     name  = o.resource_record_name
     type  = o.resource_record_type
