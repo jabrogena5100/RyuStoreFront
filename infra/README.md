@@ -17,7 +17,9 @@ Region `us-west-2`, AWS profile `ryustorefront`, Terraform 1.17.2 in Docker thro
 | Route 53 zone `api.ryustorefront.com` | Zone `Z06707493A3HFUP7647H3` | Hand, then imported into `foundation` (`prevent_destroy`) | Yes | $0.50 (list price, estimate) |
 | `infra/foundation` | ECR repository `storefront` and lifecycle policy (keeps 15 images); Secrets Manager shells `storefront/stripe-secret-key` and `storefront/stripe-webhook-secret`; ACM certificate for `api.ryustorefront.com` and its validation record | Terraform | Yes | Secrets $0.40 each, ECR $0.10/GB-month stored (list prices, estimate) |
 | Stripe (test mode) | Webhook endpoint `https://api.ryustorefront.com/api/stripe/webhook` and its signing secret | Hand (Stripe dashboard) | Yes | free |
-| `infra/session` | VPC, 2 public subnets, internet gateway, route table, 3 security groups and 5 rules, DB subnet group, RDS Postgres 18.6 (`db.t4g.micro`, single-AZ) with its RDS-managed password secret, IAM roles, log group, ECS cluster, task definition, service, ALB, target group, two listeners, DNS alias `api` | Terraform | **No: destroyed after every session** | 0 when destroyed |
+| `infra/foundation` (phase 6 additions) | ECR repository `storefront-web`; ACM certificate for the apex `ryustorefront.com` (validated by a CNAME made by hand in Cloudflare); private S3 bucket `storefront-images-<account>` behind a CloudFront distribution (origin access control, `*.cloudfront.net` name) and the SSM parameter `/storefront/images-base-url`; SES domain identity `api.ryustorefront.com` with three DKIM records and a `p=none` DMARC record in the zone | Terraform (`web.tf`, `images.tf`, `email.tf`) | Yes | S3 about 45 MiB, CloudFront and SES pay per use, SSM standard parameter free (list prices, estimate) |
+| Outside Terraform, phase 6 | Apex record in Cloudflare: `ryustorefront.com` CNAME `api.ryustorefront.com` (DNS only, flattened); the apex certificate's validation CNAME in Cloudflare; the owner's own address verified in SES (sandbox recipient) | Hand (Cloudflare dashboard, AWS CLI) | Yes | none |
+| `infra/session` | VPC, 2 public subnets, internet gateway, route table, 3 security groups and 5 rules, DB subnet group, RDS Postgres 18.6 (`db.t4g.micro`, single-AZ) with its RDS-managed password secret, IAM roles, log group, ECS cluster, task definition, service, ALB, target group, two listeners, DNS alias `api`; since phase 6 also the worker and web task definitions and services, their log groups, the web target group, the apex certificate on the HTTPS listener, the host-header rule for `ryustorefront.com`, two security-group rules for port 3000, the SES send policy and the web task role | Terraform | **No: destroyed after every session** | 0 when destroyed |
 
 Foundation total when idle: about **$1 to $2 a month** (estimate from list prices: zone $0.50 + two secrets $0.80 + ECR storage;
 not yet checked in Cost Explorer, `docs/metrics.md` C9).
@@ -51,15 +53,78 @@ credentials midway leaves `errored.tfstate` (section 7).
 
 Always save the plan, read it, then apply that file. Never `apply` without a plan file.
 
+## 3A. One-time setup for the full shop (phase 6: frontend, worker, photos, e-mail)
+
+Do this once; it survives every session destroy. Nothing here has been run yet.
+
+**3A.1 Apply the foundation additions.**
+
+```
+aws login --profile "$AWS_PROFILE"
+scripts/aws-terraform.sh -chdir=infra/foundation init -backend-config="bucket=$BUCKET"
+scripts/aws-terraform.sh -chdir=infra/foundation plan -out=tfplan
+```
+Expect **`Plan: 17 to add, 0 to change, 0 to destroy.`** (derived from the code: ECR repository and lifecycle policy 2, apex
+certificate 1, bucket and its public-access block, ownership, encryption and policy 5, origin access control 1, distribution 1,
+SSM parameter 1, SES identity 1, DKIM records 3, DMARC record 1). Read it: nothing may change or be destroyed. Then
+`aws login` again and `scripts/aws-terraform.sh -chdir=infra/foundation apply tfplan`. The CloudFront distribution takes several
+minutes (not measured here).
+
+**3A.2 Apex certificate (Cloudflare, by hand).**
+
+```
+scripts/aws-terraform.sh -chdir=infra/foundation output app_certificate_validation
+```
+In Cloudflare, DNS for `ryustorefront.com`: add that record as **CNAME, Proxy status DNS only (grey cloud)**. Cloudflare wants the
+name without the trailing `.ryustorefront.com.`; paste the value without the trailing dot. Then wait for `ISSUED`:
+
+```
+aws acm list-certificates --query "CertificateSummaryList[?DomainName=='ryustorefront.com'].Status" --output text
+```
+
+**3A.3 Apex record (Cloudflare, by hand).** Add `ryustorefront.com` (name `@`) **CNAME `api.ryustorefront.com`, DNS only**. Cloudflare
+flattens a CNAME at the apex, so it answers with the load balancer's addresses; because Terraform re-points `api` at each new load
+balancer, this record never needs editing. Delete any other `@` A/AAAA record first (they conflict). Between sessions the apex does
+not resolve, which is expected. Unverified until a session is up (check in 3.5).
+
+**3A.4 SES.** The domain identity verifies itself through the DKIM records (minutes to hours; not measured):
+
+```
+aws sesv2 get-email-identity --email-identity api.ryustorefront.com --query '[VerifiedForSendingStatus,DkimAttributes.Status]' --output text
+# expect: True    SUCCESS
+```
+The account is in the SES **sandbox**: mail is delivered only to verified addresses. Verify the address you will register with in
+the shop (AWS sends a link to it; click it). Keep the address out of committed files:
+
+```
+read -r MY_EMAIL                                   # type your address
+aws sesv2 create-email-identity --email-identity "$MY_EMAIL"
+aws sesv2 get-email-identity --email-identity "$MY_EMAIL" --query VerifiedForSendingStatus --output text    # True after the click
+```
+
+**3A.5 Upload the photos** (about 45 MiB, 1,128 files, from `evidence-raw/images/variants`; regenerate them first with
+`scripts/images/variants.sh` if that folder is gone):
+
+```
+aws login --profile "$AWS_PROFILE"
+IMAGES_BUCKET=$(scripts/aws-terraform.sh -chdir=infra/foundation output -raw images_bucket) scripts/images/upload.sh aws
+CDN=$(scripts/aws-terraform.sh -chdir=infra/foundation output -raw images_base_url)
+curl -sI "$CDN/products/ostrava-atelier-umber-chelsea-boot-1-9b06e0e4-480.avif" | grep -iE '^HTTP|content-type|cache-control|x-cache'
+# expect: HTTP/2 200, image/avif, public, max-age=31536000, immutable
+curl -s -o /dev/null -w '%{http_code}\n' "https://$IMAGES_BUCKET.s3.us-west-2.amazonaws.com/products/ostrava-atelier-umber-chelsea-boot-1-9b06e0e4-480.avif"
+# expect: 403 (the bucket itself is private)
+```
+
 ## 3. Start a session (foundation already exists)
 
 Normal path. Duration: about 10 minutes of waiting, mostly RDS (estimate; the full sequence has never been timed in one go, `docs/metrics.md` C10).
 
-**3.1 Image.** From a clean, committed tree (the script refuses otherwise; tags are the commit SHA and immutable):
+**3.1 Images.** From a clean, committed tree (the script refuses otherwise; tags are the commit SHA and immutable):
 
 ```
-scripts/ecr-push.sh                 # prints: Pushed <account>.dkr.ecr.us-west-2.amazonaws.com/storefront:<tag>
-TAG=<the 12-character tag it printed>
+scripts/ecr-push.sh                 # API and worker. Prints: Pushed <account>.dkr.ecr.us-west-2.amazonaws.com/storefront:<tag>
+scripts/ecr-push.sh web             # frontend, built with API_ORIGIN=https://api.ryustorefront.com -> storefront-web:<tag>
+TAG=<the 12-character tag it printed>   # the same commit, so the same tag for both
 ```
 If ECR already has that tag the script says so and exits; reuse the tag.
 
@@ -84,9 +149,12 @@ A task cannot start if a secret has no value. If either is missing, load it as i
 
 ```
 scripts/aws-terraform.sh -chdir=infra/session init -backend-config="bucket=$BUCKET"
-scripts/aws-terraform.sh -chdir=infra/session plan -out=tfplan -var image_tag=$TAG -var desired_count=1
+scripts/aws-terraform.sh -chdir=infra/session plan -out=tfplan -var image_tag=$TAG -var web_image_tag=$TAG \
+  -var desired_count=1 -var worker_desired_count=1 -var web_desired_count=1
 ```
-Expect: **`Plan: 31 to add, 0 to change, 0 to destroy.`** (derived: 18 + 13 were observed in two separate applies on 2026-11-15).
+Expect: **`Plan: 45 to add, 0 to change, 0 to destroy.`** (derived: the 31 observed on 2026-11-15 plus 14 for phase 6: two log
+groups, worker and web task definitions and services, web target group, listener certificate, listener rule, two security-group
+rules, SES policy, web task role). Also fails early if the apex certificate is not `ISSUED` (3A.2) or the SSM parameter is missing (3A.1).
 The plan fails early, before creating anything, if a data source is missing: the zone `api.ryustorefront.com`, an `ISSUED`
 certificate for that name, the two secrets or the ECR repository. Fix the foundation first.
 
@@ -106,7 +174,28 @@ aws logs tail /storefront/api --since 10m | grep -E 'Started StorefrontApplicati
 curl -s -o /dev/null -w '%{http_code} %{ssl_verify_result}\n' https://api.ryustorefront.com/actuator/health   # expect: 200 0
 ```
 
-**3.6 One checkout.** Pick a SKU from the seeded catalogue, then pay with card 4242 4242 4242 4242 on Stripe's page:
+**3.5b The full shop (phase 6).** Worker and web services, the apex, and photos through CloudFront:
+
+```
+aws ecs describe-services --cluster storefront --services api worker web \
+  --query 'services[].[serviceName,desiredCount,runningCount,deployments[0].rolloutState]' --output text   # 1 1 COMPLETED each
+aws logs tail /storefront/worker --since 10m | grep -E 'Started StorefrontApplication|ERROR'
+dig +short ryustorefront.com @$(dig +short NS ryustorefront.com | head -1)       # the ALB's addresses, from Cloudflare itself
+curl -s -o /dev/null -w '%{http_code} %{ssl_verify_result}\n' https://ryustorefront.com/healthz             # expect: 200 0
+curl -s https://ryustorefront.com/api/products/ostrava-atelier-umber-chelsea-boot | jq -r '.images[0].base'  # the CloudFront URL
+scripts/web-cloud-check.sh          # the 19 live checks against https://ryustorefront.com; screenshots to docs/evidence/cloud-shots/
+```
+
+**3.5c One real purchase in the browser** at `https://ryustorefront.com`: register with the address verified in 3A.4, add a pair, check
+out, pay with card 4242 4242 4242 4242. Expect: Stripe returns you to `/orders/<id>/confirmation`, the cart empties within a few
+seconds (worker), and the confirmation mail arrives from `orders@api.ryustorefront.com`. Evidence to keep:
+
+```
+aws logs tail /storefront/worker --since 15m | grep -E 'Sent confirmation|ERROR|WARN'
+aws logs tail /storefront/api --since 15m | grep -iE 'webhook|checkout.session'
+```
+
+**3.6 One checkout from the command line** (phase 4b; still works). Pick a SKU from the seeded catalogue, then pay with card 4242 4242 4242 4242 on Stripe's page:
 
 ```
 curl -s 'https://api.ryustorefront.com/api/products?pageSize=1' | jq -r '.items[0].slug' \
@@ -120,9 +209,9 @@ and calling pay again for the same order answers `409 order_not_payable (paid)`.
 
 ```
 aws login --profile "$AWS_PROFILE"
-scripts/aws-terraform.sh -chdir=infra/session plan -destroy -out=tfplan -var image_tag=unused
+scripts/aws-terraform.sh -chdir=infra/session plan -destroy -out=tfplan -var image_tag=unused -var web_image_tag=unused
 ```
-Expect: **`Plan: 0 to add, 0 to change, 31 to destroy.`** (observed 2026-11-15). Read it: nothing from `foundation` may appear.
+Expect: **`Plan: 0 to add, 0 to change, 45 to destroy.`** (derived for phase 6; 31 observed 2026-11-15 before it). Read it: nothing from `foundation` may appear.
 
 ```
 scripts/aws-terraform.sh -chdir=infra/session apply tfplan
@@ -136,7 +225,7 @@ A record, RDS-managed `rds!` secrets). Expect `ok` on every line, then the expec
 two `storefront/` secrets and the certificate. The tag search printed last **lags behind deletions** and can still list the ECS
 service, cluster or security-group rules for a while; trust the direct checks. Exit code 0 means clean.
 
-Save the destroy output with the `Destroy complete! Resources: 31 destroyed.` line; it was not captured last time.
+Save the destroy output with the `Destroy complete! Resources: 45 destroyed.` line; it was not captured last time.
 
 ## 5. Rebuild from an empty account
 
@@ -251,11 +340,9 @@ Only to leave the project or change accounts. Expect to redo section 5 afterward
 
 ## 8. Open items (not done; each is a later session, not a claim)
 
-- **Frontend in the cloud** at `ryustorefront.com` (apex on Cloudflare): not written. The Fargate vs static/CloudFront choice and the
-  Cloudflare DNS record for the apex are phase 6.
-- **Return URL bug for that session:** `STOREFRONT_PUBLIC_BASE_URL` in `infra/session/ecs.tf` is the API host. With a frontend it must
-  be `https://ryustorefront.com`, or shoppers return from Stripe to a 404 on the API.
-- **Worker service** (confirmation e-mail, cart clearing, reservation expiry) and an e-mail path (SES) in AWS.
+- **Phase 6 is written, not run:** sections 3A and 3.5b/3.5c, the worker and web services, CloudFront photos and SES mail have
+  not been applied or observed in AWS yet. Every count and expectation there is derived from the code.
+- **SES production access** (mail to unverified addresses) is a request to AWS; out of scope for the demo.
 - **Reading the database** without opening RDS (ECS Exec or a read endpoint).
 - **Webhook replay** and out-of-order delivery against the cloud endpoint; refunds.
 - **Real cost** per session and per idle month from Cost Explorer (tag `Project=storefront`; it lags about a day).

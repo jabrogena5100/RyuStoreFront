@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
-# Build the image on this VM and push it to ECR, tagged with the commit SHA.
+# Build an image on this VM and push it to ECR, tagged with the commit SHA.
 # Repository tags are immutable, so a SHA is pushed once; re-running skips the push if the tag is already there.
 #
 # Usage:
 #   export AWS_PROFILE=ryustorefront
 #   aws login --profile "$AWS_PROFILE"
-#   scripts/ecr-push.sh
+#   scripts/ecr-push.sh            # the API/worker image (Dockerfile)     -> ECR storefront
+#   scripts/ecr-push.sh web        # the frontend image (web/Dockerfile)   -> ECR storefront-web
+# The web image is built with API_ORIGIN=https://api.ryustorefront.com (override with WEB_API_ORIGIN).
 set -euo pipefail
 
 REGION="${AWS_REGION:-us-west-2}"
-REPO="storefront"
+WHAT="${1:-api}"
+case "$WHAT" in
+  api) REPO="storefront"; BUILD=(-f Dockerfile .) ;;
+  web) REPO="storefront-web"; BUILD=(-f web/Dockerfile --build-arg "API_ORIGIN=${WEB_API_ORIGIN:-https://api.ryustorefront.com}" web) ;;
+  *) echo "usage: scripts/ecr-push.sh [api|web]" >&2; exit 1 ;;
+esac
 PROFILE="${AWS_PROFILE:-}"
 [[ -n "$PROFILE" ]] || { echo "AWS_PROFILE is not set (expected: export AWS_PROFILE=ryustorefront)" >&2; exit 1; }
 
@@ -31,7 +38,7 @@ if aws ecr describe-images --repository-name "$REPO" --image-ids imageTag="$TAG"
   exit 0
 fi
 
-DOCKER_BUILDKIT=1 docker build --network host -t "$IMAGE" .
+DOCKER_BUILDKIT=1 docker build --network host -t "$IMAGE" "${BUILD[@]}"
 aws ecr get-login-password --region "$REGION" | docker login --username AWS --password-stdin "$REGISTRY"
 docker push "$IMAGE"
 echo "Pushed ${IMAGE}" >&2

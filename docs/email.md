@@ -9,7 +9,19 @@ email: the **order confirmation**, when an order becomes `paid` (event `order.pa
 **nothing leaves your machine**. Open the inbox at <http://localhost:8025>. The application's SMTP settings
 (`spring.mail.*`) already point there. The sender is `storefront.mail.from` (default `orders@storefront.local`).
 
-In AWS this becomes SES (sandbox first); only the `spring.mail.*` settings change, not the code.
+## AWS: SES API (phase 6)
+
+`storefront.mail.transport` picks the sender: `smtp` (default, `SmtpEmailSender`, Mailpit locally) or `ses`
+(`SesEmailSender`, Amazon SES API v2 `SendEmail` with simple content: subject, text and HTML parts, UTF-8). The worker
+task sets `STOREFRONT_MAIL_TRANSPORT=ses` and `STOREFRONT_MAIL_FROM=orders@api.ryustorefront.com`; credentials are the
+ECS task role, whose policy allows only `ses:SendEmail` with that From address. No SMTP password or access key exists.
+
+- The sending domain `api.ryustorefront.com` is an SES identity in `infra/foundation/email.tf`, verified by three Easy DKIM
+  records in the Route 53 zone, plus a monitoring-only DMARC record (`p=none`).
+- The account is in the **SES sandbox**: mail goes only to verified addresses. The owner verifies their own address with the
+  AWS CLI (`infra/README.md` 3A.4) and registers in the shop with it. Production access is a request to AWS; not planned.
+- A rejected send (unverified recipient, throttling) throws, so the handler's `sent_emails` row rolls back and the event is
+  retried with backoff, exactly like an SMTP failure. Tested in `SesEmailSenderTests` on the request the sender really builds.
 
 ## How a confirmation is sent
 

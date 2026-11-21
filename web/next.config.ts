@@ -10,6 +10,9 @@ const apiOrigin = process.env.API_ORIGIN ?? "http://localhost:8080";
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The container image (web/Dockerfile) sets NEXT_OUTPUT=standalone: a self-contained server.js with only the files it
+  // needs. Local `next start` keeps the default output.
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   async rewrites() {
     return [{ source: "/api/:path*", destination: `${apiOrigin}/api/:path*` }];
   },

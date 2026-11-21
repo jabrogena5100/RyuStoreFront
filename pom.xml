@@ -31,6 +31,7 @@
 		<spring-modulith.version>2.1.2</spring-modulith.version>
 		<stripe.version>34.1.0</stripe.version>
 		<gson.version>2.13.2</gson.version>
+		<awssdk.version>2.59.7</awssdk.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -72,6 +73,25 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>sesv2</artifactId>
+			<exclusions>
+				<!-- One small HTTP client instead of Apache and Netty: the worker sends a few emails, nothing more. -->
+				<exclusion>
+					<groupId>software.amazon.awssdk</groupId>
+					<artifactId>apache-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>software.amazon.awssdk</groupId>
+					<artifactId>netty-nio-client</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>url-connection-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.stripe</groupId>
@@ -182,6 +202,13 @@
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>software.amazon.awssdk</groupId>
+				<artifactId>bom</artifactId>
+				<version>${awssdk.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.modulith</groupId>
 				<artifactId>spring-modulith-bom</artifactId>
