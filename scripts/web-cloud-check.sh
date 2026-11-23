@@ -18,6 +18,6 @@ code="$(curl -s -o /dev/null -w '%{http_code}' "$BASE_URL/healthz" || true)"
 code="$(curl -s -o /dev/null -w '%{http_code}' "$BASE_URL/api/categories" || true)"
 [ "$code" = 200 ] || { echo "$BASE_URL/api/categories answered '$code', not 200 (the frontend's proxy to the API)."; exit 1; }
 
-docker run --rm --network host --ipc=host --user "$(id -u):$(id -g)" -e HOME=/tmp/home -e BASE_URL \
+docker run --rm --network host --ipc=host --user "$(id -u):$(id -g)" -e HOME=/tmp/home -e "BASE_URL=$BASE_URL" \
   -e LIVE_SHOTS_DIR=/workspace/docs/evidence/cloud-shots \
   -v "$REPO":/workspace -w /workspace/web "$PW_IMAGE" npx playwright test -c playwright.live.config.ts
