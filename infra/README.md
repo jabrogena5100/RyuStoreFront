@@ -155,9 +155,9 @@ scripts/aws-terraform.sh -chdir=infra/session init -backend-config="bucket=$BUCK
 scripts/aws-terraform.sh -chdir=infra/session plan -out=tfplan -var image_tag=$TAG -var web_image_tag=$TAG \
   -var desired_count=1 -var worker_desired_count=1 -var web_desired_count=1
 ```
-Expect: **`Plan: 45 to add, 0 to change, 0 to destroy.`** (derived: the 31 observed on 2026-11-15 plus 14 for phase 6: two log
+Expect: **`Plan: 44 to add, 0 to change, 0 to destroy.`** (the 31 observed on 2026-11-15 plus 13 for phase 6: two log
 groups, worker and web task definitions and services, web target group, listener certificate, listener rule, two security-group
-rules, SES policy, web task role). Also fails early if the apex certificate is not `ISSUED` (3A.2) or the SSM parameter is missing (3A.1).
+rules, SES policy, web task role; 44 added was observed on 2026-11-23, `Apply complete! Resources: 44 added`). Also fails early if the apex certificate is not `ISSUED` (3A.2) or the SSM parameter is missing (3A.1).
 The plan fails early, before creating anything, if a data source is missing: the zone `api.ryustorefront.com`, an `ISSUED`
 certificate for that name, the two secrets or the ECR repository. Fix the foundation first.
 
@@ -214,7 +214,7 @@ and calling pay again for the same order answers `409 order_not_payable (paid)`.
 aws login --profile "$AWS_PROFILE"
 scripts/aws-terraform.sh -chdir=infra/session plan -destroy -out=tfplan -var image_tag=unused -var web_image_tag=unused
 ```
-Expect: **`Plan: 0 to add, 0 to change, 45 to destroy.`** (derived for phase 6; 31 observed 2026-11-15 before it). Read it: nothing from `foundation` may appear.
+Expect: **`Plan: 0 to add, 0 to change, 44 to destroy.`** (derived from the 44 applied; 31 observed 2026-11-15 before phase 6). Read it: nothing from `foundation` may appear.
 
 ```
 scripts/aws-terraform.sh -chdir=infra/session apply tfplan
@@ -228,7 +228,7 @@ A record, RDS-managed `rds!` secrets). Expect `ok` on every line, then the expec
 two `storefront/` secrets and the certificate. The tag search printed last **lags behind deletions** and can still list the ECS
 service, cluster or security-group rules for a while; trust the direct checks. Exit code 0 means clean.
 
-Save the destroy output with the `Destroy complete! Resources: 45 destroyed.` line; it was not captured last time.
+Save the destroy output with the `Destroy complete! Resources: 44 destroyed.` line; it was not captured last time.
 
 ## 5. Rebuild from an empty account
 

@@ -118,6 +118,9 @@ test("an existing e-mail offers to sign in instead, and a returning customer can
   await other.getByRole("button", { name: "Create account" }).click();
   await expect(other.getByText("already exists")).toBeVisible();
   await other.getByRole("link", { name: "Sign in instead" }).click();
+  // The link navigates on the client; without this wait the e-mail can be typed into the register form that is
+  // about to unmount (seen against the cloud: the sign-in page rendered with an empty e-mail field).
+  await other.waitForURL("**/sign-in");
   await other.getByLabel("E-mail").fill(e);
   await other.getByLabel("Password", { exact: true }).fill(PASSWORD);
   await other.getByRole("button", { name: "Sign in" }).click();
