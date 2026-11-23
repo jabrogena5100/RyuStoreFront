@@ -334,7 +334,7 @@ Only to leave the project or change accounts. Expect to redo section 5 afterward
 | Symptom | Cause and fix |
 | --- | --- |
 | `Could not export credentials for profile` | `aws login --profile ryustorefront` (with `--remote` on a headless VM). |
-| Apply stopped with an auth error, `errored.tfstate` appears | The credentials expired midway. `aws login`, then `scripts/aws-terraform.sh -chdir=infra/<stage> state push errored.tfstate`, then plan again and read it before applying. |
+| Apply stopped with an auth error, `errored.tfstate` appears | The credentials expired midway. `docker ps` must show no Terraform container; `aws login`; if the state is locked, `scripts/aws-terraform.sh -chdir=infra/<stage> force-unlock -force <ID from the error>`; then `state push errored.tfstate`, plan again and read it before applying. Seen on 2026-11-23 during a destroy: the RDS deletion and the 5-minute internet gateway outlast a login made minutes before; run `aws login` immediately before `apply`. |
 | Session plan fails on `data.aws_acm_certificate.api` or `data.aws_route53_zone.main` | The foundation is missing or the certificate is not `ISSUED`. Section 3.2 or 5.4. |
 | Task keeps stopping with `ResourceInitializationError` | A secret has no value, or the execution role cannot read it. Section 3.3. |
 | Target unhealthy, then the task is replaced | Startup longer than the grace period (180 s), or a crash. `aws logs tail /storefront/api --since 15m`. |
