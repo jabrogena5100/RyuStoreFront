@@ -20,8 +20,13 @@ ECS task role, whose policy allows only `ses:SendEmail` with that From address. 
   records in the Route 53 zone, plus a monitoring-only DMARC record (`p=none`).
 - The account is in the **SES sandbox**: mail goes only to verified addresses. The owner verifies their own address with the
   AWS CLI (`infra/README.md` 3A.4) and registers in the shop with it. Production access is a request to AWS; not planned.
-- A rejected send (unverified recipient, throttling) throws, so the handler's `sent_emails` row rolls back and the event is
-  retried with backoff, exactly like an SMTP failure. Tested in `SesEmailSenderTests` on the request the sender really builds.
+- Throttling or a network error throws, so the handler's `sent_emails` row rolls back and the event is retried with backoff,
+  exactly like an SMTP failure. SES `MessageRejected` (in the sandbox: an unverified recipient) is permanent: the handler logs
+  `Confirmation for order ... not delivered`, keeps no `sent_emails` row, and lets the event complete, because the cart
+  clearing shares that event's transaction and a stranger's purchase on the always-on demo must still empty their cart.
+  Changed for the always-on demo; before that, the rejection was retried (`docs/metrics.md` C15 shows that older behaviour).
+  Tested in `SesEmailSenderTests` (on the request the sender really builds) and `UndeliverableEmailTests` (real outbox, both
+  handlers, cart cleared, nothing retried). Not yet observed against real SES.
 
 ## How a confirmation is sent
 

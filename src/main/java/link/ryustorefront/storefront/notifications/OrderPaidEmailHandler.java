@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
  * <p>The outbox delivers at least once, so this handler guards against sending twice: it first records
  * the email in {@code sent_emails} (a primary key on the dedupe key), and sends only if that insert is
  * new. The record and the send share the worker's transaction, so if sending fails the record is rolled
- * back and the event is retried with backoff.
+ * back and the event is retried with backoff. A permanent refusal ({@link UndeliverableEmailException}, such as an
+ * unverified recipient in the SES sandbox) is logged and not retried, so it cannot hold back the cart clearing that
+ * shares this event's transaction.
  *
  * <p>The one remaining window is a crash after the mail server accepted the message but before the
  * transaction commits: the retry then sends a second copy. Sending twice was chosen over possibly never
@@ -69,7 +71,14 @@ class OrderPaidEmailHandler implements OutboxHandler {
             log.info("Confirmation for order {} was already sent; skipping", orderId);
             return;
         }
-        mail.send(from, order.contactEmail(), content);
+        try {
+            mail.send(from, order.contactEmail(), content);
+        } catch (UndeliverableEmailException e) {
+            // Permanent refusal: keep no "sent" record, and let the event (and the cart clearing) complete.
+            jdbc.sql("DELETE FROM sent_emails WHERE dedupe_key = :key").param("key", "order.paid:" + orderId).update();
+            log.warn("Confirmation for order {} not delivered: {}", orderId, e.getMessage());
+            return;
+        }
         log.info("Sent confirmation for order {}", orderId);
     }
 }

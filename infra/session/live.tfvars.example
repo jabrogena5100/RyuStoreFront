@@ -1,0 +1,10 @@
+# Always-on demo settings (infra/README.md section 3L). Copy to live.tfvars (git-ignored) and fill in alarm_email.
+desired_count        = 1
+worker_desired_count = 1
+web_desired_count    = 1
+
+db_backup_retention_days = 7    # daily automated backups, point-in-time restore
+db_final_snapshot        = true # a destroy leaves storefront-final behind (delete it by hand when done)
+db_deletion_protection   = true # a destroy fails until this is set back to false and applied
+
+alarm_email = "you@example.com"
