@@ -27,7 +27,7 @@ services:
   # published (archived April 2026). No identities are configured, so the gateway accepts anonymous requests: fine for a
   # localhost-only dev store, never for anything reachable from outside. In AWS the same objects go to S3 behind CloudFront.
   seaweedfs:
-    image: chrislusf/seaweedfs:4.52
+    image: chrislusf/seaweedfs:4.55
     # Volumes grow 7 at a time on first write, so the cap must leave room; 64 MB volumes suit a few hundred images.
     command: server -s3 -s3.port=8333 -dir=/data -volume.max=32 -master.volumeSizeLimitMB=64
     ports:
