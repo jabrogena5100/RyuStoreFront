@@ -208,6 +208,65 @@ BASE=https://api.ryustorefront.com bash scripts/manual-checkout.sh <sku>
 Proof the order is paid (no database access yet): Stripe's event delivery log shows `checkout.session.completed` with HTTP 200,
 and calling pay again for the same order answers `409 order_not_payable (paid)`.
 
+## 3L. Keep it live (always-on demo for job applications)
+
+Same session stage, applied with `infra/session/live.tfvars` instead of the three `-var ..._count=1` flags. Nothing here has been
+run yet. Differences from a normal session:
+
+- **RDS** keeps 7 days of automated backups, takes a final snapshot `storefront-final` on destroy, and has deletion protection on.
+- **ECS** services roll back on their own if a new deployment never becomes healthy (deployment circuit breaker; on for every session).
+- **Alarms:** an SNS topic e-mails you when the API or the web shop has had no healthy task for 5 minutes, and again when it recovers.
+
+**3L.1 Settings file** (git-ignored; holds your alarm address):
+
+```
+cp infra/session/live.tfvars.example infra/session/live.tfvars
+$EDITOR infra/session/live.tfvars     # set alarm_email
+```
+
+**3L.2 Images, foundation, secrets:** sections 3.1 to 3.3, from a clean `main` after the PR is merged.
+
+**3L.3 Plan and apply:**
+
+```
+scripts/aws-terraform.sh -chdir=infra/session init -backend-config="bucket=$BUCKET"
+scripts/aws-terraform.sh -chdir=infra/session plan -out=tfplan -var-file=live.tfvars -var image_tag=$TAG -var web_image_tag=$TAG
+```
+Expect **`Plan: 48 to add, 0 to change, 0 to destroy.`** (derived: the 44 of section 3.4 plus SNS topic, subscription and two alarms).
+Then `aws login` and `apply tfplan`, and check exactly as in 3.5, 3.5b and 3.5c. Click the "AWS Notification - Subscription
+Confirmation" link in the mail; the alarms start `INSUFFICIENT_DATA` or `ALARM` for a few minutes, then `OK`:
+
+```
+aws cloudwatch describe-alarms --alarm-name-prefix storefront- --query 'MetricAlarms[].[AlarmName,StateValue]' --output text
+```
+
+**3L.4 Deploy a new version** while live: commit, `scripts/ecr-push.sh` and `scripts/ecr-push.sh web`, then the same plan with the new
+`TAG` (expect only the task definitions replaced and the services updated in place), `aws login`, apply. The old task keeps serving
+until the new one is healthy. The ECR lifecycle policy keeps 15 images: the tag that is running must not be pushed out by 15 newer ones,
+or a task replacement fails to pull.
+
+**3L.5 Taking it down:** set `db_deletion_protection = false` in `live.tfvars`, plan and apply that (1 to change), then section 4 with
+`-var-file=live.tfvars` added to the destroy plan. The final snapshot `storefront-final` stays behind and is billed as snapshot storage;
+delete it with `aws rds delete-db-snapshot --db-snapshot-identifier storefront-final` when you no longer want it.
+
+**Monthly cost, always on** (estimate from us-west-2 list prices, 730 hours, not measured; check Cost Explorer after a few days, `docs/metrics.md` C9):
+
+| Item | Estimate |
+| --- | --- |
+| Fargate: api 0.5 vCPU/1 GB, worker 0.25 vCPU/1 GB, web 0.25 vCPU/0.5 GB | about $38 |
+| Load balancer: hourly plus a low-traffic minimum of LCUs | about $20 to $22 |
+| RDS `db.t4g.micro` and 20 GB gp3 (backups free up to the database size) | about $14 |
+| Public IPv4 addresses: 2 for the load balancer, 1 per task (no NAT, section 1) | about $18 |
+| Foundation, three secrets, logs, two alarms | about $3 |
+| **Total** | **about $90 to $95** |
+
+That is close to the $100 budget, so its forecast alert may fire; the $150 budget is the real ceiling.
+
+What visitors should know (already on the site): Stripe is in test mode (card 4242 4242 4242 4242), brands are invented, admin and
+order history are demo fixtures. SES is in the sandbox, so confirmation mail reaches only addresses verified in 3A.4; for anyone else
+the worker logs one `Confirmation for order ... not delivered` warning and moves on; the order is paid and the cart still empties
+(`docs/email.md`).
+
 ## 4. End a session: destroy and audit
 
 ```

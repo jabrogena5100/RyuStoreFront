@@ -157,6 +157,13 @@ resource "aws_ecs_service" "api" {
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
 
+  # A deployment whose tasks never become healthy rolls back to the last working task definition instead of
+  # leaving the live site down.
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
   # Startup was 22 s on the dev VM with no CPU limit; a 0.5 vCPU task will be slower. 180 s is a guess to be
   # replaced by the measured Fargate start time (docs/verification.md).
   health_check_grace_period_seconds = 180
@@ -226,6 +233,13 @@ resource "aws_ecs_service" "worker" {
   desired_count   = var.worker_desired_count
   launch_type     = "FARGATE"
 
+  # A deployment whose tasks never become healthy rolls back to the last working task definition instead of
+  # leaving the live site down.
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
   network_configuration {
     subnets          = aws_subnet.public[*].id
     security_groups  = [aws_security_group.app.id]
@@ -282,6 +296,13 @@ resource "aws_ecs_service" "web" {
   task_definition = aws_ecs_task_definition.web.arn
   desired_count   = var.web_desired_count
   launch_type     = "FARGATE"
+
+  # A deployment whose tasks never become healthy rolls back to the last working task definition instead of
+  # leaving the live site down.
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
 
   health_check_grace_period_seconds = 60 # the Node server started in under a second locally (not measured on Fargate)
 

@@ -15,9 +15,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
 import software.amazon.awssdk.services.sesv2.model.Message;
+import software.amazon.awssdk.services.sesv2.model.MessageRejectedException;
 import software.amazon.awssdk.services.sesv2.model.SendEmailRequest;
 import software.amazon.awssdk.services.sesv2.model.SendEmailResponse;
 import software.amazon.awssdk.services.sesv2.model.SesV2Exception;
+import software.amazon.awssdk.services.sesv2.model.TooManyRequestsException;
 
 /**
  * The SES sender, checked on the request it really hands the SDK (not on a hand-written one): the confirmation email
@@ -25,15 +27,15 @@ import software.amazon.awssdk.services.sesv2.model.SesV2Exception;
  */
 class SesEmailSenderTests {
 
-    /** Records every SendEmail call; optionally fails like SES does for an unverified sandbox recipient. */
+    /** Records every SendEmail call; optionally fails with the given SES error. */
     static final class CapturingSes implements SesV2Client {
         final List<SendEmailRequest> sent = new ArrayList<>();
-        boolean reject;
+        SesV2Exception failure;
 
         @Override
         public SendEmailResponse sendEmail(SendEmailRequest request) {
-            if (reject) {
-                throw (SesV2Exception) SesV2Exception.builder().message("Email address is not verified.").statusCode(400).build();
+            if (failure != null) {
+                throw failure;
             }
             sent.add(request);
             return SendEmailResponse.builder().messageId("test-1").build();
@@ -79,14 +81,27 @@ class SesEmailSenderTests {
     }
 
     @Test
-    void aRejectedSendPropagatesSoTheOutboxRetries() {
+    void anUnverifiedSandboxRecipientIsAPermanentFailure() {
         CapturingSes ses = new CapturingSes();
-        ses.reject = true;
+        ses.failure = (SesV2Exception) MessageRejectedException.builder()
+                .message("Email address is not verified.").statusCode(400).build();
 
         assertThatThrownBy(() -> new SesEmailSender(ses).send("orders@api.ryustorefront.com", "buyer@example.com",
                 OrderConfirmationEmail.build(ORDER)))
-                .isInstanceOf(SesV2Exception.class)
-                .hasMessageContaining("not verified");
+                .isInstanceOf(UndeliverableEmailException.class)
+                .hasMessageContaining("not verified")
+                .hasCauseInstanceOf(MessageRejectedException.class);
+    }
+
+    @Test
+    void throttlingPropagatesUnchangedSoTheOutboxRetries() {
+        CapturingSes ses = new CapturingSes();
+        ses.failure = (SesV2Exception) TooManyRequestsException.builder().message("Too many requests").statusCode(429).build();
+
+        assertThatThrownBy(() -> new SesEmailSender(ses).send("orders@api.ryustorefront.com", "buyer@example.com",
+                OrderConfirmationEmail.build(ORDER)))
+                .isInstanceOf(TooManyRequestsException.class)
+                .isNotInstanceOf(UndeliverableEmailException.class);
     }
 
     private final ApplicationContextRunner context = new ApplicationContextRunner()

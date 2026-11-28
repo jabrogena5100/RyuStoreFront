@@ -29,8 +29,26 @@ resource "aws_db_instance" "main" {
   publicly_accessible    = false
   multi_az               = false
 
-  backup_retention_period = 0
-  skip_final_snapshot     = true
-  deletion_protection     = false
-  apply_immediately       = true
+  backup_retention_period   = var.db_backup_retention_days
+  skip_final_snapshot       = !var.db_final_snapshot
+  final_snapshot_identifier = var.db_final_snapshot ? "${var.name}-final" : null
+  deletion_protection       = var.db_deletion_protection
+  apply_immediately         = true
+}
+
+# Session defaults keep a destroy quick and free. For an always-on demo, infra/session/live.tfvars.example turns on
+# daily backups, a final snapshot and deletion protection (infra/README.md section 3L).
+variable "db_backup_retention_days" {
+  type    = number
+  default = 0
+}
+
+variable "db_final_snapshot" {
+  type    = bool
+  default = false
+}
+
+variable "db_deletion_protection" {
+  type    = bool
+  default = false
 }
