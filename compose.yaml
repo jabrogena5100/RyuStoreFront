@@ -2,7 +2,7 @@
 # on http://localhost:8025). Nothing sent here leaves the machine. SeaweedFS is the local S3 for product images.
 services:
   postgres:
-    image: postgres:18.7-alpine
+    image: postgres:19.0-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-storefront}
       POSTGRES_USER: ${POSTGRES_USER:-storefront}
